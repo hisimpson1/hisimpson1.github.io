@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--CreateContext2-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta http-equiv="content-type" content="text/html; charset=euc-kr">
+  <title>CreateContext2</title>
+
+  
+</head><body>
+<h1>CreateContext2<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>리액트네이티브에서 CreateContext를 이용해 로그인을 관리하는 코드 예제이다.<br>
+      <br>
+      <ul>
+        <li>AuthContext를 만들어 로그인 상태(user)와 login, logout 함수를 제공.</li>
+        <li>AuthProvider로 앱 전체를 감싸서 어디서든 로그인 상태를 접근 가능.</li>
+        <li>LoginScreen에서 useContext(AuthContext)를 사용해 로그인/로그아웃 처리.</li>
+      </ul>
+      <br>
+AuthContext.js 파일<br>
+      <div>import React, { createContext, useState } from 'react';<br>
+      <br>
+// Context 생성<br>
+export const AuthContext = createContext();<br>
+      <br>
+// Provider 컴포넌트<br>
+export const AuthProvider = ({ children }) =&gt; {<br>
+&nbsp; const [user, setUser] = useState(null);<br>
+      <br>
+&nbsp; // 로그인 함수<br>
+&nbsp; const login = (username, password) =&gt; {<br>
+&nbsp;&nbsp;&nbsp; // 실제로는 서버와 통신해야 하지만 여기서는 예시로 단순 처리<br>
+&nbsp;&nbsp;&nbsp; if (username === 'test' &amp;&amp; password === '1234') {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setUser({ username });<br>
+&nbsp;&nbsp;&nbsp; } else {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alert('로그인 실패');<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp; };<br>
+      <br>
+&nbsp; // 로그아웃 함수<br>
+&nbsp; const logout = () =&gt; {<br>
+&nbsp;&nbsp;&nbsp; setUser(null);<br>
+&nbsp; };<br>
+      <br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;AuthContext.Provider value={{ user, login, logout }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {children}<br>
+&nbsp;&nbsp;&nbsp; &lt;/AuthContext.Provider&gt;<br>
+&nbsp; );<br>
+};<br>
+      </div>
+
+      <br>
+      App.js 파일<br>
+      <div>import React, { useContext, useState } from 'react';<br>
+import { View, Text, TextInput, Button } from 'react-native';<br>
+import { AuthProvider, AuthContext } from './AuthContext';<br>
+      <br>
+const LoginScreen = () =&gt; {<br>
+&nbsp; const { user, login, logout } = useContext(AuthContext);<br>
+&nbsp; const [username, setUsername] = useState('');<br>
+&nbsp; const [password, setPassword] = useState('');<br>
+      <br>
+&nbsp; if (user) {<br>
+&nbsp;&nbsp;&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;환영합니다, {user.username}!&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="로그아웃" onPress={logout} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp;&nbsp;&nbsp; );<br>
+&nbsp; }<br>
+      <br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View style={{ height: 100 }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextInput<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; placeholder="아이디"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value={username}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onChangeText={setUsername}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextInput<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; placeholder="비밀번호"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; secureTextEntry<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value={password}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onChangeText={setPassword}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="로그인" onPress={() =&gt; login(username, password)} /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+};<br>
+      <br>
+export default function App() {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;AuthProvider&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;LoginScreen /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/AuthProvider&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--CreateContext2-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+li {
+    margin: 10px 0;    
+}
+
+li:last-child {
+    margin-bottom: 0;
+}
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta http-equiv="content-type" content="text/html; charset=euc-kr">
+  <title>CreateContext2</title>
+
+  
+</head><body>
+<h1>CreateContext2<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td><br>
+CreateContext를 사용해 문자열을 다국어 지원을 만든어 본다.<br>
+      <ul>
+        <li>LanguageContext : 현재 언어 상태와 언어 변경 함수 제공</li>
+        <li>LanguageProvider : Provider를 통해 language와 toggleLanguage를
+하위 컴포넌트에 전달</li>
+        <li>translations : 다국어 문자열을 객체로 관리 (한국어/영어)</li>
+        <li>HomeScreen : useContext로 현재 언어를 가져와 UI에 반영</li>
+        <li>버튼 클릭 시 toggleLanguage 실행 → 언어가 바뀌면서 UI도 자동 업데이트</li>
+      </ul>
+      <br>
+translations.js 파일<br>
+      <div>export const translations = {<br>
+&nbsp; ko: {<br>
+&nbsp;&nbsp;&nbsp; greeting: "안녕하세요!",<br>
+&nbsp;&nbsp;&nbsp; button: "언어 변경"<br>
+&nbsp; },<br>
+&nbsp; en: {<br>
+&nbsp;&nbsp;&nbsp; greeting: "Hello!",<br>
+&nbsp;&nbsp;&nbsp; button: "Change Language"<br>
+&nbsp; },<br>
+&nbsp; es: {<br>
+&nbsp;&nbsp;&nbsp; greeting: "¡Hola!",<br>
+&nbsp;&nbsp;&nbsp; button: "Cambiar idioma"<br>
+&nbsp; }<br>
+};<br>
+      </div>
+      <br>
+      <br>
+LanguageContext.js 파일<br>
+      <div>import React, { createContext, useState } from 'react';<br>
+      <br>
+export const LanguageContext = createContext();<br>
+      <br>
+export function LanguageProvider({ children }) {<br>
+&nbsp; const [language, setLanguage] = useState("ko"); // 기본값: 한국어<br>
+      <br>
+&nbsp; const changeLanguage = (lang) =&gt; {<br>
+&nbsp;&nbsp;&nbsp; setLanguage(lang);<br>
+&nbsp; };<br>
+      <br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;LanguageContext.Provider value={{ language,
+changeLanguage }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {children}<br>
+&nbsp;&nbsp;&nbsp; &lt;/LanguageContext.Provider&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+      <br>
+      <span style="color: rgb(51, 51, 255);">const LanguageContext =
+createContext()&nbsp; //OK</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">export LanguageContext;</span><br style="color: rgb(51, 51, 255);">
+      <br>
+처럼 사용해도 되지만 아래처럼 한줄로 해도 된다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">export const
+LanguageContext = createContext();&nbsp;&nbsp;&nbsp; //OK</span><br>
+      <br>
+      <span style="color: rgb(204, 0, 0);">export default const
+LanguageContext = createContext();&nbsp;&nbsp; //문법 오류, 이건 안된다.</span><br>
+      <br>
+export default 뒤에는 **표현식(expression)**이 와야 하는데 const ...는
+선언문(statement)이기 때문에 syntax error가 난다.<br>
+      <br>
+      <br>
+HomeScreen.js 파일<br>
+      <div>import React, { useContext } from 'react';<br>
+import { View, Text, Button, StyleSheet } from 'react-native';<br>
+import { LanguageContext } from './LanguageContext';<br>
+import { translations } from './translations';<br>
+      <br>
+export default function HomeScreen() {<br>
+&nbsp; const { language, changeLanguage } = useContext(LanguageContext);<br>
+      <br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={styles.container}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text style={styles.text}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{translations[language].greeting}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Text&gt;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View style={styles.buttons}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="한국어"
+onPress={() =&gt; changeLanguage("ko")} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="English"
+onPress={() =&gt; changeLanguage("en")} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="Espa&#241;ol"
+onPress={() =&gt; changeLanguage("es")} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+const styles = StyleSheet.create({<br>
+&nbsp; container: {<br>
+&nbsp;&nbsp;&nbsp; flex: 1,<br>
+&nbsp;&nbsp;&nbsp; justifyContent: "center",<br>
+&nbsp;&nbsp;&nbsp; alignItems: "center"<br>
+&nbsp; },<br>
+&nbsp; text: {<br>
+&nbsp;&nbsp;&nbsp; fontSize: 24,<br>
+&nbsp;&nbsp;&nbsp; marginBottom: 20<br>
+&nbsp; },<br>
+&nbsp; buttons: {<br>
+&nbsp;&nbsp;&nbsp; flexDirection: "row",<br>
+&nbsp;&nbsp;&nbsp; gap: 10<br>
+&nbsp; }<br>
+});<br>
+      </div>
+      <br>
+App.js 파일<br>
+      <div>import React from 'react';<br>
+import { LanguageProvider } from './LanguageContext';<br>
+import HomeScreen from './HomeScreen';<br>
+      <br>
+export default function App() {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;LanguageProvider&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;HomeScreen /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/LanguageProvider&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+      <br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

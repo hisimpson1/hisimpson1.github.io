@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--CreateContext-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta http-equiv="content-type" content="text/html; charset=euc-kr">
+  <title>CreateContext</title>
+
+  
+</head><body>
+<h1>CreateContext<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>리액트네이티브에서는 부모에서 자식으로 데이터 전달할때 props를 이용한다.<br>
+글로벌이나 전체 공유할수 있는 방법이 없을까?<br>
+      <br>
+이때 사용하는 컴포넌트가 CreateContext이다. <br><br>
+&#129513; CreateContext란?<br>
+리액트네이티브에서 CreateContext는 "공유 상자"를 만드는 도구이다. <br>
+Context 객체를 반환한다.<br>
+      <br>
+&#129513; Provider란?<br>
+데이터 공급자(Data Provider)로 Context에 값을 넣는다.<br>
+value라는 prop을 통해 공유할 데이터를 지정하고 하위 컴포넌트 어디서든 접근 가능하다..<br>
+      <br>
+&#129513; useContext와 Consumer란?<br>
+useContext와 Consumer를 통해 Context 데이터에 접근하여 가져 올수 있다.<br>
+      <br>
+      <h3>간단한 예제1)</h3>
+User.js<br>
+      <div>import&nbsp; { createContext } from 'react';<br>
+      <br>
+const UserContext = createContext({ name: 'gildong Hong' })<br>
+      <br>
+export default UserContext;<br>
+      </div>
+      <br>
+userContext 사용 : App.js 파일<br>
+      <div>import React, { useContext } from 'react';<br>
+import { View, Text } from 'react-native';<br>
+import UserContext from './User';<br>
+      <br>
+      <br>
+export default function App() {<br>
+&nbsp; const user = useContext(UserContext);<br>
+&nbsp; return (&lt;Text&gt;마이 이름: {user.name}&lt;/Text&gt;);<br>
+}<br>
+      </div>
+      <br>
+Consumer 사용 App.js 파일<br>
+      <div>import React, { useContext } from 'react';<br>
+import { View, Text } from 'react-native';<br>
+import UserContext from './User';<br>
+      <br>
+      <br>
+export default function App() {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;UserContext.Consumer&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { value =&gt; &lt;Text&gt;마이 이름: {value.name}&lt;/Text&gt; }<br>
+&nbsp;&nbsp;&nbsp; &lt;/UserContext.Consumer&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+      <br>
+      <span style="color: rgb(204, 0, 0);">User.js 파일을 다음과 같이 여러군데서 호출 하더라도 createContext 컴포넌트는 한번만 생성이 되고 UserContext를 반환한다.</span><br>
+      <br>
+&nbsp; <span style="color: rgb(51, 51, 255);">const user = useContext(UserContext);</span><br>
+      <br>
+      <h3>간단한 예제2)</h3>
+Provider 래퍼 컴포넌트는 진짜 자주 쓰이니까 이 패턴 잘 기억해 두면 나중에 Context 쓸 때 완전 편해질것 같다.<br>
+Cafeteria.js에서 children으로 넘겨서 Provider로 감싸는 패턴은 기억하자.<br>
+      <br>
+FoodContext.js 파일<br>
+      <div>import React from 'react';<br>
+      <br>
+const FoodContext = React.createContext();<br>
+export default FoodContext;<br>
+      </div>
+      <br>
+Cafeteria.js 파일<br>
+      <div>import React from 'react';<br>
+import FoodContext from './FoodContext';<br>
+      <br>
+function Cafeteria({ children }) {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;FoodContext.Provider value="김치볶음밥"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {children}<br>
+&nbsp;&nbsp;&nbsp; &lt;/FoodContext.Provider&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+export default Cafeteria;<br>
+      </div>
+      <br>
+Student.js 파일<br>
+      <div>import React, { useContext } from 'react';<br>
+import { Text } from 'react-native';<br>
+import FoodContext from './FoodContext';<br>
+      <br>
+function Student() {<br>
+&nbsp; const food = useContext(FoodContext);<br>
+&nbsp; return &lt;Text&gt;오늘 급식은 {food}!&lt;/Text&gt;;<br>
+}<br>
+      <br>
+export default Student;<br>
+      </div>
+      <br>
+App.js 파일<br>
+      <div>import React from 'react';<br>
+import { View } from 'react-native';<br>
+import Cafeteria from './Cafeteria';<br>
+import Student from './Student';<br>
+      <br>
+export default function App() {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;Cafeteria&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Student /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/Cafeteria&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+
+      <br>
+Cafeteria 컴포넌트의 children이름은 아무거나 사용해도 엘리먼트 자식들로 넘어온다.<br>
+children이름은 관습이다. 다른 이름 사용해도 됨.<br>
+옛날 리액트네이티브에서는 props.children로 이름이 고정되어 있었다. 
+      <p dir="auto" style=""><span style="color: rgb(51, 51, 255);">function Wrapper(props) {</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp; return &lt;div style={{border: '10px solid tomato'}}&gt;{props.children}&lt;/div&gt;;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">}</span><br>
+      </p>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
