@@ -3,12 +3,12 @@
 <!--CreateContext2-->
   
   <style type="text/css">table {
-        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: ¸¼Àº °íµñ, ¹ÙÅÁ, Courier New, Courier
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: ë§‘ì€ ê³ ë”•, ë°”íƒ•, Courier New, Courier
 }
   </style>
   
   <style type="text/css">div {
-        line-height:130%; font-family:µ¸¿òÃ¼; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+        line-height:130%; font-family:ë‹ì›€ì²´; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
 }
   </style>
   
@@ -25,7 +25,7 @@ li:last-child {
   <meta name="GENERATOR" content="Namo WebEditor v6.0">
 
   
-  <meta http-equiv="content-type" content="text/html; charset=euc-kr">
+  <meta charset="UTF-8">
   <title>CreateContext2</title>
 
   
@@ -38,41 +38,41 @@ li:last-child {
   <tbody>
     <tr>
       <td><br>
-CreateContext¸¦ »ç¿ëÇØ ¹®ÀÚ¿­À» ´Ù±¹¾î Áö¿øÀ» ¸¸µç¾î º»´Ù.<br>
+CreateContextë¥¼ ì‚¬ìš©í•´ ë¬¸ìì—´ì„ ë‹¤êµ­ì–´ ì§€ì›ì„ ë§Œë“ ì–´ ë³¸ë‹¤.<br>
       <ul>
-        <li>LanguageContext : ÇöÀç ¾ğ¾î »óÅÂ¿Í ¾ğ¾î º¯°æ ÇÔ¼ö Á¦°ø</li>
-        <li>LanguageProvider : Provider¸¦ ÅëÇØ language¿Í toggleLanguage¸¦
-ÇÏÀ§ ÄÄÆ÷³ÍÆ®¿¡ Àü´Ş</li>
-        <li>translations : ´Ù±¹¾î ¹®ÀÚ¿­À» °´Ã¼·Î °ü¸® (ÇÑ±¹¾î/¿µ¾î)</li>
-        <li>HomeScreen : useContext·Î ÇöÀç ¾ğ¾î¸¦ °¡Á®¿Í UI¿¡ ¹İ¿µ</li>
-        <li>¹öÆ° Å¬¸¯ ½Ã toggleLanguage ½ÇÇà ¡æ ¾ğ¾î°¡ ¹Ù²î¸é¼­ UIµµ ÀÚµ¿ ¾÷µ¥ÀÌÆ®</li>
+        <li>LanguageContext : í˜„ì¬ ì–¸ì–´ ìƒíƒœì™€ ì–¸ì–´ ë³€ê²½ í•¨ìˆ˜ ì œê³µ</li>
+        <li>LanguageProvider : Providerë¥¼ í†µí•´ languageì™€ toggleLanguageë¥¼
+í•˜ìœ„ ì»´í¬ë„ŒíŠ¸ì— ì „ë‹¬</li>
+        <li>translations : ë‹¤êµ­ì–´ ë¬¸ìì—´ì„ ê°ì²´ë¡œ ê´€ë¦¬ (í•œêµ­ì–´/ì˜ì–´)</li>
+        <li>HomeScreen : useContextë¡œ í˜„ì¬ ì–¸ì–´ë¥¼ ê°€ì ¸ì™€ UIì— ë°˜ì˜</li>
+        <li>ë²„íŠ¼ í´ë¦­ ì‹œ toggleLanguage ì‹¤í–‰ â†’ ì–¸ì–´ê°€ ë°”ë€Œë©´ì„œ UIë„ ìë™ ì—…ë°ì´íŠ¸</li>
       </ul>
       <br>
-translations.js ÆÄÀÏ<br>
+translations.js íŒŒì¼<br>
       <div>export const translations = {<br>
 &nbsp; ko: {<br>
-&nbsp;&nbsp;&nbsp; greeting: "¾È³çÇÏ¼¼¿ä!",<br>
-&nbsp;&nbsp;&nbsp; button: "¾ğ¾î º¯°æ"<br>
+&nbsp;&nbsp;&nbsp; greeting: "ì•ˆë…•í•˜ì„¸ìš”!",<br>
+&nbsp;&nbsp;&nbsp; button: "ì–¸ì–´ ë³€ê²½"<br>
 &nbsp; },<br>
 &nbsp; en: {<br>
 &nbsp;&nbsp;&nbsp; greeting: "Hello!",<br>
 &nbsp;&nbsp;&nbsp; button: "Change Language"<br>
 &nbsp; },<br>
 &nbsp; es: {<br>
-&nbsp;&nbsp;&nbsp; greeting: "¢®Hola!",<br>
+&nbsp;&nbsp;&nbsp; greeting: "Â¡Hola!",<br>
 &nbsp;&nbsp;&nbsp; button: "Cambiar idioma"<br>
 &nbsp; }<br>
 };<br>
       </div>
       <br>
       <br>
-LanguageContext.js ÆÄÀÏ<br>
+LanguageContext.js íŒŒì¼<br>
       <div>import React, { createContext, useState } from 'react';<br>
       <br>
 export const LanguageContext = createContext();<br>
       <br>
 export function LanguageProvider({ children }) {<br>
-&nbsp; const [language, setLanguage] = useState("ko"); // ±âº»°ª: ÇÑ±¹¾î<br>
+&nbsp; const [language, setLanguage] = useState("ko"); // ê¸°ë³¸ê°’: í•œêµ­ì–´<br>
       <br>
 &nbsp; const changeLanguage = (lang) =&gt; {<br>
 &nbsp;&nbsp;&nbsp; setLanguage(lang);<br>
@@ -91,19 +91,19 @@ changeLanguage }}&gt;<br>
 createContext()&nbsp; //OK</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">export LanguageContext;</span><br style="color: rgb(51, 51, 255);">
       <br>
-Ã³·³ »ç¿ëÇØµµ µÇÁö¸¸ ¾Æ·¡Ã³·³ ÇÑÁÙ·Î ÇØµµ µÈ´Ù.<br>
+ì²˜ëŸ¼ ì‚¬ìš©í•´ë„ ë˜ì§€ë§Œ ì•„ë˜ì²˜ëŸ¼ í•œì¤„ë¡œ í•´ë„ ëœë‹¤.<br>
       <br>
       <span style="color: rgb(51, 51, 255);">export const
 LanguageContext = createContext();&nbsp;&nbsp;&nbsp; //OK</span><br>
       <br>
       <span style="color: rgb(204, 0, 0);">export default const
-LanguageContext = createContext();&nbsp;&nbsp; //¹®¹ı ¿À·ù, ÀÌ°Ç ¾ÈµÈ´Ù.</span><br>
+LanguageContext = createContext();&nbsp;&nbsp; //ë¬¸ë²• ì˜¤ë¥˜, ì´ê±´ ì•ˆëœë‹¤.</span><br>
       <br>
-export default µÚ¿¡´Â **Ç¥Çö½Ä(expression)**ÀÌ ¿Í¾ß ÇÏ´Âµ¥ const ...´Â
-¼±¾ğ¹®(statement)ÀÌ±â ¶§¹®¿¡ syntax error°¡ ³­´Ù.<br>
+export default ë’¤ì—ëŠ” **í‘œí˜„ì‹(expression)**ì´ ì™€ì•¼ í•˜ëŠ”ë° const ...ëŠ”
+ì„ ì–¸ë¬¸(statement)ì´ê¸° ë•Œë¬¸ì— syntax errorê°€ ë‚œë‹¤.<br>
       <br>
       <br>
-HomeScreen.js ÆÄÀÏ<br>
+HomeScreen.js íŒŒì¼<br>
       <div>import React, { useContext } from 'react';<br>
 import { View, Text, Button, StyleSheet } from 'react-native';<br>
 import { LanguageContext } from './LanguageContext';<br>
@@ -120,7 +120,7 @@ export default function HomeScreen() {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Text&gt;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View style={styles.buttons}&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="ÇÑ±¹¾î"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="í•œêµ­ì–´"
 onPress={() =&gt; changeLanguage("ko")} /&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="English"
 onPress={() =&gt; changeLanguage("en")} /&gt;<br>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({<br>
 });<br>
       </div>
       <br>
-App.js ÆÄÀÏ<br>
+App.js íŒŒì¼<br>
       <div>import React from 'react';<br>
 import { LanguageProvider } from './LanguageContext';<br>
 import HomeScreen from './HomeScreen';<br>

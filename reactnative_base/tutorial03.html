@@ -3,12 +3,12 @@
 <!--CreateContext2-->
   
   <style type="text/css">table {
-        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: ¸¼Àº °íµñ, ¹ÙÅÁ, Courier New, Courier
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: ë§‘ì€ ê³ ë”•, ë°”íƒ•, Courier New, Courier
 }
   </style>
   
   <style type="text/css">div {
-        line-height:130%; font-family:µ¸¿òÃ¼; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+        line-height:130%; font-family:ë‹ì›€ì²´; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
 }
   </style>
   
@@ -25,7 +25,7 @@
   <meta name="GENERATOR" content="Namo WebEditor v6.0">
 
   
-  <meta http-equiv="content-type" content="text/html; charset=euc-kr">
+  <meta charset="UTF-8">
   <title>CreateContext2</title>
 
   
@@ -37,35 +37,35 @@
 
   <tbody>
     <tr>
-      <td>¸®¾×Æ®³×ÀÌÆ¼ºê¿¡¼­ CreateContext¸¦ ÀÌ¿ëÇØ ·Î±×ÀÎÀ» °ü¸®ÇÏ´Â ÄÚµå ¿¹Á¦ÀÌ´Ù.<br>
+      <td>ë¦¬ì•¡íŠ¸ë„¤ì´í‹°ë¸Œì—ì„œ CreateContextë¥¼ ì´ìš©í•´ ë¡œê·¸ì¸ì„ ê´€ë¦¬í•˜ëŠ” ì½”ë“œ ì˜ˆì œì´ë‹¤.<br>
       <br>
       <ul>
-        <li>AuthContext¸¦ ¸¸µé¾î ·Î±×ÀÎ »óÅÂ(user)¿Í login, logout ÇÔ¼ö¸¦ Á¦°ø.</li>
-        <li>AuthProvider·Î ¾Û ÀüÃ¼¸¦ °¨½Î¼­ ¾îµğ¼­µç ·Î±×ÀÎ »óÅÂ¸¦ Á¢±Ù °¡´É.</li>
-        <li>LoginScreen¿¡¼­ useContext(AuthContext)¸¦ »ç¿ëÇØ ·Î±×ÀÎ/·Î±×¾Æ¿ô Ã³¸®.</li>
+        <li>AuthContextë¥¼ ë§Œë“¤ì–´ ë¡œê·¸ì¸ ìƒíƒœ(user)ì™€ login, logout í•¨ìˆ˜ë¥¼ ì œê³µ.</li>
+        <li>AuthProviderë¡œ ì•± ì „ì²´ë¥¼ ê°ì‹¸ì„œ ì–´ë””ì„œë“  ë¡œê·¸ì¸ ìƒíƒœë¥¼ ì ‘ê·¼ ê°€ëŠ¥.</li>
+        <li>LoginScreenì—ì„œ useContext(AuthContext)ë¥¼ ì‚¬ìš©í•´ ë¡œê·¸ì¸/ë¡œê·¸ì•„ì›ƒ ì²˜ë¦¬.</li>
       </ul>
       <br>
-AuthContext.js ÆÄÀÏ<br>
+AuthContext.js íŒŒì¼<br>
       <div>import React, { createContext, useState } from 'react';<br>
       <br>
-// Context »ı¼º<br>
+// Context ìƒì„±<br>
 export const AuthContext = createContext();<br>
       <br>
-// Provider ÄÄÆ÷³ÍÆ®<br>
+// Provider ì»´í¬ë„ŒíŠ¸<br>
 export const AuthProvider = ({ children }) =&gt; {<br>
 &nbsp; const [user, setUser] = useState(null);<br>
       <br>
-&nbsp; // ·Î±×ÀÎ ÇÔ¼ö<br>
+&nbsp; // ë¡œê·¸ì¸ í•¨ìˆ˜<br>
 &nbsp; const login = (username, password) =&gt; {<br>
-&nbsp;&nbsp;&nbsp; // ½ÇÁ¦·Î´Â ¼­¹ö¿Í Åë½ÅÇØ¾ß ÇÏÁö¸¸ ¿©±â¼­´Â ¿¹½Ã·Î ´Ü¼ø Ã³¸®<br>
+&nbsp;&nbsp;&nbsp; // ì‹¤ì œë¡œëŠ” ì„œë²„ì™€ í†µì‹ í•´ì•¼ í•˜ì§€ë§Œ ì—¬ê¸°ì„œëŠ” ì˜ˆì‹œë¡œ ë‹¨ìˆœ ì²˜ë¦¬<br>
 &nbsp;&nbsp;&nbsp; if (username === 'test' &amp;&amp; password === '1234') {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setUser({ username });<br>
 &nbsp;&nbsp;&nbsp; } else {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alert('·Î±×ÀÎ ½ÇÆĞ');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alert('ë¡œê·¸ì¸ ì‹¤íŒ¨');<br>
 &nbsp;&nbsp;&nbsp; }<br>
 &nbsp; };<br>
       <br>
-&nbsp; // ·Î±×¾Æ¿ô ÇÔ¼ö<br>
+&nbsp; // ë¡œê·¸ì•„ì›ƒ í•¨ìˆ˜<br>
 &nbsp; const logout = () =&gt; {<br>
 &nbsp;&nbsp;&nbsp; setUser(null);<br>
 &nbsp; };<br>
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) =&gt; {<br>
       </div>
 
       <br>
-      App.js ÆÄÀÏ<br>
+      App.js íŒŒì¼<br>
       <div>import React, { useContext, useState } from 'react';<br>
 import { View, Text, TextInput, Button } from 'react-native';<br>
 import { AuthProvider, AuthContext } from './AuthContext';<br>
@@ -92,8 +92,8 @@ const LoginScreen = () =&gt; {<br>
 &nbsp; if (user) {<br>
 &nbsp;&nbsp;&nbsp; return (<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;È¯¿µÇÕ´Ï´Ù, {user.username}!&lt;/Text&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="·Î±×¾Æ¿ô" onPress={logout} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;í™˜ì˜í•©ë‹ˆë‹¤, {user.username}!&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="ë¡œê·¸ì•„ì›ƒ" onPress={logout} /&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
 &nbsp;&nbsp;&nbsp; );<br>
 &nbsp; }<br>
@@ -102,17 +102,17 @@ const LoginScreen = () =&gt; {<br>
 &nbsp;&nbsp;&nbsp; &lt;View&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View style={{ height: 100 }} /&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextInput<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; placeholder="¾ÆÀÌµğ"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; placeholder="ì•„ì´ë””"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value={username}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onChangeText={setUsername}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextInput<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; placeholder="ºñ¹Ğ¹øÈ£"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; placeholder="ë¹„ë°€ë²ˆí˜¸"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; secureTextEntry<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value={password}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onChangeText={setPassword}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="·Î±×ÀÎ" onPress={() =&gt; login(username, password)} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="ë¡œê·¸ì¸" onPress={() =&gt; login(username, password)} /&gt;<br>
 &nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
 &nbsp; );<br>
 };<br>
