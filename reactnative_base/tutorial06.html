@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--NavigationContainer-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>NavigationContainer</title></head><body>
+<h1>NavigationContainer Props<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>NavigationContainer는 자식 컴포넌트에 navigation, route 두가지 기본 props를 자동으로 넘겨준다.<br>
+      <ul>
+        <li>
+navigation: 화면 전환을 위한 객체</li>
+        <li>
+route: 현재 화면에 전달된 파라미터와 관련된 정보</li>
+      </ul>
+
+2개를 동시에 넘겨주는 경우 어떠헤 하는지 알아보자.<br>
+      <br>
+      <a href="https://github.com/hisimpson1/ReactiveNative_test/blob/main/reactnative_base/tutorial06/App.js">https://github.com/hisimpson1/ReactiveNative_test/blob/main/reactnative_base/tutorial06/App.js</a><br>
+      <br>
+App.js<br>
+      <div>import * as React from 'react';<br>
+import { Button, Text, View } from 'react-native';<br>
+import { NavigationContainer } from '@react-navigation/native';<br>
+import { createNativeStackNavigator } from '@react-navigation/native-stack';<br>
+      <br>
+const Stack = createNativeStackNavigator();<br>
+      <br>
+function HomeScreen({ navigation }) {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;홈 화면&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="상세 화면으로 이동 (데이터 전달)"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; navigation.navigate('Details', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; userName: '홍길동',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; age: 25,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; })<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+function DetailsScreen({ route, navigation }) {<br>
+&nbsp; // route.params로 전달된 값 받기<br>
+&nbsp; const { userName, age } = route.params || {};<br>
+      <br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;상세 화면&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {userName &amp;&amp; &lt;Text&gt;이름: {userName}&lt;/Text&gt;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {age &amp;&amp; &lt;Text&gt;나이: {age}&lt;/Text&gt;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="홈으로 돌아가기"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt; navigation.goBack()}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+export default function App() {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;NavigationContainer&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Navigator initialRouteName="Home"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Screen name="Home" component={HomeScreen} options={{ title: '홈' }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Screen
+name="Details" component={DetailsScreen} options={{ title: '상세' }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Stack.Navigator&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/NavigationContainer&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+<br>
+      다음 문장에서 || 기능을 알아 보자.<br>
+const params = route.params || {};<br>
+      <ul>
+        <li>route.params가 truthy(값이 존재하는 경우)라면 그대로 사용한다.</li>
+        <li>route.params가 falsy(예: undefined, null, false, 0, 빈 문자열 등)라면, 대신 오른쪽의 빈 객체 {}를 사용한다.</li>
+      </ul>
+HomeScreen에서 파라메터를 전달해주고 있다.<br>
+DetailsScreen에서 라우터와 navigation값을 받는다.<br>
+navigation은 별도로 전달하지 않아도 props에서 알아서 자동으로 전달이 된다.<br>
+라우터값은 route.params로 전달 받는다.<br style="color: rgb(51, 51, 255);">
+      <br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">function HomeScreen({ navigation }) {</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ......</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; navigation.navigate('Details', {</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; userName: '홍길동',</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; age: 25,</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; })</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .......</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">
+}</span><br style="color: rgb(51, 51, 255);">
+      <br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">function DetailsScreen({ route, navigation }) {</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp; // route.params로 전달된 값 받기</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp; const { userName, age } = route.params || {};</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp; ......</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">}</span><br>
+      <br>
+      <br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

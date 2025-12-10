@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--Navigation-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>Navigation</title></head><body>
+<h1>Navigation<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>기본적으로 @react-navigation/native와 함께 Stack Navigator 패키지를 설치한다.<br>
+
+프로젝트 폴더내에서&nbsp; 네비게이션 관련 모듈을 설치 한다.<br>
+      <br><span style="color: rgb(51, 51, 255);">npx expo install @react-navigation/native</span><br style="color: rgb(51, 51, 255);"><span style="color: rgb(51, 51, 255);">
+npx expo install react-native-screens react-native-safe-area-context</span><br style="color: rgb(51, 51, 255);"><span style="color: rgb(51, 51, 255);">
+npx expo install @react-navigation/native-stack</span><br>
+      <br>
+다음은 코파일럿에서 생성한 간단한 네비게이션 예제이다.<br>
+App.js에서 Stack Navigator를 설정하는 기본 구조는 다음과 같다.<br>
+      <br>
+App.js 파일<br>
+      
+      <div>import * as React from 'react';<br>
+import { Button, Text, View } from 'react-native';<br>
+import { NavigationContainer } from '@react-navigation/native';<br>
+import { createNativeStackNavigator } from '@react-navigation/native-stack';<br>
+      <br>
+const Stack = createNativeStackNavigator();<br>
+      <br>
+function HomeScreen({ navigation }) {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;홈 화면&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="상세 화면으로 이동"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt; navigation.navigate('Details')}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+function DetailsScreen({ navigation }) {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;상세 화면&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="홈으로 돌아가기"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt; navigation.goBack()}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+export default function App() {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;NavigationContainer&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Navigator initialRouteName="Home"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Screen name="Home" component={HomeScreen} options={{ title: '홈' }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Screen
+name="Details" component={DetailsScreen} options={{ title: '상세' }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Stack.Navigator&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/NavigationContainer&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+
+      <br>
+계층 구조는 다음과 같다. <br>
+NavigationContainer는 책장이고 Stack.Screen은 책과 비슷하다.<br>
+Stack.Navigator는 책을 어떻게 배치할지 타입이라고 생각하면 된다.<br>
+      <br>
+      <span style="font-weight: bold; color: rgb(51, 51, 255);">NavigationContainer</span><br style="font-weight: bold; color: rgb(51, 51, 255);">
+      <span style="font-weight: bold; color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stack.Navigator</span><br style="font-weight: bold; color: rgb(51, 51, 255);">
+      <span style="font-weight: bold; color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stack.Screen</span><br>
+      <br>
+      <br>
+다음 임포트는 React 뿐만 아니라 모든 리액트 함수를 임포트 한다.<br>
+import * as React from 'react';<br>
+      <h3>
+1. NavigationContainer를 임포트 한다.</h3>
+
+      <br>
+
+import { NavigationContainer } from '@react-navigation/native';<br>
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';<br>
+      <br>
+      <h3>2. NavigationContainer:</h3>
+
+앱의 루트에 배치하여 네비게이션 상태를 관리하고 최상위 네비게이터(예: Stack, Tab, Drawer)를 앱 환경과 연결해주는 역할을 한다.<br>
+      <br>
+      <h3>
+3. Stack.Navigator:</h3>
+
+화면을 순차적으로 쌓고 제거하는 네비게이션 방식으로, 모바일 앱의 기본적인 화면 이동 패턴을 구현한다.<br>
+<ul>
+        
+        
+        <li>initialRouteName으로 첫 화면을 지정할 수 있다.</li>
+      </ul>
+      <h3>4. Stack.Screen:</h3>
+React Navigation의 Stack Navigator 안에서 개별 화면을 정의하는 컴포넌트입니다. <br>
+각 Screen은 이름(name)과 연결된 컴포넌트(component)를 지정하여 하나의 화면을 나타낸다.<br>
+<br>
+      NavigationContainer는 자식 컴포넌트에 navigation, route 두가지 기본 props를 자동으로 넘겨준다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">
+function HomeScreen({ navigation }) {</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">
+
+function DetailsScreen({ navigation }) {</span><br>
+<ul>
+        <li>navigation: 화면 전환을 위한 객체</li>
+        <li>route: 현재 화면에 전달된 파라미터와 관련된 정보</li>
+      </ul>
+      navigation은 React Navigation이 자동으로 주입하는 props이다.<br>
+따라서 HomeScreen({ navigation })처럼 구조 분해 할당으로 꺼내 쓸 수 있다.<br>
+navigation 객체에는 화면 전환 관련 메서드들이 있다.<br>
+      <ul>
+        <li>navigation.navigate('ScreenName') → 다른 화면으로 이동</li></ul>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(51, 51, 255);">onPress={() =&gt; navigation.navigate('Details')}</span>
+      <ul>
+
+        <li>navigation.goBack() → 이전 화면으로 돌아가기</li>
+      </ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(51, 51, 255);">onPress={() =&gt; navigation.goBack()}</span>
+      <ul>
+
+        <li>navigation.push('ScreenName') → 같은 화면을 새로 쌓기</li>
+        <li>navigation.replace('ScreenName') → 현재 화면을 교체하기</li>
+      
+      </ul>
+
+      
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

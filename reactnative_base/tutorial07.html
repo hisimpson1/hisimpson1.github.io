@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--useNavigation useRoute 사용-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>useNavigation useRoute 사용</title></head><body>
+<h1>useNavigation useRoute 사용<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>props를 사용해 데이터를 전달 할 수도 있지만 useNavigation과 useRoute 훅을 사용해서 Navigation과 라우터를 전달한다. <br>
+      <br>
+props 전달없이 사용만 하면 된다.<br>
+      <br>
+const navigation = useNavigation();<br>
+const route = useRoute();<br>
+      <br>
+      <a href="https://github.com/hisimpson1/ReactiveNative_test/blob/main/reactnative_base/tutorial07/App.js">https://github.com/hisimpson1/ReactiveNative_test/blob/main/reactnative_base/tutorial07/App.js</a><br>
+<br>
+      
+      <div>import * as React from 'react';<br>
+import { Button, Text, View } from 'react-native';<br>
+import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';<br>
+import { createNativeStackNavigator } from '@react-navigation/native-stack';<br>
+      <br>
+const Stack = createNativeStackNavigator();<br>
+      <br>
+function HomeScreen() {<br>
+&nbsp; const navigation = useNavigation(); // navigation 훅 사용<br>
+      <br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;홈 화면&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="상세 화면으로 이동 (데이터 전달)"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; navigation.navigate('Details', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; userName: '홍길동',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; age: 25,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; })<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+function DetailsScreen() {<br>
+      <span style="color: rgb(51, 51, 255);">&nbsp; const navigation = useNavigation(); // navigation 훅 사용</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp; const route = useRoute();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // route 훅 사용</span><br>
+      <br>
+&nbsp; // route.params로 전달된 값 받기<br>
+&nbsp; const { userName, age } = route.params || {};<br>
+      <br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;상세 화면&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {userName &amp;&amp; &lt;Text&gt;이름: {userName}&lt;/Text&gt;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {age &amp;&amp; &lt;Text&gt;나이: {age}&lt;/Text&gt;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="홈으로 돌아가기"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt; navigation.goBack()}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
+&nbsp; );<br>
+}<br>
+      <br>
+export default function App() {<br>
+&nbsp; return (<br>
+&nbsp;&nbsp;&nbsp; &lt;NavigationContainer&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Navigator initialRouteName="Home"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Screen name="Home" component={HomeScreen} options={{ title: '홈' }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Screen
+name="Details" component={DetailsScreen} options={{ title: '상세' }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Stack.Navigator&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/NavigationContainer&gt;<br>
+&nbsp; );<br>
+}<br>
+      </div>
+
+      <br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
