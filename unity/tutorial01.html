@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--Connect components by dragging-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>Connect components by dragging</title>
+
+  
+</head><body>
+<h1>Connect components by dragging<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>Inspector에서 오브젝트를 드래그하면 해당 오브젝트에 붙어 있는 컴포넌트가 자동으로 연결된다.<br>
+왜 드래그만 하면 자동으로 연결될까?<br>
+이유를 알아 보자.<br>
+      <br>
+먼저 테스트 환경을 만든다.<br>
+      <h4>1. 계층뷰에서 빈오브젝트로 GameManagerInstance와 MyPlayerObject를 만든다.</h4>
+      <img style="width: 238px; height: 124px;" alt="" src="tutorial01/hierarchy.png"><br>
+      <br>
+      <h4>2. 다음의 GameManager.cs 파일을 GameManagerInstance&nbsp; 오브젝트에 컴포넌트로 추가한다.</h4>
+GameManager.cs 파일<br>
+      
+      <div>using UnityEngine;<br>
+      <br>
+public class GameManager : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public int health;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Start()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+
+      <br>
+      <img style="width: 447px; height: 318px;" alt="" src="tutorial01/gamemanager.png"><br>
+      <br>
+      <h4>3. 다음의 MyPlayer.cs 파일을 MyPlayerObject 오브젝트에 컴포넌트로 추가한다.</h4>
+MyPlayer.cs 파일<br>
+      <div>using UnityEngine;<br>
+      <br>
+public class MyPlayer : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public GameManager gameManager;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Start()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gameManager.health = 5;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+<br>
+      <img style="width: 445px; height: 295px;" alt="" src="tutorial01/myplayerobject.png"><br>
+      <br>
+PlayerMove.cs의 변수 타입이 GameManager라면 드래그했을 때 연결되는 것은 GameManager 컴포넌트야.<br>
+오브젝트 전체가 아니라 그 안의 특정 컴포넌트가 연결되는 것이다.<br>
+      <br>
+실행후 GameManagerInstance 인스펙트 창을 보면 MyPlayer에 의해 Health 값이 5로 설정 되어 있는것을 확인 할수 있다.<br>
+      <br>
+결론)<br>
+Inspector에서 오브젝트를 드래그하면 해당 오브젝트에 붙어 있는 컴포넌트가 자동으로 연결된다.<br>
+Unity에서는 스크립트의 public 변수 타입을 보고 Inspector가 “어떤 오브젝트를 연결할 수 있는지” 판단한다.<br>
+      <br>
+✅ 드래그하면 연결되는 조건:<br>
+      <br>
+1. 변수 타입이 컴포넌트여야 함<br>
+2. 드래그하는 오브젝트에 해당 컴포넌트가 붙어 있어야 함<br>
+3. 변수는 public 또는 [SerializeField]여야 함<br>
+      <br>
+      <span style="color: rgb(51, 51, 255); font-weight: bold;">그래서 드래그하면 실제로 연결되는 것은 “오브젝트”가 아니라 “컴포넌트”</span><br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
