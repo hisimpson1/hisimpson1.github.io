@@ -1,132 +1,131 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
-<!--2D PPU-->
-  
-  <style type="text/css">table {
-        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
-}
-  </style>
-  
-  <style type="text/css">div {
-        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
-}
-  </style>
-  
-  <style type="text/css">
-	li {
-          margin: 10px 0;
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유니티 PPU와 격자 시스템 이해하기</title>
+    <style>
+        :root {
+            --bg-color: #2c2c2c;
+            --card-bg: #383838;
+            --primary-color: #81b1ff;
+            --accent-color: #ffeb3b;
+            --text-color: #e0e0e0;
         }
-
-        li:last-child {
-           margin-bottom: 0;
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
-  </style>
-  
-  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+        .container {
+            max-width: 850px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 { color: var(--primary-color); border-bottom: 2px solid #555; padding-bottom: 10px; }
+        h2 { color: var(--primary-color); margin-top: 30px; }
+        .grid-box {
+            background: #222;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin: 20px 0;
+        }
+        .highlight { color: var(--accent-color); font-weight: bold; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #444;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #555;
+            text-align: center;
+        }
+        th { background-color: #555; }
+        .formula {
+            display: block;
+            text-align: center;
+            font-size: 1.2em;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
 
-  
-  <meta charset="UTF-8">
-  <title>2D PPU</title>
+<div class="container">
+    <h1>Unity Unit vs PPU 완벽 정리</h1>
+    
+    <p>유니티 씬 뷰에서 보이는 <strong>격자 한 칸은 PPU가 아니라 '1 Unity Unit'</strong>입니다. PPU는 이 한 칸 안에 이미지가 어떻게 들어갈지를 결정하는 도구입니다.</p>
 
-  
-</head><body>
-<h1>2D PPU<br>
-</h1>
+    <div class="grid-box">
+        <h2>1. 개념 정의</h2>
+        <ul>
+            <li><strong>Unity Unit (격자 한 칸):</strong> 유니티 월드의 기본 거리 단위 (좌표 1.0의 거리).</li>
+            <li><strong>PPU (Pixels Per Unit):</strong> "원본 이미지의 몇 픽셀을 1 Unit(한 칸)으로 채울 것인가?"를 정의하는 값.</li>
+        </ul>
+    </div>
 
-<table border="0" width="700">
+    <h2>2. PPU 설정에 따른 크기 변화</h2>
+    <p>이미지 크기가 <strong>64x64 픽셀</strong>일 때의 예시입니다.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>스프라이트 PPU 설정</th>
+                <th>결과 (씬 뷰에서의 크기)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="highlight">PPU = 64</span></td>
+                <td>정확히 격자 <strong>1칸</strong>에 꽉 참</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">PPU = 32</span></td>
+                <td>격자 <strong>2칸</strong>의 크기를 차지함</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">PPU = 100</span> (기본값)</td>
+                <td>격자 1칸보다 작게 보임 (0.64칸)</td>
+            </tr>
+        </tbody>
+    </table>
 
-  <tbody>
-    <tr>
-      <td><span style="color: rgb(31, 31, 31); font-family: &quot;Google Sans Flex&quot;,&quot;Google Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; white-space: normal; background-color: rgb(233, 238, 246); display: inline ! important; float: none;">유니티 2D 게임에서 텍스쳐 PPU와 씬뷰의 격자 한칸의 관계는?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><br>
-      <br>
-      <img style="width: 397px; height: 172px;" alt="" src="tutorial03/grid.png"><br>
-      <br>
-      <p data-path-to-node="0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">유니티(Unity)에서 씬 뷰에 보이는 저 **격자(Grid) 한 칸은 기본적으로 '1 유니티 단위(1 Unity Unit)'**를 의미합니다.</p>
-      <p data-path-to-node="1" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">결론부터 말씀드리면, <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">"한 칸이 곧 PPU"인 것은 아니지만, PPU 설정에 따라 스프라이트가 저 한 칸에 어떻게 들어가는지가 결정됩니다.</b></p>
-      <p data-path-to-node="2" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">이 개념을 쉽게 이해하실 수 있도록 핵심 내용을 정리해 드릴게요.</p>
-      <hr data-path-to-node="3" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-      <h3 data-path-to-node="4" style="font-family: &quot;Google Sans&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">1. Unity Unit vs PPU (Pixels Per Unit)</h3>
-      <ul data-path-to-node="5" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-<li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="5,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Unity Unit (격자 한 칸):</b> 유니티 월드 내의 거리 단위입니다. 물리 엔진이나 좌표계에서 기본이 되는 <span class="math-inline" data-math="1.0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">1.0</span>의 크기입니다.</p></li><li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="5,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">PPU (Pixels Per Unit):</b> 스프라이트 이미지의 **'몇 픽셀을 유니티 1단위(한 칸)로 취급할 것인가'**를 결정하는 설정값입니다.</p></li>
-      </ul>
-      <h3 data-path-to-node="6" style="font-family: &quot;Google Sans&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">2. 예시로 이해하기</h3>
-      <p data-path-to-node="7" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">만약 내가 가져온 캐릭터 이미지의 해상도가 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">64x64</b> 픽셀이라고 가정해 보겠습니다.</p>
-      <table data-path-to-node="8" style="margin-bottom: 32px; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-<thead style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><tr style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><strong style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important; margin-bottom: 0px ! important;">스프라이트 PPU 설정</strong></td><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><strong style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important; margin-bottom: 0px ! important;">결과 (씬 뷰에서의 크기)</strong></td></tr></thead><tbody style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><tr style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><span data-path-to-node="8,1,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">PPU = 64</b></span></td><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><span data-path-to-node="8,1,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">이미지가 격자 **정확히 한 칸(1 unit)**에 꽉 차게 들어갑니다.</span></td></tr><tr style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><span data-path-to-node="8,2,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">PPU = 32</b></span></td><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><span data-path-to-node="8,2,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">이미지가 격자 **두 칸(2 units)**의 크기를 차지하게 됩니다.</span></td></tr><tr style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><span data-path-to-node="8,3,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">PPU = 100</b> (기본값)</span></td><td style="border: 1px solid ; font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><span data-path-to-node="8,3,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">이미지가 격자 한 칸보다 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">작게</b> 보입니다. (약 0.64칸)</span></td></tr></tbody>
-      </table>
-      <h3 data-path-to-node="9" style="font-family: &quot;Google Sans&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">3. 왜 이게 중요한가요?</h3>
-      <p data-path-to-node="10" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">보통 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">2D 픽셀 아트 게임</b>을 만들 때 PPU 설정이 매우 중요합니다.</p>
-      <ul data-path-to-node="11" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-<li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="11,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">일관성:</b> 모든 스프라이트의 PPU를 동일하게 맞춰야 캐릭터와 배경의 해상도 이질감이 없습니다.</p></li><li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="11,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Tilemap 작업:</b> 타일셋이 16x16 픽셀이라면, PPU를 16으로 설정해야 타일 하나가 격자 한 칸에 딱 맞게 들어갑니다.</p></li>
-      </ul>
-      <hr data-path-to-node="12" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-      <p data-path-to-node="13" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">팁:</b> 만약 픽셀 게임을 만드신다면, 사용 중인 타일의 가로 픽셀 크기에 맞춰 스프라이트의 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Pixels Per Unit</b> 값을 수정해 보세요!</p>
-      <p data-path-to-node="14" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">혹시 지금 작업 중인 아트셋의 픽셀 사이즈를 알려주시면, 적절한 PPU 값을 추천해 드릴까요?</p>
-<br>
-      <span style="color: rgb(31, 31, 31); font-family: &quot;Google Sans Flex&quot;,&quot;Google Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; white-space: normal; background-color: rgb(233, 238, 246); display: inline ! important; float: none;">2D 직교 좌표계로 설정한 상태에서는?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><br>
-<br>
-      
-      <p data-path-to-node="0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">2D 직교 좌표계(Orthographic) 모드에서도 격자 한 칸은 여전히 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">1 Unity Unit</b>입니다. 하지만 화면에 보이는 방식이 3D와는 조금 다릅니다.</p>
-      <p data-path-to-node="1" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">직교 좌표계 환경에서 PPU와 카메라의 관계를 이해하면 작업이 훨씬 수월해집니다.</p>
-      <hr data-path-to-node="2" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-      <h3 data-path-to-node="3" style="font-family: &quot;Google Sans&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">1. 격자 한 칸의 의미</h3>
-      <p data-path-to-node="4" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">직교 좌표계에서 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Camera의 Size</b> 속성을 보면 이 격자의 개념이 명확해집니다.</p>
-      <ul data-path-to-node="5" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-<li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="5,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Camera Size가 5일 경우:</b> 화면의 정중앙에서 위쪽 끝까지 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">격자 5칸</b>이 들어갑니다. (즉, 화면 전체 세로 높이는 10단위가 됩니다.)</p></li><li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="5,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">이때 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">PPU가 100</b>이라면, 화면 세로 전체에 픽셀이 총 <span class="math-inline" data-math="10 \times 100 = 1000" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">$10 X 100 = 1000</span>픽셀만큼 그려진다는 뜻입니다.</p></li>
-      </ul>
-      <h3 data-path-to-node="6" style="font-family: &quot;Google Sans&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">2. '픽셀 퍼펙트(Pixel Perfect)'를 원하신다면?</h3>
-      <p data-path-to-node="7" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">만약 픽셀 아트 게임을 만들고 계셔서 스프라이트가 격자에 딱딱 맞기를 원하신다면 다음 공식을 기억하세요.</p>
-      <blockquote data-path-to-node="8" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="8,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><span class="math-inline" data-math="\text{PPU} = \text{타일의 픽셀 크기}" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">PPU = 타일의 픽셀 크기</span></b></p></blockquote>
-      <ul data-path-to-node="9" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-<li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="9,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">예를 들어, 타일 하나가 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">16x16</b> 픽셀이라면 이미지 설정에서 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">PPU를 16</b>으로 바꿔주세요.</p></li><li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="9,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">그러면 스프라이트 하나가 정확히 **격자 한 칸(1 unit)**을 차지하게 되어 배치하기가 매우 편해집니다.</p></li>
-      </ul>
-      <h3 data-path-to-node="10" style="font-family: &quot;Google Sans&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">3. 직교 좌표계 작업 팁</h3>
-      <ul data-path-to-node="11" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">
-<li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="11,0,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Snap 기능:</b> <code style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Ctrl</code>을 누른 채로 오브젝트를 움직이면 격자 단위(1 unit)로 딱딱 끊어서 이동할 수 있습니다.</p></li><li style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><p data-path-to-node="11,1,0" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;"><b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Pivot(중심점):</b> PPU를 맞춰도 격자에 안 맞는다면, 스프라이트 설정에서 <b style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Pivot</b>이 <code style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Center</code>로 되어 있는지 확인해 보세요. 격자 선에 맞추고 싶다면 <code style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Top Left</code>나 <code style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">Bottom Left</code>로 변경하기도 합니다.</p></li>
-      </ul>
-<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <h2>3. 직교 좌표계(Orthographic)와 PPU</h2>
+    <p>2D 게임 환경에서 가장 중요한 관계식입니다.</p>
+    <div class="formula">
+        <strong>화면상의 이미지 크기(Unit) = 실제 픽셀 크기 / PPU</strong>
+    </div>
+    <ul>
+        <li><strong>Camera Size:</strong> 화면 중앙에서 위쪽 끝까지 보이는 격자의 개수입니다.</li>
+        <li><strong>Pixel Perfect:</strong> 타일이 16px라면 PPU를 16으로 설정하세요. 그래야 격자 한 칸에 타일이 정확히 일치합니다.</li>
+    </ul>
 
-<p>&nbsp;</p>
+    <div class="grid-box">
+        <h3>💡 요약 및 팁</h3>
+        <p>격자 한 칸은 언제나 1 Unit입니다. 픽셀 아트를 하신다면 <strong>"내 타일의 가로 픽셀 크기 = PPU"</strong> 공식을 사용하여 격자와 이미지를 일치시키는 것이 작업 효율에 가장 좋습니다.</p>
+    </div>
 
-<p>&nbsp;</p>
+    <footer>
+        Unity 2D Development Guide - Unit & PPU System
+    </footer>
+</div>
 
-<script language="JavaScript">
-
-var images = document.getElementsByTagName('img'); 
-
-for(var i = 0; i < images.length; i++) { 
-    images[i].style.width = images[i].width/2 + 'px';
-    images[i].style.height = images[i].height/2 + 'px';
-    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
-    images[i].setAttribute('data-imageSize', '0.5');
-}
-
-function ChangeImageSize(){
-    imageSize = this.getAttribute('data-imageSize')
-
-    width = this.width;
-    height = this.height;
-
-    if(imageSize == '1') 
-    {
-	this.setAttribute('data-imageSize', '0.5');
-        width =  width/2;
-        height = height/2;      
-    }
-    else 
-    {
-	this.setAttribute('data-imageSize', '1');
-        width = width*2;
-        height = height*2;
-    }
-
-    this.style.width = width + 'px';
-    this.style.height = height + 'px';
-}
-
-</script>
-</body></html>
+</body>
+</html>
