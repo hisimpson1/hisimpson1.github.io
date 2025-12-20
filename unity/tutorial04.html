@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--2D sprite animation-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>2D sprite animation</title>
+
+  
+</head><body>
+<h1>2D sprite animation<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>스프라이트로 2D 애니메이션을 만드는 방법은 몇가지 있지만 가장 간단한 방법에 대해서 알아 본다.<br>
+      <br>
+      <h3>1. 텍스쳐 옵션 설정</h3>
+애니메이션할 할 모든 파일을 텍스쳐 옵션을 다음과 같이 설정한다.<br>
+      <br>
+      <img style="width: 709px; height: 691px;" alt="" src="tutorial04/texture_option.png"><br>
+      <br>
+스프라이트 텍스쳐에서 주로 사용하는 Filter Mode의 특징은 다음과 같다.<br>
+      <h3 style="font-weight: bold;" data-path-to-node="3">Point (no
+filter)</h3>
+      <p data-path-to-node="4">픽셀 하나하나가 칼같이 떨어지게 표현하는 방식이다.</p>
+      <ul data-path-to-node="5">
+        <li>
+          <p data-path-to-node="5,0,0">특징: 이미지를 확대했을 때 경계선이 뭉개지지 않고 계단
+현상이 그대로 남는다.</p>
+        </li>
+        <li>
+          <p data-path-to-node="5,1,0">추천: 픽셀 아트(도트 게임), 레트로 스타일 게임.</p>
+        </li>
+        <li>
+          <p data-path-to-node="5,2,0">주의: <code data-path-to-node="5,2,0" data-index-in-node="4">Compression</code>
+설정이 잘못되면 픽셀이 깨져 보일 수 있으므로, 픽셀 아트의 경우 보통 <code data-path-to-node="5,2,0" data-index-in-node="56">Compression</code>을 <code data-path-to-node="5,2,0" data-index-in-node="69">None</code>으로 두거나
+고품질로 설정한다.</p>
+        </li>
+      </ul>
+      <img style="width: 229px; height: 190px;" alt="" src="tutorial04/point_filter.png"><br>
+      <br>
+      <h3 style="font-weight: bold;" data-path-to-node="6">Bilinear
+(기본값)</h3>
+      <p data-path-to-node="7">주변 픽셀들을 평균 내어 부드럽게 보정하는 방식이다.</p>
+      <ul data-path-to-node="8">
+        <li>
+          <p data-path-to-node="8,0,0">특징: 이미지를 확대하거나 회전했을 때 경계면을
+부드럽게(안티앨리어싱 효과) 만들어준다.</p>
+        </li>
+        <li>
+          <p data-path-to-node="8,1,0">추천: 고해상도 일러스트, 부드러운 벡터 스타일 그래픽,
+실사 사진 기반 스프라이트.</p>
+        </li>
+        <li>
+          <p data-path-to-node="8,2,0">주의: 아주 작은 크기의 픽셀 아트를 Bilinear로
+두면 뿌옇게(Blurry) 보여서 그래픽이 지저분해진다.</p>
+        </li>
+      </ul>
+      <img style="width: 238px; height: 205px;" alt="" src="tutorial04/bilinear_filter.png"><br>
+      <br>
+      <h4>2. 스프라이트 파일을&nbsp; 드래그 하여 애니메이션 파일을 생성한다.</h4>
+idle 관련 스프라이트 파일을 Hierachy로 드래그 하여 애니메이션 파일을 생성한다.<br>
+      <br>
+      <img style="width: 773px; height: 775px;" alt="" src="tutorial04/drag_idle_sprite.png"><br>
+      <br>
+드래그 하고나면 대화상자가 뜬다. idle이라고 입력한다.<br>
+      <br>
+      <img style="width: 873px; height: 493px;" alt="" src="tutorial04/dlg_idle_anim.png"><br>
+      <br>
+run 스프라이트 파일도 드래그 해서. run 애니메이션 파일도 똑같이 만든다.<br>
+      <br>
+      <h3>3. 애니메이션 컨트롤러 파일 이름을 정리한다.</h3>
+idle 애니메이션 컨트롤러 파일만 남기고, 나머지 애니메이션 컨트롤러 파일은 삭제한다.<br>
+idle 애니메이션 컨트롤러 파일 이름은 player로 수정한다.<br>
+      <br>
+      <img style="width: 629px; height: 336px;" alt="" src="tutorial04/animation_file.png"><br>
+      <br>
+      <h4>4. anim 파일을 드래그 하여 Transition으로 연결한다.</h4>
+player 애니메이션 컨트롤러를 오픈한다.<br>
+run anim 파일을 드래그 후, Make Transition으로 run과 idle 사이를 선 2개로 서로 연결한다.<br>
+      <br>
+      <img style="width: 882px; height: 655px;" alt="" src="tutorial04/run_drag_anim.png"><br>
+      <br>
+      <h4>5. 애니메이션 전이용 파라메터를 추가한다.</h4>
+bool 타입의 isRun 파라메터를 추가한다.<br>
+isRun이면 run 애니메이션을 하고, false이면 idle 애니메이션을 한다.<br>
+      <br>
+      <img style="width: 753px; height: 417px;" alt="" src="tutorial04/bool_type.png"><br>
+      <br>
+      <h4>6. 애니메이션 트랜지션을 설정한다.</h4>
+- (1) "Has Exit Time"을 체크 해제한다.<br>
+- (2) "Transition Start"&nbsp; 전이 시작 지점으로 왼쪽으로 옮긴다.<br>
+- (3) "Transition End" 전이 종료 지점으로 왼쪽으로 옮긴다.<br>
+- (4) "Exit Time"과 재생 헤드 (Playhead / Scrub Bar) 두가지 역할로 <br>
+      <br>
+      <img style="width: 498px; height: 503px;" alt="" src="tutorial04/animation_transition.png"><br>
+      <br>
+전이시작점과 점이 종료 지점을 왼쪽으로 옮긴다.<br>
+idle -&gt; run으로 전이 할때는 isRun을 true로 지정한다.<br>
+run -&gt; idle으로 전이 할때는 isRun을 false로 지정한다.<br>
+      <br>
+      <img style="width: 411px; height: 544px;" alt="" src="tutorial04/animation_transition1.png"><br>
+      <br>
+      <br>
+idle 상태(노드)를 한번만 클릭하면 다음과 같이 표시된다. Speed로 애이메이션 스피드를 지정할수 있다.<br>
+      <img style="width: 713px; height: 440px;" alt="" src="tutorial04/idle_one_click.png"><br>
+      <br>
+idle 상태(노드)를 더블 클릭하면 다음과 같이 표시된다. <br>
+Loop Time으로 반복을 지정할수 있다.<br>
+      <br>
+      <img style="width: 730px; height: 428px;" alt="" src="tutorial04/idle_double_click.png"><br>
+      <br>
+      <h4>
+7. 애니메이션을 확인 한다.</h4>
+
+에디터 플레이 버튼을 누른다.<br>
+isRun 버튼을 체크하면 run 애니메이션으로 바뀐다.<br>
+      <br>
+      <img style="width: 958px; height: 519px;" alt="" src="tutorial04/animation_test.png"><br>
+      <br>
+      <br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
