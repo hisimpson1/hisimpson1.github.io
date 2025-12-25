@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--UGUI Scroll View Code-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>UGUI Scroll View Code</title></head><body>
+<h1>UGUI Scroll View Code<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>UGUI Scroll View의 이용하는 방법에 대해 알아 본다.<br>
+      <br>
+      <a href="tutorial05.html">UGUI Scroll View 리소스 만들기</a><br>
+      <br>
+      <a href="tutorial06/HorizontalScrollController.cs">HorizontalScrollController.cs 파일</a><br>
+      
+      <div>using System.Collections.Generic;<br>
+using UnityEngine;<br>
+using UnityEngine.UI;<br>
+      <br>
+public class HorizontalScrollController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; private ScrollRect scrollRect;<br>
+&nbsp;&nbsp;&nbsp; private RectTransform content;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private float space = 1;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public GameObject itemPrefab;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public List&lt;GameObject&gt; itemList = new List&lt;GameObject&gt;();<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Awake()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scrollRect = GetComponent&lt;ScrollRect&gt;();<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (scrollRect != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; content = scrollRect.content;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Start()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 100; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddItem();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; itemList.Count; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Button btn = itemList[i].GetComponentInChildren&lt;Button&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Text
+btnText = itemList[i].GetComponentInChildren&lt;Text&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; btnText.text = (i + 1).ToString();<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">//버튼이 클릭 되었을때 아이템을 구분하기 위해 인덱스 추가</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ItemIndexButton itemIndex =
+itemList[i].GetComponent&lt;ItemIndexButton&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; itemIndex.index = i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; btn.onClick.AddListener(itemIndex.OnClick);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetSpacing(space);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateContentWidth();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void HandleItemButtonClick(int index)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("버튼 클릭 index: " + index);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; public void AddItem()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GameObject newUI = Instantiate(itemPrefab, content);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; itemList.Add(newUI);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void UpdateContentWidth()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 1. 필요한 컴포넌트 정보 가져오기</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HorizontalLayoutGroup
+layoutGroup = content.GetComponent&lt;HorizontalLayoutGroup&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RectTransform contentRect = content.GetComponent&lt;RectTransform&gt;();<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int childCount = content.childCount;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (childCount == 0) return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 2. 아이템 하나의 가로 길이 (첫 번째 자식 기준)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float itemWidth =
+content.GetChild(0).GetComponent&lt;RectTransform&gt;().sizeDelta.x;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 3. 전체 너비 계산 공식:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // (아이템 너비 * 개수) + (사이 간격 * (개수 - 1)) + 좌우 패딩<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float totalWidth = (itemWidth * childCount)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ (layoutGroup.spacing * (childCount - 1))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ layoutGroup.padding.left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ layoutGroup.padding.right;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 4. Content의 sizeDelta 수정 (가로 길이 반영)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contentRect.sizeDelta = new Vector2(totalWidth, contentRect.sizeDelta.y);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void ClearAllItems()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in itemList)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Destroy(item);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; itemList.Clear();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void SetSpacing(float spacing)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HorizontalLayoutGroup layout = content.GetComponent&lt;HorizontalLayoutGroup&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (layout != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; layout.spacing = spacing;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 간격이 바뀌면 전체크기가 다시 계산 되어야 하므로 UpdateContentWidth를 실행한다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LayoutRebuilder.ForceRebuildLayoutImmediate(content.GetComponent&lt;RectTransform&gt;());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+
+      <br>
+      itemPrefab : ScrollView에 추가할 아이템의 프리팹으로 에디터에서 지정한다.<br>
+      <br>
+ScrollView 인스펙터 창에서 컴포넌트로 추가한다.<br>
+      <br>
+      <img style="width: 481px; height: 531px;" alt="" src="tutorial06/ScrollView_component.png"><br>
+      <br>
+      <a href="tutorial06/ItemIndexButton.cs">ItemIndexButton.cs 파일</a><br>
+      <div>using UnityEngine;<br>
+      <br>
+public class ItemIndexButton : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public int index;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private HorizontalScrollController controller;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Awake()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 부모에서 컨트롤러 찾기</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controller = GetComponentInParent&lt;HorizontalScrollController&gt;();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void OnClick()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(controller)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controller.HandleItemButtonClick(index);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+인스펙터 창에서 ScrollView에 추가한 아이템의 프리팹에 컴포넌트로 추가한다.<br>
+      <br>
+      <img style="width: 476px; height: 360px;" alt="" src="tutorial06/prefab_component.png"><br>
+      <br>
+아이템을 인덱스에 의해 구분할려고 하는데 어떻게 해야 할까?<br>
+람다 방식도 있지만 버튼에 클래스 컴포넌트를 추가 하는 방식으로 하겠다.<br>
+버튼의 ItemIndexButton 컴포넌트에 인덱스를 지정하고 버튼 클릭시에 불릴수 있도록 연결한다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">ItemIndexButton itemIndex = itemList[i].GetComponent&lt;ItemIndexButton&gt;();</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">itemIndex.index = i;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">btn.onClick.AddListener(itemIndex.OnClick);</span><br>
+      <br>
+버튼이 클릭되면 ItemIndexButton.cs에서는 HorizontalScrollController의 HandleItemButtonClick 함수를 호출한다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">public void OnClick()</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">{</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp; if(controller)</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controller.HandleItemButtonClick(index);</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">}</span><br>
+      <br>
+HorizontalScrollControlle.UpdateContentWidth 함수<br>
+버튼을 추가 하거나 속성을 바뀌면 sizeDelta를 업데이트 하기 위해 실행해야 하는 함수이다. <br>
+      <br>
+HorizontalScrollControlle.SetSpacing 함수<br>
+아이템간의 폭을 조정하는 함수이다.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

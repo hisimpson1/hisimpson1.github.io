@@ -1,5 +1,6 @@
-# make_all_list_html_perfect.py  ← 이 이름으로 저장하세요!
+# genhtml.py
 import os
+import sys
 from datetime import datetime
 from urllib.parse import quote
 
@@ -10,7 +11,7 @@ def sizeof_fmt(num, suffix='B'):
         num /= 1024.0
     return f"{num:.1f}Y{suffix}"
 
-def generate_list_html(path, link_mode=True):
+def generate_list_html(path, link_mode=True, exclude_self=False):
     name = os.path.basename(path) or "루트 폴더"
     parent = os.path.dirname(path)
     has_parent = os.path.isfile(os.path.join(parent, "list.html")) if path != os.path.abspath(os.sep) else False
@@ -25,6 +26,8 @@ def generate_list_html(path, link_mode=True):
 
     for item in items:
         if item.startswith('.') or item == "list.html":
+            continue
+        if exclude_self and item == "genhtml.py":
             continue
         full = os.path.join(path, item)
         if os.path.isdir(full):
@@ -84,28 +87,31 @@ def generate_list_html(path, link_mode=True):
     except Exception as e:
         print(f"저장 실패: {path}")
 
-# 메인 실행 — 2단계로 완벽 해결!
+# 메인 실행
 print("모든 폴더에 list.html 생성 시작 (완벽 연결 버전)\n")
 
 root_dir = os.getcwd()
 total = 0
 
-# 1단계: 모든 폴더에 list.html 먼저 생성 (링크 없이도 파일 존재하게)
+# 명령행 인자 처리
+exclude_self = "-noneself" in sys.argv
+
+# 1단계: 모든 폴더에 list.html 먼저 생성
 print("1단계: 모든 폴더에 list.html 파일 생성 중...")
 for current, dirs, _ in os.walk(root_dir):
     dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__', 'node_modules', '.git', '.venv']]
     rel = os.path.relpath(current, root_dir)
     print(f"   생성 → {rel if rel != '.' else '현재 폴더'}")
-    generate_list_html(current, link_mode=False)  # 링크는 나중에
+    generate_list_html(current, link_mode=False, exclude_self=exclude_self)
     total += 1
 
-# 2단계: 다시 돌면서 이번엔 정확히 링크 걸기
+# 2단계: 다시 돌면서 링크 걸기
 print("\n2단계: 클릭 가능한 링크 완성 중...")
 for current, dirs, _ in os.walk(root_dir):
     dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__', 'node_modules', '.git', '.venv']]
     rel = os.path.relpath(current, root_dir)
     print(f"   연결 → {rel if rel != '.' else '현재 폴더'}")
-    generate_list_html(current, link_mode=True)   # 이제 진짜 링크 걸림!
+    generate_list_html(current, link_mode=True, exclude_self=exclude_self)
 
 print(f"\n완료! 총 {total}개 폴더에 완벽한 list.html 생성됨")
 print("이제 아무 list.html이나 열어보세요 → 모든 폴더 클릭해서 자유롭게 이동 가능합니다!")

@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--UGUI Scroll View 리소스 만들기-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>UGUI Scroll View 리소스 만들기</title>
+
+  
+</head><body>
+<h1>UGUI Scroll View 리소스 만들기<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>유니티(Unity) UGUI에서 수평으로 움직이는 Scroll View의 리소소를 만드는 과정을 설명한다..<br>
+      <br>
+코드 관련:&nbsp; <a href="tutorial06.html">UGUI Scroll View Code</a><br>
+      <h2 data-path-to-node="2">1. 기본 Scroll View 오브젝트 생성</h2>
+      <p data-path-to-node="3">먼저 캔버스 위에 스크롤 뷰의 기본 틀을 만든다.</p>
+      <ol start="1" data-path-to-node="4">
+        <li>
+          <p data-path-to-node="4,0,0"><b data-path-to-node="4,0,0" data-index-in-node="0">Hierarchy</b> 창에서 우클릭 후 <code data-path-to-node="4,0,0" data-index-in-node="20">UI &gt; Scroll View</code>를
+선택한다.</p>
+        </li>
+        <li>
+          <p data-path-to-node="4,1,0">생성된 <b data-path-to-node="4,1,0" data-index-in-node="4">Scroll View</b>를 선택하고 <b data-path-to-node="4,1,0" data-index-in-node="22">Inspector</b> 창 Rect
+Transform에서 크기(Width, Height)를 조절한다.</p>
+        </li>
+        <li>
+          <p data-path-to-node="4,2,0">수평 스크롤만 필요하므로, <b data-path-to-node="4,2,0" data-index-in-node="15">Scroll Rect</b>
+컴포넌트에서 <b data-path-to-node="4,2,0" data-index-in-node="34">Vertical</b>
+체크박스를 해제한다.</p>
+        </li>
+        <li>수평 스크롤만 필요하므로, <b data-path-to-node="4,2,0" data-index-in-node="15">Scroll Rect</b> 컴포넌트에서 <b data-path-to-node="4,2,0" data-index-in-node="34">Vertical Scrollbar</b>를
+"None (Scrollbar)"로 지정한다.</li>
+        <li>
+          <p data-path-to-node="4,3,0">세로 스크롤바가 필요 없다면 계층뷰에서 하위 오브젝트인 <code data-path-to-node="4,3,0" data-index-in-node="33">Scrollbar Vertical</code>을
+제거하거나 비활성화 한다. (난 필요 없어서 제거한다.)</p>
+        </li>
+        <li>
+          <p data-path-to-node="4,3,0"><code data-path-to-node="4,3,0" data-index-in-node="33">Scrollbar Vertical을 삭제하면 Scrollbar Horizontal의
+크기를 Rect Tool을 이용해 늘린다.</code><br>
+          <br>
+ScrollView Inspector 속성<br>
+          <img style="width: 467px; height: 660px;" alt="" src="tutorial05/scrollview_inspector.png"><br>
+          <br>
+계층뷰에서 <code data-path-to-node="4,3,0" data-index-in-node="33">Scrollbar
+Vertical 제거<br>
+          </code></p>
+        </li>
+      </ol>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img style="width: 190px; height: 80px;" alt="" src="tutorial05/remove_vertical.png"><br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code data-path-to-node="4,3,0" data-index-in-node="33">Scrollbar
+Horizontal의 크기를 Rect Tool로 늘리기</code><br>
+      <img style="width: 695px; height: 124px;" alt="" src="tutorial05/scrollbar_horizontal_size.png"><br>
+      <br>
+      <br>
+      <h2 data-path-to-node="6">2. Content 영역 설정</h2>
+      <p data-path-to-node="7">스크롤될 실제 내용물이 담기는 공간인 <b data-path-to-node="7" data-index-in-node="21">Content</b>를 설정한다.</p>
+      <ol start="1" data-path-to-node="8">
+        <li>
+          <p data-path-to-node="8,0,0">Scroll View 하위의 <code data-path-to-node="8,0,0" data-index-in-node="16">Viewport &gt; Content</code>
+오브젝트를 선택합니다.</p>
+        </li>
+        <li>
+          <p data-path-to-node="8,1,0"><b data-path-to-node="8,1,0" data-index-in-node="0">Inspector</b>에서 <b data-path-to-node="8,1,0" data-index-in-node="12">Add Component</b>를 클릭해 <b data-path-to-node="8,1,0" data-index-in-node="31">Horizontal Layout
+Group</b>을 추가한다. (아이템들을 가로로 자동 정렬해줍니다.)</p>
+        </li>
+        <li>
+          <p data-path-to-node="8,2,0"><b data-path-to-node="8,2,0" data-index-in-node="0">Content Size Fitter</b> 컴포넌트도 추가한다.</p>
+          <ul data-path-to-node="8,2,1">
+            <li>
+              <p data-path-to-node="8,2,1,0,0"><b data-path-to-node="8,2,1,0,0" data-index-in-node="0">Horizontal Fit</b>
+설정을<span style="font-weight: bold;"> </span>Min Size<span style="font-weight: bold;"> </span>또는 <b data-path-to-node="8,2,1,0,0" data-index-in-node="31">Preferred Size</b>로
+변경한다. 이 설정을 해야 아이템이 늘어날 때 Content의 가로 길이도 자동으로 늘어난다.</p>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <p data-path-to-node="8,3,0"><b data-path-to-node="8,3,0" data-index-in-node="0">Horizontal Layout Group</b> 설정에서 <code data-path-to-node="8,3,0" data-index-in-node="29">Child Alignment</code>를
+          <b data-path-to-node="8,3,0" data-index-in-node="46">Middle
+Left</b> 정도로 맞추고, <code data-path-to-node="8,3,0" data-index-in-node="67">Spacing</code>을 조절해 아이템 사이의 간격을
+둔다.&nbsp;&nbsp; (코드로 Spacing 값을 조정 할것이다.)<br>
+          </p>
+        </li>
+      </ol>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img style="width: 480px; height: 629px;" alt="" src="tutorial05/content_inspector.png"><br>
+      <br>
+      <h2 data-path-to-node="10">3. 아이템(내용물) 추가하기</h2>
+      <p data-path-to-node="11">이제 스크롤될 개별 요소들을 넣을 차례이다.</p>
+      <ol start="1" data-path-to-node="12">
+        <li>
+          <p data-path-to-node="12,0,0"><b data-path-to-node="12,0,0" data-index-in-node="0">Content</b> 오브젝트 아래에 마우스 우클릭 후 <code data-path-to-node="12,0,0" data-index-in-node="27">UI &gt; Image</code>
+또는 <code data-path-to-node="12,0,0" data-index-in-node="41">Button</code>
+등을 생성한다.</p>
+        </li>
+        <li>
+          <p data-path-to-node="12,1,0">생성한 아이템을 <code data-path-to-node="12,1,0" data-index-in-node="9">Ctrl + D</code>로 여러
+개 복제해 본다.<br>
+          </p>
+        </li>
+        <li>
+          <p data-path-to-node="12,2,0"><b data-path-to-node="12,2,0" data-index-in-node="0">Content Size Fitter</b> 덕분에 아이템을 복제할수록 Content의
+가로 길이가 자동으로 길어지는 것을 확인할 수 있다.<br>
+          </p>
+        </li>
+      </ol>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
