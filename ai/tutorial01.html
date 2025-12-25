@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--SGD base-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>SGD base</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>SGD base<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>SGD (Stochastic Gradient Descent)를 간단하게 파이썬으로 구현해 본다.<br>
+      <br>
+Stochastic Gradient Descent (SGD, 확률적 경사 하강법)는 전체 데이터를 한꺼번에 계산하지 않는다.<br>
+&nbsp;**매 단계에서 무작위로 선택된 하나의 데이터(또는 소규모 배치)**에 대해서만 기울기를 계산하여 가중치를 업데이트하는 방식이다.<br>
+      <br>
+가장 직관적인 예시인 선형 회귀(y_hat = wx + b) 문제를 해결하는 코드를 작성해 보자.<br>
+      <br>
+      <div>import numpy as np<br>
+      <br>
+# 가상 데이터 (y = 2x + 1 관계)<br>
+x = np.array([1, 2, 3, 4])<br>
+y = np.array([3, 5, 7, 9])<br>
+      <br>
+rate = 0.01<br>
+w = 1.0<br>
+b = 1.0<br>
+      <br>
+for epoch in range(1000):<br>
+&nbsp;&nbsp;&nbsp; for x_i, y_i in zip(x, y):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 1. 순전파 (Forward): 예측값 계산</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; y_hat = x_i * w + b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 2. 오차 계산</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; err = y_hat - y_i <br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 3. 역전파 &amp; 업데이트 (Backward &amp; Update)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; w = w - rate * err * x_i<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b = b - rate * err&nbsp; <br>
+      <br>
+&nbsp;&nbsp;&nbsp; if epoch % 200 == 0:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print(f"Epoch {epoch}: w={w:.3f}, b={b:.3f}")<br>
+      <br>
+print(f"\n최종 결과: y = {w:.2f}x + {b:.2f}")<br>
+      </div>
+<br>
+      <br>
+      결과)<br>
+      <span style="color: rgb(31, 31, 31); font-family: monospace; font-size: 14px; font-style: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; white-space: pre; background-color: rgb(255, 255, 255); display: inline ! important; float: none;">Epoch 0: w=1.270, b=1.092<br>
+Epoch 200: w=1.970, b=1.091<br>
+Epoch 400: w=1.991, b=1.027<br>
+Epoch 600: w=1.997, b=1.008<br>
+Epoch 800: w=1.999, b=1.002<br>
+      <br>
+최종 결과: y = 2.00x + 1.00</span><br>
+      <br>
+      
+      <ul>
+        <li>손실 함수 𝐽(𝑤,𝑏)는 예측과 실제 값의 차이를 측정</li>
+        <li>미분을 통해 𝑤,𝑏에 대한 기울기(gradient)를 구함</li>
+        <li>경사하강법으로 손실을 줄이는 방향으로 𝑤,𝑏를 업데이트</li>
+      </ul>
+      <br>
+      <span style="font-weight: bold;">역전파에서 미분(Gradient 계산)</span><br>
+      <br>
+경사하강법에서는 𝑤, 𝑏를 업데이트하기 위해 손실 함수를 각각에 대해 미분한다.<br>
+      <img style="width: 372px; height: 125px;" alt="" src="tutorial01/sgd_err.png"><br>
+      <br>
+      <span style="font-weight: bold;">파라미터 업데이트 규칙</span><br>
+      <br>
+경사하강법은 다음과 같이 파라미터를 갱신한다.<br>
+      <br>
+      <img style="width: 479px; height: 195px;" alt="" src="tutorial01/sgd_alpha.png"><br>
+      <br>
+      <h4 style="background-color: yellow;">ChainRule을 사용하여 미분 해보겠습니다.</h4>
+
+      <img style="width: 600px; height: 750px;" alt="" src="tutorial01/chain_rule.png"><br>
+      <br>
+      <br>
+      <img style="width: 559px; height: 287px;" alt="" src="tutorial01/chain_rule_b.png"><br>
+      <br>
+      <h4 style="background-color: yellow;">ChainRule을 사용하지 않고 기본 전개식으로도 미분 해보겠습니다.</h4>
+      <img style="width: 706px; height: 800px;" alt="" src="tutorial01/none_chainrule.png"><br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
