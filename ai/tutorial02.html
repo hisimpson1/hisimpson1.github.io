@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--SGD by keras-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>SGD by keras</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>SGD by keras<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>다음 python 소스를 keras를 사용해 구현해 본다.<br>
+      <br>
+      <h4>
+파이썬으로 선형회귀 SGD 구현</h4>
+
+      <div>import numpy as np<br>
+      <br><span style="color: rgb(0, 153, 0);">
+# 가상 데이터 (y = 2x + 1 관계)</span><br>
+x = np.array([1, 2, 3, 4])<br>
+y = np.array([3, 5, 7, 9])<br>
+      <br>
+rate = 0.01<br>
+w = 1.0<br>
+b = 1.0<br>
+      <br>
+for epoch in range(1000):<br>
+&nbsp;&nbsp;&nbsp; for x_i, y_i in zip(x, y):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 1. 순전파 (Forward): 예측값 계산</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; y_hat = x_i * w + b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 2. 오차 계산</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; err = y_hat - y_i<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 3. 역전파 &amp; 업데이트
+(Backward &amp; Update)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; w = w - rate * err * x_i<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b = b - rate * err <br>
+      <br>
+&nbsp;&nbsp;&nbsp; if epoch % 200 == 0:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print(f"Epoch {epoch}:
+w={w:.3f}, b={b:.3f}")<br>
+      <br>
+print(f"\n최종 결과: y = {w:.2f}x + {b:.2f}")<br>
+      </div>
+      <br>
+      
+      <h4>Keras로 선형회귀 SGD 구현</h4>
+      <div>import numpy as np<br>
+from tensorflow.keras.models import Sequential<br>
+from tensorflow.keras.layers import Dense<br>
+from tensorflow.keras.optimizers import SGD<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);"># 1. 데이터 준비</span><br>
+x = np.array([1, 2, 3, 4])<br>
+y = np.array([3, 5, 7, 9])<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);"># 2. 모델 구성</span><br>
+model = Sequential()<br>
+      <span style="color: rgb(0, 153, 0);"># 출력(y)은 1개, 입력(x)도 1개인 선형 레이어 추가</span><br>
+model.add(Dense(1, input_dim=1, activation='linear'))<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);"># 3. 컴파일 (학습 방식 설정)</span><br>
+      <span style="color: rgb(0, 153, 0);"># optimizer는 경사하강법, 손실 함수는 평균 제곱 오차(mse)</span><br>
+model.compile(optimizer=SGD(learning_rate=0.01), loss='mse')<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);"># 4. 학습</span><br style="color: rgb(0, 153, 0);">
+      <span style="color: rgb(0, 153, 0);"># verbose=0은 학습 과정 로그 출력 생략</span><br>
+model.fit(x, y, epochs=1000, verbose=0) <br>
+      <br>
+      <span style="color: rgb(0, 153, 0);"># 5. 결과 확인</span><br>
+w = model.weights[0].numpy()[0,0]<br>
+b = model.weights[1].numpy()[0]<br>
+      <br>
+print(f"최종 결과: y = {w:.2f}x + {b:.2f}")<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);"># 6. 예측해보기</span><br>
+print(f"x=5일 때 예측값: {model.predict(np.array([5]))[0][0]:.2f}")<br>
+      </div>
+      <br>
+최종 결과: y = 2.01x + 0.98<br>
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 118ms/step<br>
+x=5일 때 예측값: 11.01<br>
+      <br>
+Dense(1, input_dim=1, activation='linear') 설명:<br>
+첫번째 파라메터는 출력 갯수이다.<br>
+      <br>
+      <h4>옵티마이저(Optimizer)란?</h4>
+딥러닝에서 **옵티마이저(Optimizer)**는 모델이 예측한 값과 실제 정답 사이의 차이인 <span style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">손실 함수(Loss Function)의 값을 최소화하기 위해 가중치(<span class="math-inline" data-math="W" data-index-in-node="91" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">W)</span>와 편향<span class="math-inline" data-math="b" data-index-in-node="98" style="font-family: &quot;Google Sans Text&quot;,sans-serif ! important; line-height: 1.15 ! important; margin-top: 0px ! important;">(b)</span>을 업데이트하는 알고리즘</span>입니다.<br>
+      <br>
+쉽게 비유하자면, 산의 정상(오차가 가장 큰 상태)에서 안개가 낀 골짜기(오차가 가장 작은 최저점)를 향해 <span style="font-weight: bold; color: rgb(204, 0, 0);">가장 빠르고 안전하게 내려가는 방법</span>을 결정하는 가이드와 같습니다.<br>
+      <br>
+      <h4>옵티마이저의 핵심 원리: 경사 하강법 (Gradient Descent)</h4>
+대부분의 옵티마이저는 경사 하강법에 기반한다. 현재 위치에서 경사(미분값)가 가장 가파른 아래 방향으로 조금씩 이동하는 방식이다.<br>
+      <br>
+      <img style="width: 500px; height: 130px;" alt="" src="tutorial02/gradient_descent.png"><br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
