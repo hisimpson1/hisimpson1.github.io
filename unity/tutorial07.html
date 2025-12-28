@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--UGUI Radio Button-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>UGUI Radio Button</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>UGUI Radio Button<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>Toggle 버튼을 이용해서 라디오 버튼을 만들어 보겠습니다.<br>
+      <h4>Toggle을 별도의 수정없이 체크 박스 형태의 라디오 버튼을 만들어 보겠습니다.</h4>
+1. 계층뷰에서 "Create Empty"으로 빈 오브젝트를 생성합니다.<br>
+      <br>
+2. 생성한 빈 오브젝트에 "Toggle Group" 컴포넌트를 추가 합니다.<br>
+      <br>
+3. "Allow Switch Off" 항목을 체크 해제 합니다.<br>
+      <br>
+Allow Switch Off = true 이면 ---&gt;&nbsp; 켜진 Toggle을 다시 클릭하면 OFF 가능<br>
+      <br>
+      <img style="width: 915px; height: 386px;" alt="" src="tutorial07/toggle_group.png"><br>
+      <br>
+      4. 마우스 오른쪽 버튼을 UI &gt; Toggle 추가합니다. <br>
+위 그림에서는 추가한 세개의 Toggle을 각각 Toggle_one, Toggle_Two, Toggle_three로 이름을 변경 합니다.<br>
+      <br>
+5. 세개의 Toggle중에 하나만 "Is On"에 체크 합니다.<br>
+      <br>
+나머지 두개의 Toggle에 있는 "Is On"은 체크 해제 합니다.<br>
+      <img style="width: 931px; height: 642px;" alt="" src="tutorial07/ison.png"><br>
+      <br>
+      <br>
+실행 화면은 다음과 같습니다.<br>
+      <img style="width: 488px; height: 344px;" alt="" src="tutorial07/check_run.png"><br>
+      <br>
+      <br>
+      <h4>Toggle을 수정하여 버튼 형태의 라디오 버튼을 만들어 보겠습니다.</h4>
+
+      <br>
+1. 체크 박스형의 라디오 버튼을 단계를 따라 만들기<br>
+      <br>
+2. Background를 선택하고 Toggle_one의 크기까지 늘려 조정 합니다.<br>
+      <br>
+      <img style="width: 957px; height: 476px;" alt="" src="tutorial07/background.png"><br>
+      <br>
+3. Label을 선택하고 Paragraph를 중간으로 지정후에 Rect Tool로 Toggle_one의 크기까지 늘려 조정 합니다.<br>
+      <br>
+      <img style="width: 795px; height: 449px;" alt="" src="tutorial07/label.png"><br>
+      <br>
+4. Checkmark를 선택하고 Source Image, Color를 수정하고, Checkmark의 크기를 Toggle_one의 크기까지 늘려 조정 합니다.<br>
+Source Image는 Checkmark에서 UISpite(다른것도 가능)로 지정<br>
+체크시 Color를 원하는 칼라로 지정<br>
+      <br>
+      <img style="width: 911px; height: 484px;" alt="" src="tutorial07/checkmark.png"><br>
+      <br>
+실행 화면입니다.<br>
+      <br>
+      <img style="width: 297px; height: 274px;" alt="" src="tutorial07/check_run1.png"><br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
