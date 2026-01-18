@@ -1,0 +1,250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--computer shader particle-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>computer shader particle</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>computer shader particle<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>computer shader로 파티클 그릴때, Graphics.DrawProcedural를 사용하고 있는데 대략 뭔지 알아 보겠습니다.<br>
+<br>
+      Graphics.DrawProcedural는 Unity에서 CPU가 아닌 GPU에서 직접 버텍스를 생성해서
+그리는 방식으로, 주로 커스텀 메쉬, 셰이더 기반 파티클, GPU 인스턴싱 등에 사용됩니다. 이 명령은 모바일에서 사용
+가능하지만 몇 가지 제한 사항이 있습니다.<br>
+      <br>
+      Graphics.DrawProcedural 자체는 **모바일(iOS, Android)**에서도 호출이 가능합니다.<br>
+단, GPU가 지원하는 기능과 그래픽 API에 의존합니다.<br>
+      <ul>
+        <li>OpenGL ES 3.0 이상</li>
+        <li>Vulkan (Android)</li>
+        <li>Metal (iOS)</li>
+      </ul>
+      <br>
+      <h4>제한 사항</h4>
+1. 셰이더 지원<br>
+      <ul>
+        <li>반드시 Compute Shader 또는 Vertex/Fragment Shader와 연동해서 사용해야 합니다.</li>
+        <li>OpenGL ES 3.1 이상이면 Compute Shader 지원이 가능하지만, OpenGL ES 3.0에서는 제한적입니다.</li>
+      </ul>
+2. Instancing<br>
+      <ol>
+        <li>GPU Instancing을 같이 사용하면 성능이 좋아집니다.</li>
+        <li>모바일에서는 Instancing 지원이 GPU 성능과 드라이버에 따라 달라질 수 있습니다.</li>
+      </ol>
+      <br>
+3. DrawProcedural 타입<br>
+      <ul>
+        <li>MeshTopology.Triangles 또는 MeshTopology.Points 등 GPU가 이해할 수 있는 topology여야 합니다.</li>
+        <li>Graphics.DrawProceduralNow를 사용하면 즉시 렌더링, Graphics.DrawProcedural은 커맨드 버퍼에서 렌더링을 예약합니다.</li>
+      </ul>
+      <br>
+4. 성능 고려<br>
+      <ul>
+        <li>고해상도 모바일 기기에서는 성능이 괜찮지만, 저사양 기기에서는 과도한 버텍스 처리로 프레임 드랍 가능.</li>
+        <li>배치 수와 버텍스 수를 적절히 조절해야 합니다.</li>
+      </ul>
+      <br>
+5. WebGL은 지원되지 않습니다.<br>
+      <br>
+      <br>
+      <span style="font-weight: bold;">언제 Graphics.DrawProcedural을 쓰나?</span><br>
+      <ul>
+        <li>파티클 시스템 직접 구현</li>
+        <li>GPU 기반 시뮬레이션</li>
+        <li>메쉬 생성 비용 없이 대량 렌더링</li>
+        <li>Compute Shader + 렌더링 연계</li>
+      </ul>
+      <br>
+      <br>
+화면 중앙에 빨간 화면을 그려 보겠습니다.<br>
+      <br>
+      <img style="width: 443px; height: 246px;" alt="" src="computershader03/run.png"><br>
+      <br>
+      <br>
+DrawProceduralExample.cs 파일<br>
+      <div>using UnityEngine;<br>
+      <br>
+public class DrawProceduralExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public Material material;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void OnRenderObject()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (material == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; material.SetPass(0);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 삼각형 1개 → vertex 3개</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Graphics.DrawProceduralNow( MeshTopology.Triangles, 3);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">핵심</span><br>
+      <ul>
+        <li>Mesh를 전혀 사용하지 않음</li>
+        <li>vertexID를 이용해 셰이더에서 정점을 계산 (SV_VertexID)</li>
+        <li>OnRenderObject()는 가장 간단하게 테스트하기 좋음</li>
+      </ul>
+여기서, vertexID는 Graphics.DrawProcedural 호출 시 GPU가 자동으로 생성해서 vertex shader에 넘겨주는 정점 인덱스입니다.<br>
+OnRenderObject는 카메라가 씬의 모든 일반적인 오브젝트 렌더링을 끝낸 직후에 호출됩니다.<br>
+
+      <br>
+셰이더 파일은 unlit으로 생성 합니다.<br>
+      <br>
+DrawProcedural.shader 파일<br>
+      <div>Shader "Unlit/DrawProceduralExample"<br>
+{<br>
+&nbsp;&nbsp;&nbsp; SubShader<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CGPROGRAM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma vertex vert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma fragment frag<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct v2f<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float4 pos : SV_POSITION;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2f vert(uint vertexID : SV_VertexID)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2f o;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float2 positions[3];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; positions[0] = float2(0.0, 0.5);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; positions[1] = float2(-0.5, -0.5);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; positions[2] = float2(0.5, -0.5);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+o.pos = float4(positions[vertexID], 0, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return o;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fixed4 frag(v2f i) : SV_Target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return fixed4(1, 0, 0, 1); <span style="color: rgb(0, 153, 0);">// 빨간색</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ENDCG<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">사용 방법</span><br>
+      <ol>
+        <li>빈 GameObject 생성</li>
+        <li>DrawProceduralExample 스크립트 추가</li>
+        <li>새 Material 생성</li>
+        <li>Shader → Unlit/DrawProceduralExample</li>
+        <li>Material을 스크립트에 할당</li>
+        <li>실행 ▶️</li>
+      </ol>
+      <br>
+      <h2 data-start="800" data-end="825">왜 Mesh 없이도 정점이 생기나?</h2>
+
+      <p data-start="827" data-end="855"><code data-start="827" data-end="843">DrawProcedural</code>은 이렇게 동작합니다:</p>
+
+      <ol data-start="857" data-end="971">
+<li data-start="857" data-end="887">
+<p data-start="860" data-end="887">CPU가 말함<br data-start="867" data-end="870">
+👉 “정점 3개 그려라”</p>
+</li><li data-start="888" data-end="928">
+<p data-start="891" data-end="928">GPU가 자동으로<br data-start="900" data-end="903">
+👉 vertexID = 0,1,2 생성</p>
+</li><li data-start="929" data-end="971">
+<p data-start="932" data-end="971">Vertex Shader에서<br data-start="947" data-end="950">
+👉 vertexID로 위치 계산</p></li>
+      </ol>
+      <br>
+      <br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

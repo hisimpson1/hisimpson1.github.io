@@ -1,0 +1,540 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--URP ShaderGUI-->
+
+
+  
+  <style type="text/css">
+table {
+    border-collapse: collapse;
+    line-height: 160%;
+    font-size: 11pt;
+    margin: 0px;
+    font-family: 맑은 고딕, 바탕, Courier New, Courier;
+}
+
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>URP ShaderGUI</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>URP ShaderGUI<br>
+</h1>
+
+<table border="0" width="800">
+
+  <tbody>
+    <tr>
+      <td>유니티 6.0 버전에서 URP 커스텀 셰이더를 작성하고 있습니다.<br>
+PBR 셰이더를 만든다고 했을때,&nbsp; "Metallic Workflow", "Specular
+Workflow"에&nbsp; 따라서 Metallic Map과&nbsp; Specular Map을 별도로 표시 해야 됩니다.<br>
+      <br>
+이때는, 셰이더 자체만으로는 힘들고 CS 파일도 추가 해야 합니다.<br>
+ShaderGUI를 상속하여 OnGUI에서 Inspector창의 셰이더 속성 UI를 추가 하면 됩니다.<br>
+      <br>
+      <div>public class CustomPBR_CS_GUI : ShaderGUI<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public override void OnGUI(MaterialEditor
+materialEditor, MaterialProperty[] properties)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+      <h3>
+1. 셰이더 속성 찾기</h3>
+
+      
+셰이더의 Properties {}에 선언된 값들을 MaterialProperty로 연결<br>
+      <br>
+      <div>MaterialProperty workflow = FindProperty("_WorkflowMode",
+properties);<br>
+MaterialProperty baseMap = FindProperty("_BaseMap", properties);<br>
+MaterialProperty baseColor = FindProperty("_BaseColor", properties);<br>
+MaterialProperty metallicMap = FindProperty("_MetallicMap", properties);<br>
+MaterialProperty metallic = FindProperty("_Metallic", properties);<br>
+MaterialProperty specMap = FindProperty("_SpecGlossMap", properties);<br>
+MaterialProperty specColor = FindProperty("_SpecColor", properties);<br>
+MaterialProperty smoothness = FindProperty("_Smoothness", properties);<br>
+MaterialProperty bumpMap = FindProperty("_BumpMap", properties);<br>
+MaterialProperty bumpScale = FindProperty("_BumpScale", properties);<br>
+      </div>
+      <br>
+      <h3>
+2. 워크플로우 선택 UI</h3>
+
+      
+      <h4>
+a) UI 값 변경 여부를 감지
+      </h4>
+<div>EditorGUI.BeginChangeCheck();<br>
+      </div>
+      <br>
+변경된 경우에만 material 값 적용 → Undo / 성능 최적화<br>
+      <h4>
+b) 라벨을 출력</h4>
+
+      <div>EditorGUILayout.Space(10);<br>
+EditorGUILayout.LabelField("1. WORKFLOW SELECTION",
+EditorStyles.boldLabel);<br>
+      </div>
+      <br>
+간격을 두기위해 세로 여백을 추가(10px)<br>
+텍스트 라벨을 인스펙트에 출력<br>
+      <br>
+      <h4>
+c) 드롭다운 메뉴 출력</h4>
+
+      
+      <div>string[] options = { "Metallic Workflow", "Specular
+Workflow" };<br>
+int mode = (int)workflow.floatValue;<br>
+mode = EditorGUILayout.Popup("Selected Mode", mode, options);<br>
+      <br>
+if (EditorGUI.EndChangeCheck())<br>
+{<br>
+&nbsp;&nbsp;&nbsp; workflow.floatValue = (float)mode;<br>
+}<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">옵션 배열 선언</span><br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">string[] options = {
+"Metallic Workflow", "Specular Workflow" };</span><br>
+      <ul>
+        <li>드롭다운에 표시될 항목 목록</li>
+        <li>인덱스가 곧 선택 값</li>
+      </ul>
+      <br>
+      <table style="text-align: left; width: 448px; height: 111px;" border="1" cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">index<br>
+            </td>
+            <td style="vertical-align: top;">표시 이름<br>
+            </td>
+            <td style="vertical-align: top;">의미<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">0<br>
+            </td>
+            <td style="vertical-align: top;">Metallic Workflow</td>
+            <td style="vertical-align: top;">Metallic 워크플로우</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">1<br>
+            </td>
+            <td style="vertical-align: top;">Specular Workflow</td>
+            <td style="vertical-align: top;">Specular 워크플로우</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <span style="font-weight: bold;">머티리얼 값 → int로 변환</span><br>
+      <br>
+      <span style="color: rgb(51, 51, 255);"> int mode =
+(int)workflow.floatValue;</span><br>
+      <br>
+왜 floatValue 인가?<br>
+MaterialProperty는 모든 수치 값을 float로 저장하기 때문에 <br>
+      <br>
+왜 int로 캐스팅?<br>
+EditorGUILayout.Popup()은 int 인덱스를 사용하기 때문에<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">mode =
+EditorGUILayout.Popup("Selected Mode", mode, options);</span><br>
+      <br>
+인스펙터에 드롭다운 UI를 생성한다.<br>
+첫번째 인자 "Selected Mode" : 라벨 이름<br>
+두번째 인자 mode : 현재 선택<br>
+세번째 인자 options :&nbsp; 목록<br>
+반환값 : 사용자가 바꾸면 새 인덱스를 반환<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">if
+(EditorGUI.EndChangeCheck())</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">{</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;
+workflow.floatValue = (float)mode;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">} </span><br style="color: rgb(51, 51, 255);">
+      <br>
+다시 workflow.floatValue에 값에 대입하여 셰이더 로직에서 사용 할수 있습니다.<br>
+      <br>
+      <h4>
+d) 베이스 맵 정보</h4>
+
+      
+      <div>EditorGUILayout.Space(15);<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 3. 알베도/컬러 (한 줄로 표시)</span><br>
+EditorGUILayout.LabelField("2. BASE MAPS", EditorStyles.boldLabel);<br>
+materialEditor.TexturePropertySingleLine(new GUIContent("Albedo
+(RGB)"), baseMap, baseColor);<br>
+      <br>
+EditorGUILayout.Space(15);<br>
+      </div>
+      <br>
+중복해서 나오는 함수&nbsp; EditorGUILayout의 Space( ), LabelField( ) 설명은 생략 하겠습니다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">materialEditor.TexturePropertySingleLine(new
+GUIContent("Albedo (RGB)"), baseMap, baseColor);</span><br>
+      <br>
+      <img style="width: 529px; height: 58px;" alt="" src="tutorial04/BaseMap.png"><br>
+      <br>
+TexturePropertySingleLine로 한 줄에 텍스처 선택 슬롯을 생성합니다.<br>
+      <br>
+첫번째 인자 : <br>
+GUIContent입니다.<br>
+화면에 그릴 GUI 요소(버튼, 레이블, 박스 등)의 실제 '내용물(Content)'을 정의하는 클래스입니다. <br>
+&nbsp;간단히 말해, "무엇을 그릴 것인가(텍스트, 이미지, 툴팁)"를 담는 데이터 컨테이너입니다<br>
+      <br>
+두번째 인자:<br>
+텍스쳐 슬롯입니다.<br>
+셰이더 코드 : _BaseMap ("Albedo", 2D) = "white" {}<br>
+      <br>
+세번째 인자: <br>
+텍스처와 곱해지는 컬러 값<br>
+셰이더 코드 : _BaseColor ("Base Color", Color) = (1, 1, 1, 1)<br>
+      <br>
+세번째 인자를 생략하면 GUI에는 칼라픽커가 출력이 되지 않습니다.<br>
+<br>
+      <h4>e) 선택한 workflow 값에 따라, Metallic 정보와&nbsp; 스펙큘러 정보중 하나만 출력 합니다.</h4>
+이것을 보여주기 위해 CS 파일로 GUI를 만든 이유입니다.<br>
+선택한 workflow에 따라 Metallic 정보와&nbsp; 스펙큘러 정보중 하나만 보여줘, 디자이너가 어떤 텍스쳐를 사용해야 할지 확실하게 알수 있습니다.<br>
+      <br>
+      <div><span style="color: rgb(0, 153, 0);">// 4. 모드별 UI (0:
+Metallic, 1: Specular)</span><br>
+if (workflow.floatValue &lt; 0.5f)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Metallic UI</span><br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Specular UI</span><br>
+}<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">Metallic 정보</span><br>
+      <br>
+Metallic 정보를 그룹화 해서 보여 줍니다.<br>
+      <br>
+      <div>EditorGUILayout.BeginVertical("helpBox");<br>
+EditorGUILayout.LabelField("METALLIC MODE ACTIVE",
+EditorStyles.miniBoldLabel);<br>
+materialEditor.TexturePropertySingleLine(new GUIContent("Metallic(R)
+Smoothness(A)"), metallicMap);<br>
+materialEditor.ShaderProperty(metallic, "Metallic Intensity");<br>
+materialEditor.ShaderProperty(smoothness, "Smoothness Intensity");<br>
+EditorGUILayout.EndVertical();<br>
+      </div>
+      <br>
+
+EditorGUILayout.LabelField("METALLIC MODE ACTIVE",
+EditorStyles.miniBoldLabel);<br>
+      <br>
+박스 상단에 상태 안내 텍스트를 표시 합니다.<br>
+miniBoldLabel:&nbsp; <br>
+      <ul>
+        <li>작은 글씨 ( EditorStyles.boldLabel 보다는 작은 글씨입니다. )</li>
+        <li>굵음</li>
+        <li>섹션 제목보다는 약한 강조<br>
+        </li>
+      </ul>
+<br>
+EditorGUILayout.BeginVertical 시각적 그룹을 만들고 안의 요소들을 세로로 정렬하여 보여 줍니다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">EditorGUILayout.BeginVertical("helpBox");</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">...</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">EditorGUILayout.EndVertical();</span><br style="color: rgb(51, 51, 255);">
+      <br>
+"helpBox"이 외에도 여러가지가 있습니다. 아래는 각 옵션을 넣고 출력 했을때 결과 화면입니다.<br>
+      <br>
+"box"<br>
+      <img style="width: 519px; height: 103px;" alt="" src="tutorial04/box_option.png"><br>
+      <br>
+"window"<br>
+      <img style="width: 510px; height: 124px;" alt="" src="tutorial04/window_option.png"><br>
+      <br>
+"groupBox"<br>
+      <img style="width: 516px; height: 123px;" alt="" src="tutorial04/groupBox_option.png"><br>
+      <br>
+"helpBox"<br>
+      <img style="width: 517px; height: 107px;" alt="" src="tutorial04/helpBox_option.png"><br>
+      <br>
+"notificationText" - 빈 공백이 많이 생기네요.<br>
+      <img style="width: 521px; height: 225px;" alt="" src="tutorial04/notificationText_option.png"><br>
+      <br>
+"TextArea"<br>
+      <img style="width: 510px; height: 104px;" alt="" src="tutorial04/TextArea_option.png"><br>
+      <br>
+"TextField"<br>
+      <img style="width: 513px; height: 105px;" alt="" src="tutorial04/TextField_option.png"><br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">materialEditor.TexturePropertySingleLine(new
+GUIContent("Metallic(R) Smoothness(A)"), metallicMap);</span><br>
+      <br>
+TexturePropertySingleLine로 한 줄에 텍스처 선택 슬롯을 생성합니다.<br>
+      <br>
+첫번째 인자에는 new GUIContent("Metallic(R) Smoothness(A)") 텍스트를 출력합니다.<br>
+      <br>
+두번째 인자 metallicMap은<br>
+셰이더 코드에서 _MetallicMap ("Metallic Map", 2D) = "white" {} 프로퍼티의 텍스쳐 슬롯입니다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">materialEditor.ShaderProperty(metallic,
+"Metallic Intensity");</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">materialEditor.ShaderProperty(smoothness,
+"Smoothness Intensity");</span><br style="color: rgb(51, 51, 255);">
+      <br>
+Shader Property : 셰이더 내에 선언된 _Metallic이나 _Glossiness 같은
+수치값(Float/Range)을 조절할 수 있는 슬라이더나 입력 칸을 만듭니다.<br>
+      <br>
+첫 번째 인자인 metallic은 셰이더 프로퍼티 객체이고, 두 번째 인자인 "Metallic Intensity"는 인스펙터 창에 나타날 레이블 이름입니다.<br>
+<br>
+셰이더 프로퍼티에 있는 정보는 다음과 같습니다.<br>
+_Metallic ("Metallic Scale", Range(0, 1)) = 1.0<br>
+_Smoothness ("Smoothness Scale", Range(0, 1)) = 0.5<br>
+      <br>
+      <span style="font-weight: bold;">스펙큘러 정보</span><br>
+      <br>
+스펙큘러 정보를 그룹화 해서 보여 줍니다.<br>
+      <br>
+      <div>EditorGUILayout.BeginVertical("helpBox");<br>
+EditorGUILayout.LabelField("SPECULAR MODE ACTIVE",
+EditorStyles.miniBoldLabel);<br>
+materialEditor.TexturePropertySingleLine(new GUIContent("Specular(RGB)
+Smoothness(A)"), specMap, specColor);<br>
+materialEditor.ShaderProperty(smoothness, "&nbsp;&nbsp; Smoothness
+Intensity");<br>
+EditorGUILayout.EndVertical();<br>
+      </div>
+      <br>
+      위에서 설명했으니 스펙큘러 정보 그룹의 설명은 생략 합니다.<br>
+      <br>
+HDR <br>
+      <div><span style="color: rgb(0, 153, 0);">//CS 파일</span><br>
+materialEditor.TexturePropertySingleLine(new GUIContent("Emission"),
+FindProperty("_EmissionMap", properties),
+FindProperty("_EmissionColor", properties));<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">//셰이더 파일</span><br>
+[HDR] _EmissionColor ("Emission Color", Color) = (0, 0, 0, 1)<br>
+_EmissionMap ("Emission Map", 2D) = "white" {}<br>
+      </div>
+
+      <br>
+아래는 skull의 전체 창입니다.<br>
+Emission 맵은 HDR을 사용하기 때문에 칼라 픽커에 HDR 문구가 표시 됩니다.<br>
+일반 텍스쳐는 Albedo 칼라 픽커 처럼 표시 됩니다.<br>
+      <br>
+      <img style="width: 530px; height: 835px;" alt="" src="tutorial04/total.png"><br>
+      <br>
+      <br>
+CustomPBR_CS_GUI.cs 파일<br>
+      <div>using UnityEngine;<br>
+using UnityEditor;<br>
+      <br>
+public class CustomPBR_CS_GUI : ShaderGUI<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 1. 속성 찾기</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty workflow = FindProperty("_WorkflowMode", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty baseMap = FindProperty("_BaseMap", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty baseColor = FindProperty("_BaseColor", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty metallicMap = FindProperty("_MetallicMap", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty metallic = FindProperty("_Metallic", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty specMap = FindProperty("_SpecGlossMap", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty specColor = FindProperty("_SpecColor", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty smoothness = FindProperty("_Smoothness", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty bumpMap = FindProperty("_BumpMap", properties);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaterialProperty bumpScale = FindProperty("_BumpScale", properties);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 2. 값 변경 체크 시작</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUI.BeginChangeCheck();<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.Space(10);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.LabelField("1. WORKFLOW SELECTION", EditorStyles.boldLabel);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// --- 방법 A: 드롭다운 팝업 (가장 안정적) ---</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string[] options = { "Metallic Workflow", "Specular Workflow" };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int mode = (int)workflow.floatValue;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mode = EditorGUILayout.Popup("Selected Mode", mode, options);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// --- 방법 B: 선택 버튼 형태를 원하시면 위 Popup을 주석처리하고 아래 SelectionGrid를 사용하세요 ---</span><br style="color: rgb(0, 153, 0);">
+      <span style="color: rgb(0, 153, 0);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // mode = GUILayout.SelectionGrid(mode, options, 2, EditorStyles.miniButtonMid);</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (EditorGUI.EndChangeCheck())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; workflow.floatValue = (float)mode;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.Space(15);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 3. 알베도/컬러 (한 줄로 표시)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.LabelField("2. BASE MAPS", EditorStyles.boldLabel);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("Albedo
+(RGB)"), baseMap, baseColor);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.Space(15);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 4. 모드별 UI (0: Metallic, 1: Specular)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (workflow.floatValue &lt; 0.5f)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Metallic UI</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.BeginVertical("TextField");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EditorGUILayout.LabelField("METALLIC MODE ACTIVE",
+EditorStyles.miniBoldLabel);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("Metallic(R)
+Smoothness(A)"), metallicMap);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.ShaderProperty(metallic, "Metallic Intensity");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.ShaderProperty(smoothness, "Smoothness Intensity");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.EndVertical();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Specular UI</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.BeginVertical(EditorStyles.helpBox);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EditorGUILayout.LabelField("SPECULAR MODE ACTIVE",
+EditorStyles.miniBoldLabel);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("Specular(RGB)
+Smoothness(A)"), specMap, specColor);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.ShaderProperty(smoothness, "&nbsp;&nbsp; Smoothness
+Intensity");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.EndVertical();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.Space(15);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 5. 공통 속성</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.LabelField("3. SURFACE DETAILS", EditorStyles.boldLabel);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("Normal Map"),
+bumpMap, bumpScale);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("Occlusion
+Map"), FindProperty("_OcclusionMap", properties),
+FindProperty("_OcclusionStrength", properties));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("Height Map"),
+FindProperty("_ParallaxMap", properties), FindProperty("_Parallax",
+properties));<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.Space(15);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 6. 이펙트</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.LabelField("4. EXTRA EFFECTS", EditorStyles.boldLabel);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("Emission"),
+FindProperty("_EmissionMap", properties),
+FindProperty("_EmissionColor", properties));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.ShaderProperty(FindProperty("_UseFresnel", properties),
+"Enable Fresnel");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.ShaderProperty(FindProperty("_MatCapStrength",
+properties), "MatCap Strength");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+materialEditor.TexturePropertySingleLine(new GUIContent("MatCap
+Texture"), FindProperty("_MatCapTex", properties));<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditorGUILayout.Space(10);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; materialEditor.TextureScaleOffsetProperty(baseMap);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">workflow GUI는 어떤걸로 할까요?</span><br>
+      <br>
+방법 A와 같은 드롭다운 방식과 방법 B와 같은 버튼 형태를 취향에 따라 선택하면 됩니다.<br>
+<br><span style="color: rgb(0, 153, 0);">// --- 방법 A: 드롭다운 팝업 (가장 안정적) ---</span><br>
+mode = EditorGUILayout.Popup("Selected Mode", mode, options);<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// --- 방법 B: 선택 버튼 형태를 원하시면 위 Popup을 주석처리하고 아래 SelectionGrid를 사용하세요 ---</span><br>
+mode = GUILayout.SelectionGrid(mode, options, 2, EditorStyles.miniButtonMid);<br>
+      <br>
+      <br>
+      <img style="width: 528px; height: 292px;" alt="" src="tutorial04/select_workflow.png"><br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

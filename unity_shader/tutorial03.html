@@ -1,0 +1,378 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--URP shader toggle by multi_compile-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>URP shader toggle by multi_compile</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>URP shader toggle by multi_compile<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>multi_compile도 지시어도 shader_feature 지시어 처럼 토글(체크박스)로 셰이더의 기능을 On/Off 할수 있습니다.<br>
+      <br>
+두 지시어의 차이점에 대해 간단하게 알아 보겠습니다.<br>
+      <h4>shader_feature vs multi_compile:</h4>
+shader_feature: <br>
+      <ul>
+        <li>메테리얼에서 쓰지 않는 변종은 빌드 시 포함하지 않습니다. (용량 절약, 보통 재질 설정에 사용)</li>
+        <li>용도 : 메테리얼 설정 (개별 기능 On/Off)</li>
+        <li>빌드 최적화 : 사용 중인 조합만 빌드에 포함&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </li>
+        <li>런타임 제어 : 어려움 (빌드 시 빠질 수 있음)</li>
+      </ul>
+      <br>
+multi_compile: <br>
+      <ul>
+        <li>사용 여부와 관계없이 모든 변종을 빌드합니다. (주로 그림자, 안개 등 시스템 설정에 사용)</li>
+        <li>용도 : 전역(Global) 설정 (안개, 그림자 등)</li>
+        <li>빌드 최적화 : 모든 가능한 조합을 빌드에 포함</li>
+        <li>런타임 제어 : 모두 포함, 자유로움 (언제든 끄고 켜기 가능)</li>
+      </ul>
+런타임에 코드로 자유롭게 끄고 켜야 하는 기능이라면 shader_feature 대신 multi_compile을 사용하는 것이 안전합니다.<br>
+      <br>
+다음 예제는 multi_compile을 이용하여 텍스쳐를 적용 할지, 안할지 토글하여 선택 할수 있습니다.<br>
+셰이더를 초기화 상태로 되돌리려면 Reset을 해야 합니다.<br>
+      <br>
+실질적으로는 shader_feature 키워드에서 multi_compile로 키워드 한줄만 바뀌었습니다.<br>
+<br>
+      <h3>
+1. 퍼로퍼티 추가</h3>
+
+      [Toggle] 속성을 사용하여 인스펙터에 체크박스를 생성합니다.<br>
+괄호 안의 _USE_TEX_ON은 실제 셰이더 키워드 이름이 됩니다.<br>
+      <br>
+      <div>&nbsp;&nbsp;&nbsp; Properties<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(51, 51, 255); font-weight: bold;">[Toggle(_USE_TEX_ON)]
+_UseTex ("Use Texture?", Float) = 0.0</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _BaseMap("BaseMap", 2D) =
+"white" {}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _BaseColor("Base Color
+(Fallback)", Color) = (1, 1, 1, 1)<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </div>
+      <br>
+      <h3>
+2. 셰이더 키워드 선언 (텍스처 사용 여부 분기)</h3>
+
+      <div>&nbsp;&nbsp;&nbsp; Pass<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HLSLPROGRAM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma vertex vert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma fragment frag<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(51, 51, 255);">#pragma multi_compile _ _USE_TEX_ON</span><br>
+      </div>
+      
+      <h4>multi_compile의 장점과 단점</h4>
+      <ul>
+        <li>장점: 게임 실행 중에 언제든지 EnableKeyword를 통해 기능을 켜도 즉시 대응할 수 있습니다. 셰이더가 빌드에서 누락되어 화면이 핑크색으로 변할 걱정이 없습니다.</li>
+        <li>단점: 키워드가 많아지면 빌드 용량이 커지고 셰이더 컴파일 시간이 길어집니다.</li>
+      </ul>
+
+      
+      <h3><br>
+      </h3>
+      <h3>
+3. 체크박스가 켜져 있을 때만 텍스처를 샘플링합니다.</h3>
+      <br>
+
+      <div>half3 frag(Varyings IN) : SV_Target<br>
+{<br>
+&nbsp;&nbsp;&nbsp; ......<br>
+      <br>
+&nbsp;&nbsp;&nbsp; #if defined(_USE_TEX_ON)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; albedo *= SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, TRANSFORM_TEX(IN.uv, _BaseMap)).rgb;<br>
+&nbsp;&nbsp;&nbsp; #endif<br>
+      <br>
+&nbsp;&nbsp;&nbsp; return albedo * (directLight + ambient); <br>
+}<br>
+      </div>
+      
+      <h4>주의할 점: 셰이더 변종 폭발 (Variant Explosion)</h4>
+
+multi_compile을 남발하면 안 되는 이유입니다.<br>
+
+      <br>
+
+만약 다음과 같이 선언하면 어떻게 될까요?<br>
+
+      <ul>
+<li>#pragma multi_compile A B (2개)</li><li>#pragma multi_compile C D (2개)</li><li>#pragma multi_compile E F (2개)</li>
+      </ul>
+
+      <br>
+
+유니티는 이들의 모든 조합인 2 X 2 X 2 = 8개의 셰이더를 만듭니다.<br>
+
+키워드가 10개만 되어도 수천 개의 셰이더가 생성되어 빌드 시간이 몇 시간씩 걸릴 수 있습니다.<br>
+
+      <br>
+
+요약<br>
+
+      <ul>
+<li>multi_compile은 어떤 상황에서도 해당 기능이 작동하도록 모든 셰이더 버전을 빌드에 포함시키는 지시어입니다.</li><li>런타임에 스크립트로 기능을 끄고 켜야 한다면 multi_compile이 정답입니다.</li><li>반면, 메테리얼 설정으로 고정해서 쓸 기능이라면 shader_feature가 최적화에 유리합니다</li>
+      </ul>
+
+<br>MyUnlitBasic_multi_cimpile.shader 파일<br>
+      <div>Shader "Custom/UnlitShaderBasic_MultiCompile"<br>
+{<br>
+&nbsp;&nbsp;&nbsp; Properties<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 인스펙터 토글. 런타임에 EnableKeyword/DisableKeyword로 제어 가능합니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Toggle(_USE_TEX_ON)] _UseTex ("Use Texture?", Float) = 0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _BaseMap("BaseMap", 2D) = "white" {}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _BaseColor("Base Color (Fallback)", Color) = (1, 1, 1, 1)<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; SubShader<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HLSLPROGRAM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma vertex vert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma fragment frag<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// shader_feature 대신 multi_compile을 사용하여 </span><br style="color: rgb(0, 153, 0);">
+      <span style="color: rgb(0, 153, 0);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 빌드 시 모든 경우의 수(On/Off)를 포함시킵니다.</span><br style="color: rgb(0, 153, 0);">
+      <span style="color: rgb(0, 153, 0);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // '_'는 키워드가 없는 상태(Off)를 의미합니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma multi_compile _ _USE_TEX_ON<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#include
+"Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#include
+"Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+      <br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct Attributes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float4 positionOS&nbsp;&nbsp; : POSITION;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float2
+uv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+TEXCOORD0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float3 normalOS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : NORMAL;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct Varyings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float4 positionHCS&nbsp; : SV_POSITION;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float2
+uv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+TEXCOORD0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float3 normalWS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : NORMAL;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TEXTURE2D(_BaseMap);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SAMPLER(sampler_BaseMap);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CBUFFER_START(UnityPerMaterial)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float4 _BaseMap_ST;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; half4 _BaseColor;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CBUFFER_END<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Varyings vert(Attributes IN)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Varyings OUT;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OUT.uv = IN.uv;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OUT.normalWS = TransformObjectToWorldNormal(IN.normalOS);&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return OUT;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; half3 frag(Varyings IN) : SV_Target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Light light = GetMainLight();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float3 lightDir = normalize(light.direction);&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float3 normalWS = normalize(IN.normalWS); <br>
+&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float NdotL = saturate(dot(normalWS, lightDir));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float3 directLight = NdotL * light.color;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; half3 ambient = unity_AmbientSky.rgb;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 기본 색상 설정</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; half3 albedo = _BaseColor.rgb;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// multi_compile로 생성된 키워드 분기</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #if defined(_USE_TEX_ON)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+albedo *= SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap,
+TRANSFORM_TEX(IN.uv, _BaseMap)).rgb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endif<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return albedo * (directLight + ambient); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ENDHLSL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+"Use Texture"를 토글 하여, 텍스쳐를 적용 할수 있습니다.<br>
+      <br>
+      <h3>4. 셰이더 최종 정리</h3>
+multi_compile _ _USE_TEX_ON 처럼 언더바는 항상 포함 시켜 줍니다.<br>
+      <br>
+체크의 초기 값은&nbsp;&nbsp; 다음과 같이 1.0과 0.0으로 해주는게 가독성에 좋습니다.<br>
+      <ul>
+        <li>[Toggle(_USE_TEX_ON)] _UseTex ("Use Texture?", Float) = 1.0 </li>
+        <li>[Toggle(_USE_TEX_ON)] _UseTex ("Use Texture?", Float) = 0.0 </li>
+      </ul>
+
+      <br>
+      <div>Properties<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 1.0이면 생성 시 자동 체크, 0.0이면 체크 해제 상태</span><br>
+&nbsp;&nbsp;&nbsp; [Toggle(_USE_TEX_ON)] _UseTex ("Use Texture?", Float) = 1.0 <br>
+&nbsp;&nbsp;&nbsp; _BaseMap("BaseMap", 2D) = "white" {}<br>
+}<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// ...</span> <br>
+      <br>
+HLSLPROGRAM<br>
+      <span style="color: rgb(0, 153, 0);">// _ 는 '아무것도 없음(Off)', _USE_TEX_ON은 '켜짐(On)'</span><br>
+#pragma multi_compile _ _USE_TEX_ON <br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// ...</span><br>
+      <br>
+#if defined(_USE_TEX_ON)<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 텍스처 연산 수행</span><br>
+#endif<br>
+      </div>
+      <h3>5. C#에서 제어 하는 방법</h3>
+_USE_TEX_ON로 활성화, 비활성화 하면 됩니다.<br>
+      <br>
+      <div>using UnityEngine;<br>
+      <br>
+public class TextureToggleController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; private Material targetMat;<br>
+&nbsp;&nbsp;&nbsp; private bool isTexOn = true;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Start()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 렌더러에서 메테리얼 인스턴스를 가져옵니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; targetMat = GetComponent&lt;Renderer&gt;().material;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 스페이스바를 누를 때마다 토글</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; isTexOn = !isTexOn;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (isTexOn)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+targetMat.EnableKeyword("_USE_TEX_ON");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+targetMat.DisableKeyword("_USE_TEX_ON");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log($"Texture is now: {(isTexOn ? "ON" : "OFF")}");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+<br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

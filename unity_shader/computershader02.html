@@ -1,0 +1,379 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--simple add function-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>simple add function</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>simple add function<br>
+</h1>
+
+<table style="width: 806px; height: 4477px;" border="0">
+
+  <tbody>
+    <tr>
+      <td>
+      <h4>두수 더하기</h4>
+컴퓨터 셰이더로 값 두개를 더해 보겠습니다.<br>
+간단한 함수부터 시작하면 복잡해 보이는것도 쉽게 할수 있을 겁니다.<br>
+      <br>
+Compute Shader에서는 “단일 float 값을 바로 반환”할 수는 없고,<br>
+입력은 float 변수로, 출력은 크기 1짜리 버퍼로 받는 방식이 정석입니다.<br>
+      <br>
+아래는 float 두 개를 넘겨서 더한 결과를 하나의 float로 받는 간단한 예제입니다.<br>
+      <br>
+AddFloat.compute 파일<br>
+      <div>#pragma kernel CSMain<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 입력 값 (C#에서 SetFloat로 전달)</span><br>
+float A;<br>
+float B;<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 출력 값 (크기 1짜리 버퍼)</span><br>
+RWStructuredBuffer&lt;float&gt; Result;<br>
+      <br>
+[numthreads(1, 1, 1)]<br>
+void CSMain(uint3 id : SV_DispatchThreadID)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; Result[0] = A + B;<br>
+}<br>
+      </div>
+
+      <br>
+      <span style="color: rgb(51, 51, 255);"></span><br>
+      ComputeAddFloat.cs 파일<br>
+      
+      <div>using UnityEngine;<br>
+      <br>
+public class ComputeAddFloat : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public ComputeShader addShader;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; ComputeBuffer resultBuffer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Start()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float a = 3.5f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float b = 7.25f;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과용 버퍼 (float 1개)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resultBuffer = new ComputeBuffer(1, sizeof(float));<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int kernel = addShader.FindKernel("CSMain");<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// float 값 전달</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetFloat("A", a);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetFloat("B", b);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과 버퍼 연결</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "Result", resultBuffer);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 실행 (1 스레드)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.Dispatch(kernel, 1, 1, 1);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과 가져오기</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] result = new float[1];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resultBuffer.GetData(result);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log($"{a} + {b} = {result[0]}");<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void OnDestroy()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resultBuffer.Release();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+결과)<br>
+3.5 + 7.25 = 10.75<br>
+      <br>
+      <br>
+포인트<br>
+      <ul>
+        <li>float A, float B → 상수 버퍼(Constant Buffer)</li>
+        <li>출력은 반드시 RWStructuredBuffer</li>
+        <li>스레드는 1개만 실행</li>
+      </ul>
+      <br>
+SetFloat의 "A", "B", SetBuffer의 "Result" 값은 HLSL의 변수와 일치 해야 합니다.<br>
+      <br>
+Unity Compute Shader는 내부적으로:<br>
+      <span style="background-color: rgb(255, 204, 0);">문자열 이름 → Shader Property ID → Constant Buffer 슬롯</span><br>
+      <br>
+이 구조를 사용합니다.<br>
+그래서 이름이 곧 “연결 고리”입니다.<br>
+      <h4>ComputerShader.SetFloat이란?</h4>
+SetFloat은 Compute Shader의 float 상수 변수에 CPU 값을 전달하기 위한 상수 버퍼 설정 명령입니다.<br>
+HLSL에 선언된 float / half / int / bool 같은 변수 타입을 사용 할수 있습니다.<br>
+      <br>
+      <h4>내부 처리 순서<br>
+      </h4>
+
+C# float 값<br>
+&nbsp;&nbsp; ↓<br>
+Unity 내부 Constant Buffer (CPU)<br>
+&nbsp;&nbsp; ↓<br>
+Dispatch 시 GPU Constant Buffer로 업로드<br>
+&nbsp;&nbsp; ↓<br>
+Compute Shader에서 float A로 읽음<br>
+      <br>
+      <h4>두수 배열 더하기</h4>
+셰이더 파일을 저장할때는 euc-kr 포맷 대신 utf 파일로 저장한다.<br>
+한글이 포함 되어 있으면 실행 에러가 발생한다.<br>
+      <br>
+add.compute 파일<br>
+      <div><span style="color: rgb(0, 153, 0);"></span>#pragma kernel CSMain<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 입력 버퍼</span><br>
+StructuredBuffer&lt;float&gt; A;<br>
+StructuredBuffer&lt;float&gt; B;<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 출력 버퍼</span><br>
+RWStructuredBuffer&lt;float&gt; Result;<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 스레드 그룹 크기</span><br>
+[numthreads(64, 1, 1)]<br>
+void CSMain(uint3 id : SV_DispatchThreadID)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; uint index = id.x;<br>
+&nbsp;&nbsp;&nbsp; Result[index] = A[index] + B[index];<br>
+}<br>
+      </div>
+      <br>
+ComputeAdd.cs 파일<br>
+      <div>using UnityEngine;<br>
+      <br>
+public class ComputeAddExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public ComputeShader addShader;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; const int dataSize = 1024;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; ComputeBuffer bufferA;<br>
+&nbsp;&nbsp;&nbsp; ComputeBuffer bufferB;<br>
+&nbsp;&nbsp;&nbsp; ComputeBuffer bufferResult;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Start()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 데이터 생성</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] A = new float[dataSize];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] B = new float[dataSize];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] Result = new float[dataSize];<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; dataSize; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A[i] = i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B[i] = i * 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// ComputeBuffer 생성</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferA = new ComputeBuffer(dataSize, sizeof(float));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferB = new ComputeBuffer(dataSize, sizeof(float));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferResult = new ComputeBuffer(dataSize, sizeof(float));<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferA.SetData(A);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferB.SetData(B);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int kernel = addShader.FindKernel("CSMain");<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 셰이더에 버퍼 연결</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "A", bufferA);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "B", bufferB);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "Result", bufferResult);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 실행 (1024 / 64 = 16 그룹</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.Dispatch(kernel, dataSize / 64, 1, 1);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과 가져오기</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferResult.GetData(Result);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 테스트 출력</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 5; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log($"{A[i]} + {B[i]} = {Result[i]}");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void OnDestroy()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferA.Release();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferB.Release();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferResult.Release();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+결과)<br>
+0 + 0 = 0<br>
+1 + 2 = 3<br>
+2 + 4 = 6<br>
+3 + 6 = 9<br>
+4 + 8 = 12<br>
+      <br>
+      <br>
+핵심 설명<br>
+      <ul>
+        <li>StructuredBuffer : 읽기 전용</li>
+        <li>RWStructuredBuffer : 읽기/쓰기 가능</li>
+        <li>numthreads(64,1,1) : 한 그룹에 64개의 스레드</li>
+        <li>Dispatch()에서 전체 데이터 개수 ÷ 64 만큼 실행</li>
+      </ul><br>
+실행 (1024 / 64 = 16 그룹) 한 그룹에 쓰레드는 64개이므로 나눠 그룹의 갯수를 구한다.<br>
+      <span style="color: rgb(51, 51, 255);">addShader.Dispatch(kernel, dataSize / 64, 1, 1);</span><br>
+<h3>ComputeBuffer란?</h3>
+CPU(C#) ↔ GPU 사이에 데이터를 전달하기 위한 GPU 메모리 버퍼입니다.<br>
+      <br>
+기본 사용 흐름<br>
+      <br>
+      <ol>
+        <li>ComputeBuffer 생성</li>
+        <li>CPU 데이터 → GPU로 전송 (SetData)</li>
+        <li>Shader에서 사용</li>
+        <li>결과 필요 시 GetData</li>
+        <li>반드시 Release()로 해제</li>
+      </ol>
+      <br>
+      <span style="font-weight: bold;">ComputerBuffer.SetData : </span>데이터를 GPU 버퍼에 올리는 단계<br>
+      <br>
+역할: CPU 메모리에 있는 데이터를 GPU 메모리(ComputeBuffer)로 복사합니다.<br>
+      <br>
+SetData 내부 동작:<br>
+      <ol>
+        <li>CPU 메모리 → GPU 메모리 복사</li>
+        <li>GPU에서 나중에 Compute Shader나 Material 등에서 접근 가능</li>
+        <li>주의: 이 시점에서는 아직 Shader에 연결된 것은 아님, 그냥 GPU 버퍼에 데이터가 올라간 것뿐입니다.</li>
+      </ol>
+      <br>
+      <span style="font-weight: bold;">ComputeShader.SetBuffer</span> – GPU 버퍼를 Shader 변수와 연결하는 단계<br>
+      <br>
+역할: GPU에 있는 ComputeBuffer를 Compute Shader 변수에 바인딩합니다.<br>
+      <br>
+SetBuffer 내부 동작:<br>
+      <ol>
+        <li>Compute Shader 코드에서 정의된 RWStructuredBuffer&lt;float&gt; dataBuffer와 GPU의 ComputeBuffer 연결</li>
+        <li>Dispatch() 호출 시 Shader가 이 버퍼를 읽고 쓰게 됨</li>
+        <li>주의: 데이터는 이미 GPU에 올라와 있어야 의미 있음 → 보통 SetData() 후 호출</li>
+      </ol>
+      <br>
+      <table>
+<thead><tr><th>단계</th><th>C# 코드</th><th>GPU 측 의미</th></tr></thead><tbody><tr><td>1</td><td><code inline="">buffer.SetData(array)</code></td><td>CPU → GPU 메모리 복사</td></tr><tr><td>2</td><td><code inline="">computeShader.SetBuffer(kernel, "dataBuffer", buffer)</code></td><td>GPU Shader 변수에 버퍼 바인딩</td></tr><tr><td>3</td><td><code inline="">computeShader.Dispatch(...)</code></td><td>Shader 실행, GPU가 바인딩된 버퍼 읽기/쓰기</td></tr></tbody>
+      </table>
+      <br>
+      <p data-start="1798" data-end="1809">✅ <strong data-start="1800" data-end="1809">핵심 정리</strong></p>
+
+      <ul data-start="1810" data-end="1947">
+<li data-start="1810" data-end="1837">
+<p data-start="1812" data-end="1837"><strong data-start="1812" data-end="1823">buffer.SetData</strong>: GPU에 데이터 올리기</p>
+</li><li data-start="1838" data-end="1876">
+<p data-start="1840" data-end="1876"><strong data-start="1840" data-end="1853">Shader.SetBuffer</strong>: GPU 버퍼를 Shader 변수와 연결</p>
+</li><li data-start="1877" data-end="1917">
+<p data-start="1879" data-end="1917"><strong data-start="1879" data-end="1891">Shader.Dispatch</strong>: Shader 실행 → GPU가 버퍼를 사용함</p></li>
+        <li data-start="1877" data-end="1917"><span style="font-weight: bold;">buffer.GetData</span>: GPU → CPU 데이터 읽기</li>
+      </ul>
+      <br>
+버퍼 사용법을 정리한 간단한 예제는 다음과 같습니다.<br>
+      <div><span style="color: rgb(0, 153, 0);">// 1. CPU 데이터 준비</span><br>
+float[] data = new float[10];<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 2. ComputeBuffer 생성</span><br>
+ComputeBuffer buffer = new ComputeBuffer(10, sizeof(float));<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 3. GPU 버퍼에 데이터 전송</span><br>
+buffer.SetData(data);<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 4. Compute Shader에 버퍼 연결</span><br>
+int kernel = computeShader.FindKernel("CSMain");<br>
+computeShader.SetBuffer(kernel, "dataBuffer", buffer);<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 5. Shader 실행</span><br>
+computeShader.Dispatch(kernel, 10, 1, 1);<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 6. GPU → CPU 데이터 읽기</span><br>
+buffer.GetData(data);<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 7. 버퍼 해제</span><br>
+buffer.Release();<br>
+      </div>
+      <br>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
