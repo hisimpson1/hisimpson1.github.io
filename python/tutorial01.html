@@ -48,14 +48,14 @@
   <tbody>
     <tr>
       <td>list comprehension(‘리스트 컴프리헨션’)에 대해서 알아 보겠습니다.<br>
-list comprehension은 짧고 간결하게 리스트를 생성할수 있는 문법이지만, 가끔 파이썬을 사용하다보니 매번 새롭게 느껴집니다.<br>
+list comprehension은 짧고 간결하게 리스트를 생성할수 있는 문법이지만, 가끔 파이썬을 사용하다보니 매번 새롭게
+느껴집니다.<br>
       <br>
 아래는 odds(오즈비)를 그래프로 그린 코드입니다.<br>
       <br>
 p가 0.5를 넘어서면서 오즈가 급격하게 커지고<br>
 p가 1에 가까워질수록 odds는 천문학적으로 커지고 있는 그래프입니다.<br>
-<br>
-      
+      <br>
       <div>import numpy as np<br>
 import matplotlib.pyplot as plt<br>
       <br>
@@ -68,17 +68,19 @@ plt.xlabel('p')<br>
 plt.ylabel('p/(1-p)')<br>
 plt.show()<br>
       </div>
-
       <br>
-      결과)<br>
+결과)<br>
       <img style="width: 595px; height: 435px;" alt="" src="tutorial01/odds.png"><br>
 이 문장을 리스트 컴프리헨션(list comprehension) 이라고 부릅니다.<br>
       <br>
-      <span style="font-weight: bold; color: rgb(51, 51, 255);">odds = [p/(1-p) for p in probs]</span><br>
+      <span style="font-weight: bold; color: rgb(51, 51, 255);">odds =
+[p/(1-p) for p in probs]</span><br>
       <br>
 같은 의미를 일반적인 for문으로 풀어쓰면 이렇게 됩니다<br>
       <br>
-      <div>odds = []&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 빈 리스트를 먼저 만든다</span><br>
+      <div>odds =
+[]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <span style="color: rgb(0, 153, 0);"># 빈 리스트를 먼저 만든다</span><br>
 for p in probs:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># probs에 있는 값을 하나씩 p라는 이름으로 꺼낸다</span><br>
 &nbsp;&nbsp;&nbsp; 값 = p / (1 - p)&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 그 값으로 계산</span><br>
 &nbsp;&nbsp;&nbsp; odds.append(값)&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);"># 계산한 값을 리스트에 추가</span><br>
@@ -86,11 +88,12 @@ for p in probs:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="col
       <br>
 즉, 다음과 같습니다<br>
       <br>
-      <span style="color: rgb(51, 51, 255); font-weight: bold;">odds = [ 변수를 이용한 계산식 &nbsp;&nbsp; for 변수 in 반복할 대상 ]</span><br>
+      <span style="color: rgb(51, 51, 255); font-weight: bold;">odds =
+[ 변수를 이용한 계산식 &nbsp;&nbsp; for 변수 in 반복할 대상 ]</span><br>
       <br>
       <br>
       <br>
-<br>
+      <br>
       </td>
     </tr>
   </tbody>
@@ -135,4 +138,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

@@ -28,15 +28,17 @@
   <meta charset="UTF-8">
   <title>CreateContext2</title>
 
+  
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
-<script>
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-Z0ZXNX5CYQ');
-</script>
-  
+  </script>
 </head><body>
 <h1>CreateContext2<br>
 </h1>
@@ -66,7 +68,8 @@ export const AuthProvider = ({ children }) =&gt; {<br>
 &nbsp; // 로그인 함수<br>
 &nbsp; const login = (username, password) =&gt; {<br>
 &nbsp;&nbsp;&nbsp; // 실제로는 서버와 통신해야 하지만 여기서는 예시로 단순 처리<br>
-&nbsp;&nbsp;&nbsp; if (username === 'test' &amp;&amp; password === '1234') {<br>
+&nbsp;&nbsp;&nbsp; if (username === 'test' &amp;&amp; password ===
+'1234') {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setUser({ username });<br>
 &nbsp;&nbsp;&nbsp; } else {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alert('로그인 실패');<br>
@@ -79,15 +82,15 @@ export const AuthProvider = ({ children }) =&gt; {<br>
 &nbsp; };<br>
       <br>
 &nbsp; return (<br>
-&nbsp;&nbsp;&nbsp; &lt;AuthContext.Provider value={{ user, login, logout }}&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;AuthContext.Provider value={{ user, login,
+logout }}&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {children}<br>
 &nbsp;&nbsp;&nbsp; &lt;/AuthContext.Provider&gt;<br>
 &nbsp; );<br>
 };<br>
       </div>
-
       <br>
-      App.js 파일<br>
+App.js 파일<br>
       <div>import React, { useContext, useState } from 'react';<br>
 import { View, Text, TextInput, Button } from 'react-native';<br>
 import { AuthProvider, AuthContext } from './AuthContext';<br>
@@ -100,8 +103,10 @@ const LoginScreen = () =&gt; {<br>
 &nbsp; if (user) {<br>
 &nbsp;&nbsp;&nbsp; return (<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;View&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;환영합니다, {user.username}!&lt;/Text&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="로그아웃" onPress={logout} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;환영합니다,
+{user.username}!&lt;/Text&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="로그아웃"
+onPress={logout} /&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
 &nbsp;&nbsp;&nbsp; );<br>
 &nbsp; }<br>
@@ -120,7 +125,8 @@ const LoginScreen = () =&gt; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value={password}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onChangeText={setPassword}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="로그인" onPress={() =&gt; login(username, password)} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button title="로그인" onPress={() =&gt;
+login(username, password)} /&gt;<br>
 &nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
 &nbsp; );<br>
 };<br>
@@ -133,7 +139,7 @@ export default function App() {<br>
 &nbsp; );<br>
 }<br>
       </div>
-<br>
+      <br>
       </td>
     </tr>
   </tbody>
@@ -178,4 +184,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

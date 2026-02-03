@@ -27,16 +27,18 @@
   
   <meta charset="UTF-8">
   <title>Component by Transform</title>
+
+  
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
-<script>
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-Z0ZXNX5CYQ');
-</script>
-
-  
+  </script>
 </head><body>
 <h1>Component by Transform<br>
 </h1>
@@ -63,20 +65,22 @@ Transform 컴포넌트 클래스는 **gameObject**라는 공개 속성(Public Pr
       <br>
 아래와 같이 GameObject를 얻어 올수 있다.<br>
       <br>
-      <div><span style="color: rgb(0, 153, 0);">// 현재 스크립트가 붙어있는 오브젝트의 Transform을 통해 GameObject를 얻어온다.</span><br>
+      <div><span style="color: rgb(0, 153, 0);">// 현재 스크립트가 붙어있는 오브젝트의
+Transform을 통해 GameObject를 얻어온다.</span><br>
 GameObject myObject = transform.gameObject; <br>
       <br>
-      <span style="color: rgb(0, 153, 0);">// 예시: 얻어낸 GameObject를 비활성화(Disable) 한다.</span><br>
+      <span style="color: rgb(0, 153, 0);">// 예시: 얻어낸 GameObject를
+비활성화(Disable) 한다.</span><br>
 myObject.SetActive(false);<br>
       </div>
-
       <br>
       <br>
-      GetComponent&lt;T&gt;( )가 유효한지 체크 하는 방법은 2가지가 있다.<br>
+GetComponent&lt;T&gt;( )가 유효한지 체크 하는 방법은 2가지가 있다.<br>
       <br>
 1. null 체크<br>
       <br>
-      <span style="color: rgb(51, 51, 255);">EnemyAction enemyAction = myObject.GetComponent&lt;EnemyAction&gt;();</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">EnemyAction enemyAction =
+myObject.GetComponent&lt;EnemyAction&gt;();</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">if (enemyAction != null)</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">{</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 컴포넌트가 존재할 때 실행할 코드</span></span><br style="color: rgb(51, 51, 255);">
@@ -85,10 +89,13 @@ myObject.SetActive(false);<br>
 2. TryGetComponent&lt;T&gt;() 사용 (성능 최적화)<br>
 유니티 2019.2 버전부터 추가된 메서드로, 성능 면에서 더 효율적이며 코드도 깔끔하다.<br>
       <br>
-      <span style="color: rgb(51, 51, 255);">if (myObject.TryGetComponent&lt;EnemyAction&gt;(out EnemyAction enemyAction))</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">if
+(myObject.TryGetComponent&lt;EnemyAction&gt;(out EnemyAction
+enemyAction))</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">{</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 컴포넌트가 존재함 (enemyAction 변수에 이미 할당됨)</span></span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; enemyAction.DoSomething();</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;
+enemyAction.DoSomething();</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">}</span><br>
       <br>
       </td>
@@ -134,5 +141,8 @@ function ChangeImageSize(){
     this.style.height = height + 'px';
 }
 
+</script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
 </script>
 </body></html>

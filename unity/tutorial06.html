@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><!--UGUI Scroll View Code-->
-
-
+<html><head>
+<!--UGUI Scroll View Code-->
   
   <style type="text/css">table {
         line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
@@ -26,18 +25,21 @@
   <meta name="GENERATOR" content="Namo WebEditor v6.0">
 
   
-  <meta charset="UTF-8"><title>UGUI Scroll View Code</title>
+  <meta charset="UTF-8">
+  <title>UGUI Scroll View Code</title>
+
   
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
-<script>
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-Z0ZXNX5CYQ');
-</script>
-  
-  </head><body>
+  </script>
+</head><body>
 <h1>UGUI Scroll View Code<br>
 </h1>
 
@@ -49,8 +51,8 @@
       <br>
       <a href="tutorial05.html">UGUI Scroll View 리소스 만들기</a><br>
       <br>
-      <a href="tutorial06/HorizontalScrollController.cs">HorizontalScrollController.cs 파일</a><br>
-      
+      <a href="tutorial06/HorizontalScrollController.cs">HorizontalScrollController.cs
+파일</a><br>
       <div>using System.Collections.Generic;<br>
 using UnityEngine;<br>
 using UnityEngine.UI;<br>
@@ -64,37 +66,46 @@ public class HorizontalScrollController : MonoBehaviour<br>
       <br>
 &nbsp;&nbsp;&nbsp; public GameObject itemPrefab;<br>
       <br>
-&nbsp;&nbsp;&nbsp; public List&lt;GameObject&gt; itemList = new List&lt;GameObject&gt;();<br>
+&nbsp;&nbsp;&nbsp; public List&lt;GameObject&gt; itemList = new
+List&lt;GameObject&gt;();<br>
       <br>
 &nbsp;&nbsp;&nbsp; void Awake()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scrollRect = GetComponent&lt;ScrollRect&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scrollRect =
+GetComponent&lt;ScrollRect&gt;();<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (scrollRect != null)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; content = scrollRect.content;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+content = scrollRect.content;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; void Start()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 100; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 100;
+i++)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddItem();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AddItem();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; itemList.Count; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt;
+itemList.Count; i++)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Button btn = itemList[i].GetComponentInChildren&lt;Button&gt;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Text
 btnText = itemList[i].GetComponentInChildren&lt;Text&gt;();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; btnText.text = (i + 1).ToString();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+btnText.text = (i + 1).ToString();<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">//버튼이 클릭 되었을때 아이템을 구분하기 위해 인덱스 추가</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ItemIndexButton itemIndex =
 itemList[i].GetComponent&lt;ItemIndexButton&gt;();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; itemIndex.index = i;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; btn.onClick.AddListener(itemIndex.OnClick);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+itemIndex.index = i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+btn.onClick.AddListener(itemIndex.OnClick);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetSpacing(space);<br>
@@ -103,11 +114,13 @@ itemList[i].GetComponent&lt;ItemIndexButton&gt;();<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void HandleItemButtonClick(int index)<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("버튼 클릭 index: " + index);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("버튼 클릭 index: " +
+index);<br>
 &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; public void AddItem()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GameObject newUI = Instantiate(itemPrefab, content);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GameObject newUI =
+Instantiate(itemPrefab, content);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; itemList.Add(newUI);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
@@ -116,9 +129,11 @@ itemList[i].GetComponent&lt;ItemIndexButton&gt;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 1. 필요한 컴포넌트 정보 가져오기</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HorizontalLayoutGroup
 layoutGroup = content.GetComponent&lt;HorizontalLayoutGroup&gt;();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RectTransform contentRect = content.GetComponent&lt;RectTransform&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RectTransform contentRect =
+content.GetComponent&lt;RectTransform&gt;();<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int childCount = content.childCount;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int childCount =
+content.childCount;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (childCount == 0) return;<br>
       <br>
@@ -127,9 +142,10 @@ layoutGroup = content.GetComponent&lt;HorizontalLayoutGroup&gt;();<br>
 content.GetChild(0).GetComponent&lt;RectTransform&gt;().sizeDelta.x;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 3. 전체 너비 계산 공식:</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // (아이템 너비 * 개수) + (사이 간격 * (개수 - 1)) + 좌우 패딩<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float totalWidth = (itemWidth * childCount)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // (아이템 너비 * 개수) + (사이 간격 *
+(개수 - 1)) + 좌우 패딩<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float totalWidth =
+(itemWidth * childCount)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + (layoutGroup.spacing * (childCount - 1))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + layoutGroup.padding.left<br>
@@ -137,35 +153,40 @@ content.GetChild(0).GetComponent&lt;RectTransform&gt;().sizeDelta.x;<br>
 + layoutGroup.padding.right;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 4. Content의 sizeDelta 수정 (가로 길이 반영)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contentRect.sizeDelta = new Vector2(totalWidth, contentRect.sizeDelta.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contentRect.sizeDelta = new
+Vector2(totalWidth, contentRect.sizeDelta.y);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void ClearAllItems()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in itemList)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in
+itemList)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Destroy(item);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Destroy(item);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; itemList.Clear();<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void SetSpacing(float spacing)<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HorizontalLayoutGroup layout = content.GetComponent&lt;HorizontalLayoutGroup&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HorizontalLayoutGroup layout
+= content.GetComponent&lt;HorizontalLayoutGroup&gt;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (layout != null)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; layout.spacing = spacing;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+layout.spacing = spacing;<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 간격이 바뀌면 전체크기가 다시 계산 되어야 하므로 UpdateContentWidth를 실행한다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 간격이 바뀌면 전체크기가 다시 계산 되어야 하므로
+UpdateContentWidth를 실행한다.</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 LayoutRebuilder.ForceRebuildLayoutImmediate(content.GetComponent&lt;RectTransform&gt;());<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; }<br>
 }<br>
       </div>
-
       <br>
-      itemPrefab : ScrollView에 추가할 아이템의 프리팹으로 에디터에서 지정한다.<br>
+itemPrefab : ScrollView에 추가할 아이템의 프리팹으로 에디터에서 지정한다.<br>
       <br>
 ScrollView 인스펙터 창에서 컴포넌트로 추가한다.<br>
       <br>
@@ -183,13 +204,15 @@ public class ItemIndexButton : MonoBehaviour<br>
 &nbsp;&nbsp;&nbsp; void Awake()<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 부모에서 컨트롤러 찾기</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controller = GetComponentInParent&lt;HorizontalScrollController&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controller =
+GetComponentInParent&lt;HorizontalScrollController&gt;();<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void OnClick()<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(controller)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controller.HandleItemButtonClick(index);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+controller.HandleItemButtonClick(index);<br>
 &nbsp;&nbsp;&nbsp; }<br>
 }<br>
       </div>
@@ -202,16 +225,20 @@ public class ItemIndexButton : MonoBehaviour<br>
 람다 방식도 있지만 버튼에 클래스 컴포넌트를 추가 하는 방식으로 하겠다.<br>
 버튼의 ItemIndexButton 컴포넌트에 인덱스를 지정하고 버튼 클릭시에 불릴수 있도록 연결한다.<br>
       <br>
-      <span style="color: rgb(51, 51, 255);">ItemIndexButton itemIndex = itemList[i].GetComponent&lt;ItemIndexButton&gt;();</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">ItemIndexButton itemIndex
+= itemList[i].GetComponent&lt;ItemIndexButton&gt;();</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">itemIndex.index = i;</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">btn.onClick.AddListener(itemIndex.OnClick);</span><br>
       <br>
-버튼이 클릭되면 ItemIndexButton.cs에서는 HorizontalScrollController의 HandleItemButtonClick 함수를 호출한다.<br>
+버튼이 클릭되면 ItemIndexButton.cs에서는 HorizontalScrollController의
+HandleItemButtonClick 함수를 호출한다.<br>
       <br>
       <span style="color: rgb(51, 51, 255);">public void OnClick()</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">{</span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp; if(controller)</span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controller.HandleItemButtonClick(index);</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;
+if(controller)</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+controller.HandleItemButtonClick(index);</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">}</span><br>
       <br>
 HorizontalScrollControlle.UpdateContentWidth 함수<br>
@@ -263,4 +290,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

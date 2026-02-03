@@ -47,10 +47,11 @@
 
   <tbody>
     <tr>
-      <td>WeakReference를 사용해서 구독자가 파괴되면 자동으로 GC가 수거 되는 EventBus를 만들어 보겠습니다.<br>
+      <td>WeakReference를 사용해서 구독자가 파괴되면 자동으로 GC가 수거 되는 EventBus를 만들어
+보겠습니다.<br>
 구독자(this), 메서드를 묶어서 관리 합니다.<br>
 Publish시 살아있는 구독자만 호출 합니다.<br>
-<br>
+      <br>
 1. EventBus 구현<br>
       <br>
 SafeEventBus.cs 파일<br>
@@ -180,17 +181,20 @@ public class ScoreManager : MonoBehaviour<br>
 {<br>
 &nbsp;&nbsp;&nbsp; void OnEnable()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SafeEventBus.Subscribe&lt;PlayerScoredEvent&gt;(this, OnPlayerScored);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SafeEventBus.Subscribe&lt;PlayerScoredEvent&gt;(this, OnPlayerScored);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; void OnDisable()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SafeEventBus.Unsubscribe&lt;PlayerScoredEvent&gt;(this,OnPlayerScored);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SafeEventBus.Unsubscribe&lt;PlayerScoredEvent&gt;(this,OnPlayerScored);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; void OnPlayerScored(PlayerScoredEvent e)<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("SafeEventBus: Score: " + e.Score);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("SafeEventBus:
+Score: " + e.Score);<br>
 &nbsp;&nbsp;&nbsp; }<br>
 }<br>
       </div>
@@ -258,4 +262,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

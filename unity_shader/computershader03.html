@@ -47,13 +47,14 @@
 
   <tbody>
     <tr>
-      <td>computer shader로 파티클 그릴때, Graphics.DrawProcedural를 사용하고 있는데 대략 뭔지 알아 보겠습니다.<br>
-<br>
-      Graphics.DrawProcedural는 Unity에서 CPU가 아닌 GPU에서 직접 버텍스를 생성해서
+      <td>computer shader로 파티클 그릴때, Graphics.DrawProcedural를 사용하고 있는데
+대략 뭔지 알아 보겠습니다.<br>
+      <br>
+Graphics.DrawProcedural는 Unity에서 CPU가 아닌 GPU에서 직접 버텍스를 생성해서
 그리는 방식으로, 주로 커스텀 메쉬, 셰이더 기반 파티클, GPU 인스턴싱 등에 사용됩니다. 이 명령은 모바일에서 사용
 가능하지만 몇 가지 제한 사항이 있습니다.<br>
       <br>
-      Graphics.DrawProcedural 자체는 **모바일(iOS, Android)**에서도 호출이 가능합니다.<br>
+Graphics.DrawProcedural 자체는 **모바일(iOS, Android)**에서도 호출이 가능합니다.<br>
 단, GPU가 지원하는 기능과 그래픽 API에 의존합니다.<br>
       <ul>
         <li>OpenGL ES 3.0 이상</li>
@@ -65,7 +66,8 @@
 1. 셰이더 지원<br>
       <ul>
         <li>반드시 Compute Shader 또는 Vertex/Fragment Shader와 연동해서 사용해야 합니다.</li>
-        <li>OpenGL ES 3.1 이상이면 Compute Shader 지원이 가능하지만, OpenGL ES 3.0에서는 제한적입니다.</li>
+        <li>OpenGL ES 3.1 이상이면 Compute Shader 지원이 가능하지만, OpenGL ES
+3.0에서는 제한적입니다.</li>
       </ul>
 2. Instancing<br>
       <ol>
@@ -75,8 +77,10 @@
       <br>
 3. DrawProcedural 타입<br>
       <ul>
-        <li>MeshTopology.Triangles 또는 MeshTopology.Points 등 GPU가 이해할 수 있는 topology여야 합니다.</li>
-        <li>Graphics.DrawProceduralNow를 사용하면 즉시 렌더링, Graphics.DrawProcedural은 커맨드 버퍼에서 렌더링을 예약합니다.</li>
+        <li>MeshTopology.Triangles 또는 MeshTopology.Points 등 GPU가 이해할 수
+있는 topology여야 합니다.</li>
+        <li>Graphics.DrawProceduralNow를 사용하면 즉시 렌더링,
+Graphics.DrawProcedural은 커맨드 버퍼에서 렌더링을 예약합니다.</li>
       </ul>
       <br>
 4. 성능 고려<br>
@@ -112,12 +116,14 @@ public class DrawProceduralExample : MonoBehaviour<br>
 &nbsp;&nbsp;&nbsp; void OnRenderObject()<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (material == null)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; material.SetPass(0);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 삼각형 1개 → vertex 3개</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Graphics.DrawProceduralNow( MeshTopology.Triangles, 3);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Graphics.DrawProceduralNow(
+MeshTopology.Triangles, 3);<br>
 &nbsp;&nbsp;&nbsp; }<br>
 }<br>
       </div>
@@ -128,9 +134,9 @@ public class DrawProceduralExample : MonoBehaviour<br>
         <li>vertexID를 이용해 셰이더에서 정점을 계산 (SV_VertexID)</li>
         <li>OnRenderObject()는 가장 간단하게 테스트하기 좋음</li>
       </ul>
-여기서, vertexID는 Graphics.DrawProcedural 호출 시 GPU가 자동으로 생성해서 vertex shader에 넘겨주는 정점 인덱스입니다.<br>
+여기서, vertexID는 Graphics.DrawProcedural 호출 시 GPU가 자동으로 생성해서 vertex
+shader에 넘겨주는 정점 인덱스입니다.<br>
 OnRenderObject는 카메라가 씬의 모든 일반적인 오브젝트 렌더링을 끝낸 직후에 호출됩니다.<br>
-
       <br>
 셰이더 파일은 unlit으로 생성 합니다.<br>
       <br>
@@ -141,32 +147,46 @@ DrawProcedural.shader 파일<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pass<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CGPROGRAM<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma vertex vert<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pragma fragment frag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CGPROGRAM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#pragma vertex vert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#pragma fragment frag<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct v2f<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+struct v2f<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float4 pos : SV_POSITION;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float4 pos : SV_POSITION;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2f vert(uint vertexID : SV_VertexID)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2f
+vert(uint vertexID : SV_VertexID)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2f o;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+v2f o;<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float2 positions[3];<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; positions[0] = float2(0.0, 0.5);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; positions[1] = float2(-0.5, -0.5);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; positions[2] = float2(0.5, -0.5);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float2 positions[3];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+positions[0] = float2(0.0, 0.5);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+positions[1] = float2(-0.5, -0.5);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+positions[2] = float2(0.5, -0.5);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 o.pos = float4(positions[vertexID], 0, 1);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return o;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return o;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fixed4 frag(v2f i) : SV_Target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fixed4 frag(v2f i) : SV_Target<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return fixed4(1, 0, 0, 1); <span style="color: rgb(0, 153, 0);">// 빨간색</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return fixed4(1, 0, 0, 1); <span style="color: rgb(0, 153, 0);">// 빨간색</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ENDCG<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
@@ -185,24 +205,25 @@ o.pos = float4(positions[vertexID], 0, 1);<br>
       </ol>
       <br>
       <h2 data-start="800" data-end="825">왜 Mesh 없이도 정점이 생기나?</h2>
-
       <p data-start="827" data-end="855"><code data-start="827" data-end="843">DrawProcedural</code>은 이렇게 동작합니다:</p>
-
       <ol data-start="857" data-end="971">
-<li data-start="857" data-end="887">
-<p data-start="860" data-end="887">CPU가 말함<br data-start="867" data-end="870">
+        <li data-start="857" data-end="887">
+          <p data-start="860" data-end="887">CPU가 말함<br data-start="867" data-end="870">
 👉 “정점 3개 그려라”</p>
-</li><li data-start="888" data-end="928">
-<p data-start="891" data-end="928">GPU가 자동으로<br data-start="900" data-end="903">
+        </li>
+        <li data-start="888" data-end="928">
+          <p data-start="891" data-end="928">GPU가 자동으로<br data-start="900" data-end="903">
 👉 vertexID = 0,1,2 생성</p>
-</li><li data-start="929" data-end="971">
-<p data-start="932" data-end="971">Vertex Shader에서<br data-start="947" data-end="950">
-👉 vertexID로 위치 계산</p></li>
+        </li>
+        <li data-start="929" data-end="971">
+          <p data-start="932" data-end="971">Vertex Shader에서<br data-start="947" data-end="950">
+👉 vertexID로 위치 계산</p>
+        </li>
       </ol>
       <br>
       <br>
       <br>
-<br>
+      <br>
       </td>
     </tr>
   </tbody>
@@ -247,4 +268,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

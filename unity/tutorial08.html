@@ -69,14 +69,15 @@ AI가 저보다 설명도 잘하고 글도 잘적기 때문에 챗 GPT 설명을
         <li data-start="301" data-end="316">
           <p data-start="303" data-end="316">보통 <strong data-start="306" data-end="312">스택</strong>에 생성</p>
         </li>
-        <li data-start="317" data-end="338"><p data-start="319" data-end="338">함수 끝나면 <strong data-start="326" data-end="338">자동으로 사라짐</strong></p>
+        <li data-start="317" data-end="338">
+          <p data-start="319" data-end="338">함수 끝나면 <strong data-start="326" data-end="338">자동으로 사라짐</strong></p>
         </li>
-</ul>
+      </ul>
       <pre class="overflow-visible! px-0!" data-start="340" data-end="466"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-function"><span class="hljs-keyword">void</span></span></span><span> </span><span><span class="hljs-title">Die</span></span><span>()<br>{<br>    PlayerDeadEvent evt = </span><span><span class="hljs-keyword">new</span></span><span> PlayerDeadEvent(</span><span><span class="hljs-number">1</span></span><span>);<br>    EventBus.Publish(evt);<br>} </span><span style="color: rgb(0, 153, 0);"><span class="hljs-comment">// ← 여기서 evt는 그냥 사라짐</span></span><span>
 </span></span></code></div></div></pre>
-
       <p data-start="468" data-end="502">👉 <strong data-start="471" data-end="483">GC 관여 없음</strong></p>
-<p data-start="468" data-end="502"><strong data-start="471" data-end="483"></strong>👉 <strong data-start="487" data-end="502">삭제 코드 필요 없음</strong></p>
+      <p data-start="468" data-end="502"><strong data-start="471" data-end="483"></strong>👉 <strong data-start="487" data-end="502">삭제
+코드 필요 없음</strong></p>
       <span style="font-weight: bold;"><br>
       </span>
       <h2 data-start="509" data-end="539">“new”라는 단어 때문에 헷갈리는 포인트</h2>
@@ -142,62 +143,67 @@ struct : 값 초기화<br>
       </ul>
       <br>
       <h2 data-start="215" data-end="239">값 변경 상관없으면 이렇게 가능</h2>
-
       <pre class="overflow-visible! px-0!" data-start="241" data-end="405"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">readonly</span></span><span> </span><span><span class="hljs-built_in">int</span></span><span>[] Damages;<br><br>    </span><span><span class="hljs-function"><span class="hljs-keyword">public</span></span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span>(</span><span><span class="hljs-params"><span class="hljs-built_in">int</span></span></span><span>[] damages)<br>    {<br>        Damages = damages; </span><span><span class="hljs-comment">// 참조 전달</span></span><span><br>    }<br>}<br></span></span></code></div></div></pre>
-
       <ul data-start="407" data-end="489">
-<li data-start="407" data-end="433">
-<p data-start="409" data-end="433">✅ <strong data-start="411" data-end="427">값 변경해도 괜찮을 때</strong> 사용 가능</p>
-</li><li data-start="434" data-end="461">
-<p data-start="436" data-end="461">⚠️ 다른 쪽에서 배열을 수정해도 문제가 없음</p>
-</li><li data-start="462" data-end="489">
-<p data-start="464" data-end="489">🔹 메모리/GC 효율은 좋음 (복사 안 함)</p>
-</li>
+        <li data-start="407" data-end="433">
+          <p data-start="409" data-end="433">✅ <strong data-start="411" data-end="427">값 변경해도 괜찮을 때</strong> 사용 가능</p>
+        </li>
+        <li data-start="434" data-end="461">
+          <p data-start="436" data-end="461">⚠️ 다른 쪽에서 배열을 수정해도 문제가 없음</p>
+        </li>
+        <li data-start="462" data-end="489">
+          <p data-start="464" data-end="489">🔹 메모리/GC 효율은 좋음 (복사 안 함)</p>
+        </li>
       </ul>
-
       <h3 data-start="589" data-end="625"><code data-start="597" data-end="617">IReadOnlyList&lt;int&gt;</code> 사용 (추천)</h3>
-
       <pre class="overflow-visible! px-0!" data-start="627" data-end="813"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">readonly</span></span><span> IReadOnlyList&lt;</span><span><span class="hljs-built_in">int</span></span><span>&gt; Damages;<br><br>    </span><span><span class="hljs-function"><span class="hljs-keyword">public</span></span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span>(</span><span><span class="hljs-params"><span class="hljs-built_in">int</span></span></span><span>[] damages)<br>    {<br>        Damages = Array.AsReadOnly(damages);<br>    }<br>}<br></span></span></code></div></div></pre>
-
       <ul data-start="815" data-end="915">
-<li data-start="815" data-end="876">
-<p data-start="817" data-end="838">배열을 <strong data-start="821" data-end="836">읽기 전용으로 감싸서</strong></p>
-<ul data-start="841" data-end="876"><li data-start="841" data-end="876">
-<p data-start="843" data-end="876"><code data-start="843" data-end="860">Damages[0] = 10</code> 같은 코드는 컴파일에서 막힘</p>
-</li></ul>
-</li><li data-start="877" data-end="895">
-<p data-start="879" data-end="895">참조는 여전히 readonly</p>
-</li><li data-start="896" data-end="915">
-<p data-start="898" data-end="915">내부 배열 수정 가능성도 막아줌</p></li>
+        <li data-start="815" data-end="876">
+          <p data-start="817" data-end="838">배열을 <strong data-start="821" data-end="836">읽기 전용으로 감싸서</strong></p>
+          <ul data-start="841" data-end="876">
+            <li data-start="841" data-end="876">
+              <p data-start="843" data-end="876"><code data-start="843" data-end="860">Damages[0] = 10</code> 같은 코드는 컴파일에서 막힘</p>
+            </li>
+          </ul>
+        </li>
+        <li data-start="877" data-end="895">
+          <p data-start="879" data-end="895">참조는 여전히 readonly</p>
+        </li>
+        <li data-start="896" data-end="915">
+          <p data-start="898" data-end="915">내부 배열 수정 가능성도 막아줌</p>
+        </li>
       </ul>
-
-      
       <h3 data-start="1055" data-end="1104"><br>
-<code data-start="1063" data-end="1084"><span style="font-family: 맑은 고딕,바탕,Courier New,Courier;"></span></code></h3>
-      <h3 data-start="1055" data-end="1104"><code data-start="1063" data-end="1084"><span style="font-family: 맑은 고딕,바탕,Courier New,Courier;"></span>ReadOnlyMemory&lt;int&gt;</code> / <code data-start="1087" data-end="1098">Span&lt;int&gt;</code> (고성능)</h3>
-
+      <code data-start="1063" data-end="1084"><span style="font-family: 맑은 고딕,바탕,Courier New,Courier;"></span></code></h3>
+      <h3 data-start="1055" data-end="1104"><code data-start="1063" data-end="1084"><span style="font-family: 맑은 고딕,바탕,Courier New,Courier;"></span>ReadOnlyMemory&lt;int&gt;</code>
+/ <code data-start="1087" data-end="1098">Span&lt;int&gt;</code> (고성능)</h3>
       <ul data-start="1106" data-end="1153">
-<li data-start="1106" data-end="1136">
-<p data-start="1108" data-end="1136">Unity DOTS / Jobs 환경에서 주로 사용 (MonoBehaviour 환경에서는 고성능과 상관없음)<br>
-</p>
-</li><li data-start="1137" data-end="1153">
-<p data-start="1139" data-end="1153">메모리 안전 + 불변 보장</p>
-</li>
+        <li data-start="1106" data-end="1136">
+          <p data-start="1108" data-end="1136">Unity DOTS / Jobs 환경에서
+주로 사용 (MonoBehaviour 환경에서는 고성능과 상관없음)<br>
+          </p>
+        </li>
+        <li data-start="1137" data-end="1153">
+          <p data-start="1139" data-end="1153">메모리 안전 + 불변 보장</p>
+        </li>
       </ul>
-
       <pre class="overflow-visible! px-0!" data-start="1155" data-end="1349"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">readonly</span></span><span> ReadOnlyMemory&lt;</span><span><span class="hljs-built_in">int</span></span><span>&gt; Damages;<br><br>    </span><span><span class="hljs-function"><span class="hljs-keyword">public</span></span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span>(</span><span><span class="hljs-params"><span class="hljs-built_in">int</span></span></span><span>[] damages)<br>    {<br>        Damages = </span><span><span class="hljs-keyword">new</span></span><span> ReadOnlyMemory&lt;</span><span><span class="hljs-built_in">int</span></span><span>&gt;(damages);<br>    }<br>}<br></span></span></code></div></div></pre>
-
       <ul data-start="1351" data-end="1416">
-<li data-start="1351" data-end="1363">
-<p data-start="1353" data-end="1363">내부 값 변경 불가</p>
-</li><li data-start="1364" data-end="1374">
-<p data-start="1366" data-end="1374">GC 부담 없음</p>
-</li><li data-start="1375" data-end="1416">
-<p data-start="1377" data-end="1416">다만 Unity 일반 MonoBehaviour 환경에서는 조금 번거로움</p></li>
+        <li data-start="1351" data-end="1363">
+          <p data-start="1353" data-end="1363">내부 값 변경 불가</p>
+        </li>
+        <li data-start="1364" data-end="1374">
+          <p data-start="1366" data-end="1374">GC 부담 없음</p>
+        </li>
+        <li data-start="1375" data-end="1416">
+          <p data-start="1377" data-end="1416">다만 Unity 일반
+MonoBehaviour 환경에서는 조금 번거로움</p>
+        </li>
       </ul>
-즉, <strong data-start="868" data-end="908">ReadOnlyMemory는 DOTS 환경에서 진짜 고성능이 되고</strong>,<br data-start="909" data-end="912">
-
-MonoBehaviour 환경에서는 주로 <strong data-start="935" data-end="950">안전성 + 불변 보장</strong> 용도로 유용<br>
+즉, <strong data-start="868" data-end="908">ReadOnlyMemory는 DOTS 환경에서
+진짜 고성능이 되고</strong>,<br data-start="909" data-end="912">
+MonoBehaviour 환경에서는 주로 <strong data-start="935" data-end="950">안전성 +
+불변 보장</strong> 용도로 유용<br>
       <br>
       </td>
     </tr>
@@ -242,5 +248,8 @@ function ChangeImageSize(){
     this.style.height = height + 'px';
 }
 
+</script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
 </script>
 </body></html>

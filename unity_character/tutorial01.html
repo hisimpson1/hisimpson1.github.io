@@ -59,7 +59,8 @@ Package Manager에서 "GanzSe FREE Low Poly Modular Character" 모델을 가져�
       <br>
 모델을 Prefab 폴더로 복사를 합니다. 모델이름은 MyCharacter입니다.<br>
       <br>
-URP 렌더링에서 모델이 분홍색으로 보인다면 "Window / Rendering / Render Pipeline Converter"로 메트리얼을 변경합니다.<br>
+URP 렌더링에서 모델이 분홍색으로 보인다면 "Window / Rendering / Render Pipeline
+Converter"로 메트리얼을 변경합니다.<br>
       <br>
       <img style="width: 719px; height: 630px;" alt="" src="tutorial01/rendering.png"><br>
       <br>
@@ -92,11 +93,13 @@ Ears Type1의 Mesh를 인스펙트 뷰에서 None으로 지정합니다.<br>
       <br>
 prefab 폴더를 만들고 착용하고 싶은 파츠를 Project/Assets/prefab 폴더로 드래그 합니다.<br>
       <br>
-저는 "Chest Armor Type 2 Color1", "Chest Armor Type 5 Color3"를 Upper 파츠를 드래그 했습니다.<br>
+저는 "Chest Armor Type 2 Color1", "Chest Armor Type 5 Color3"를 Upper 파츠를
+드래그 했습니다.<br>
       <br>
       <img style="width: 353px; height: 482px;" alt="" src="tutorial01/prefab_chest.png"><br>
       <br>
-"Ears Type2" 게임 오브젝트의 인스펙트뷰에서 Mesh의 Ears Type2를 클릭하면 프로젝트창에서 해당 메시가 있는 위치로 이동 합니다.<br>
+"Ears Type2" 게임 오브젝트의 인스펙트뷰에서 Mesh의 Ears Type2를 클릭하면 프로젝트창에서 해당 메시가 있는
+위치로 이동 합니다.<br>
       <br>
 메시 "Ears Typ1", "Ears Type2"를 prefab으로 복사합니다.<br>
       <br>
@@ -125,10 +128,12 @@ public enum PartType<br>
       <br>
 public class CharacterCustomizer : MonoBehaviour<br>
 {<br>
-&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer baseMeshRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer
+baseMeshRenderer;<br>
 &nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer earMeshRenderer;<br>
       <br>
-&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType, SkinnedMeshRenderer&gt; equippedParts = new();<br>
+&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType,
+SkinnedMeshRenderer&gt; equippedParts = new();<br>
       <br>
 &nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer upper1;<br>
 &nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer upper2;<br>
@@ -138,45 +143,61 @@ public class CharacterCustomizer : MonoBehaviour<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void EquipMesh(PartType type, Mesh partPrefab)<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; earMeshRenderer.sharedMesh = partPrefab;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; earMeshRenderer.sharedMesh =
+partPrefab;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp; public void EquipPart(PartType type, SkinnedMeshRenderer partPrefab)<br>
+&nbsp;&nbsp;&nbsp; public void EquipPart(PartType type,
+SkinnedMeshRenderer partPrefab)<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 기존 파츠 제거</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (equippedParts.ContainsKey(type))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(equippedParts.ContainsKey(type))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Destroy(equippedParts[type].gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Destroy(equippedParts[type].gameObject);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 새 파츠 생성</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var newPart = Instantiate(partPrefab, transform);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.rootBone = baseMeshRenderer.rootBone;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.bones = baseMeshRenderer.bones;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var newPart =
+Instantiate(partPrefab, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.rootBone =
+baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.bones =
+baseMeshRenderer.bones;<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equippedParts[type] = newPart;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equippedParts[type] =
+newPart;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; void Update()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha1))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha1))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipPart(PartType.Upper, upper1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EquipPart(PartType.Upper, upper1);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha2))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha2))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipPart(PartType.Upper, upper2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EquipPart(PartType.Upper, upper2);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha3))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha3))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipMesh(PartType.Ear, ear1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EquipMesh(PartType.Ear, ear1);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha4))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha4))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipMesh(PartType.Ear, ear2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EquipMesh(PartType.Ear, ear2);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; }<br>
 }<br>
@@ -184,21 +205,27 @@ public class CharacterCustomizer : MonoBehaviour<br>
       <br>
 이 코드에서 실제 일어나는 일은 다음과 같습니다.<br>
       <br>
-      <span style="color: rgb(51, 51, 255);">var newPart = Instantiate(partPrefab, transform)</span><br>
+      <span style="color: rgb(51, 51, 255);">var newPart =
+Instantiate(partPrefab, transform)</span><br>
       <ul>
         <li>partPrefab.gameObject를 복제</li>
         <li>그 안에 있는 모든 컴포넌트 복사</li>
       </ul>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Transform<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- Transform<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 - SkinnedMeshRenderer<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Material<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - 기타 스크립트들<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- Material<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- 기타 스크립트들<br>
       <ul>
         <li>부모를 transform으로 설정</li>
       </ul>
-      <span style="color: rgb(204, 0, 0);">정확히는 partPrefab이 붙어 있는 GameObject를 통째로 생성하고</span><br style="color: rgb(204, 0, 0);">
-      <span style="color: rgb(204, 0, 0);">반환값은 그 GameObject의 SkinnedMeshRenderer 컴포넌트입니다.</span><br>
+      <span style="color: rgb(204, 0, 0);">정확히는 partPrefab이 붙어 있는
+GameObject를 통째로 생성하고</span><br style="color: rgb(204, 0, 0);">
+      <span style="color: rgb(204, 0, 0);">반환값은 그 GameObject의
+SkinnedMeshRenderer 컴포넌트입니다.</span><br>
       <br>
 그래서 Destroy시 컴포넌트를 삭제하는것이 아니고 게임오브젝트를 삭제하는 것입니다.<br>
       <br>
@@ -211,7 +238,8 @@ var newPart = newGO.GetComponent&lt;SkinnedMeshRenderer&gt;();<br>
       </div>
       <br>
       <br>
-빈 게임오브젝트(여기서는 이름을 ChangeParts)를 만들고 CharacterCustomizer.cs 파일을 컴포넌트로 추가 합니다.<br>
+빈 게임오브젝트(여기서는 이름을 ChangeParts)를 만들고 CharacterCustomizer.cs 파일을 컴포넌트로 추가
+합니다.<br>
       <br>
 EquipPart는 입을수 있는 상의, 하의를 착용할수 있는 함수입니다.<br>
 EquipMesh는 귀처럼 메시를 붙일수 있는 함수입니다. 지금은 코드를 간단하게 유지하기 위해 귀만 해보겠습니다.<br>
@@ -244,6 +272,7 @@ earMeshRenderer는 귀의 메시를 어태치 할 루트라고 보시면 됩니�
     </tr>
   </tbody>
 </table>
+
 <br>
 
 <p>&nbsp;</p>
@@ -283,6 +312,9 @@ function ChangeImageSize(){
     this.style.width = width + 'px';
     this.style.height = height + 'px';
 }
-
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

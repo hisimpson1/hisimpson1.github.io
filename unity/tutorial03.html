@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>유니티 PPU와 격자 시스템 이해하기</title>
-    <style>
+<html lang="ko"><head>
+  
+  <meta charset="UTF-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>유니티 PPU와 격자 시스템 이해하기</title>
+
+  
+  
+  <style>
         :root {
             --bg-color: #2c2c2c;
             --card-bg: #383838;
@@ -65,78 +70,67 @@
             color: #888;
             text-align: center;
         }
-    </style>
-	
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
-<script>
+    </style><!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-Z0ZXNX5CYQ');
-</script>
-	
-	
-</head>
-<body>
-
+  </script>
+</head><body>
 <div class="container">
-    <h1>Unity Unit vs PPU 완벽 정리</h1>
-    
-    <p>유니티 씬 뷰에서 보이는 <strong>격자 한 칸은 PPU가 아니라 '1 Unity Unit'</strong>입니다. PPU는 이 한 칸 안에 이미지가 어떻게 들어갈지를 결정하는 도구입니다.</p>
-
-    <div class="grid-box">
-        <h2>1. 개념 정의</h2>
-        <ul>
-            <li><strong>Unity Unit (격자 한 칸):</strong> 유니티 월드의 기본 거리 단위 (좌표 1.0의 거리).</li>
-            <li><strong>PPU (Pixels Per Unit):</strong> "원본 이미지의 몇 픽셀을 1 Unit(한 칸)으로 채울 것인가?"를 정의하는 값.</li>
-        </ul>
-    </div>
-
-    <h2>2. PPU 설정에 따른 크기 변화</h2>
-    <p>이미지 크기가 <strong>64x64 픽셀</strong>일 때의 예시입니다.</p>
-    <table>
-        <thead>
-            <tr>
-                <th>스프라이트 PPU 설정</th>
-                <th>결과 (씬 뷰에서의 크기)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="highlight">PPU = 64</span></td>
-                <td>정확히 격자 <strong>1칸</strong>에 꽉 참</td>
-            </tr>
-            <tr>
-                <td><span class="highlight">PPU = 32</span></td>
-                <td>격자 <strong>2칸</strong>의 크기를 차지함</td>
-            </tr>
-            <tr>
-                <td><span class="highlight">PPU = 100</span> (기본값)</td>
-                <td>격자 1칸보다 작게 보임 (0.64칸)</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>3. 직교 좌표계(Orthographic)와 PPU</h2>
-    <p>2D 게임 환경에서 가장 중요한 관계식입니다.</p>
-    <div class="formula">
-        <strong>화면상의 이미지 크기(Unit) = 실제 픽셀 크기 / PPU</strong>
-    </div>
-    <ul>
-        <li><strong>Camera Size:</strong> 화면 중앙에서 위쪽 끝까지 보이는 격자의 개수입니다.</li>
-        <li><strong>Pixel Perfect:</strong> 타일이 16px라면 PPU를 16으로 설정하세요. 그래야 격자 한 칸에 타일이 정확히 일치합니다.</li>
-    </ul>
-
-    <div class="grid-box">
-        <h3>💡 요약 및 팁</h3>
-        <p>격자 한 칸은 언제나 1 Unit입니다. 픽셀 아트를 하신다면 <strong>"내 타일의 가로 픽셀 크기 = PPU"</strong> 공식을 사용하여 격자와 이미지를 일치시키는 것이 작업 효율에 가장 좋습니다.</p>
-    </div>
-
-    <footer>
-        Unity 2D Development Guide - Unit & PPU System
-    </footer>
+<h1>Unity Unit vs PPU 완벽 정리</h1>
+<p>유니티 씬 뷰에서 보이는 <strong>격자 한 칸은 PPU가 아니라 '1 Unity Unit'</strong>입니다.
+PPU는 이 한 칸 안에 이미지가 어떻게 들어갈지를 결정하는 도구입니다.</p>
+<div class="grid-box">
+<h2>1. 개념 정의</h2>
+<ul>
+  <li><strong>Unity Unit (격자 한 칸):</strong> 유니티 월드의 기본 거리 단위 (좌표 1.0의
+거리).</li>
+  <li><strong>PPU (Pixels Per Unit):</strong> "원본 이미지의 몇 픽셀을 1 Unit(한
+칸)으로 채울 것인가?"를 정의하는 값.</li>
+</ul>
+</div>
+<h2>2. PPU 설정에 따른 크기 변화</h2>
+<p>이미지 크기가 <strong>64x64 픽셀</strong>일 때의 예시입니다.</p>
+<table>
+  <thead> <tr>
+    <th>스프라이트 PPU 설정</th>
+    <th>결과 (씬 뷰에서의 크기)</th>
+  </tr>
+  </thead> <tbody>
+    <tr>
+      <td><span class="highlight">PPU = 64</span></td>
+      <td>정확히 격자 <strong>1칸</strong>에 꽉 참</td>
+    </tr>
+    <tr>
+      <td><span class="highlight">PPU = 32</span></td>
+      <td>격자 <strong>2칸</strong>의 크기를 차지함</td>
+    </tr>
+    <tr>
+      <td><span class="highlight">PPU = 100</span> (기본값)</td>
+      <td>격자 1칸보다 작게 보임 (0.64칸)</td>
+    </tr>
+  </tbody>
+</table>
+<h2>3. 직교 좌표계(Orthographic)와 PPU</h2>
+<p>2D 게임 환경에서 가장 중요한 관계식입니다.</p>
+<div class="formula"> <strong>화면상의 이미지 크기(Unit) = 실제 픽셀 크기 / PPU</strong>
+</div>
+<ul>
+  <li><strong>Camera Size:</strong> 화면 중앙에서 위쪽 끝까지 보이는 격자의 개수입니다.</li>
+  <li><strong>Pixel Perfect:</strong> 타일이 16px라면 PPU를 16으로 설정하세요. 그래야
+격자 한 칸에 타일이 정확히 일치합니다.</li>
+</ul>
+<div class="grid-box">
+<h3>💡 요약 및 팁</h3>
+<p>격자 한 칸은 언제나 1 Unit입니다. 픽셀 아트를 하신다면 <strong>"내 타일의 가로 픽셀 크기 = PPU"</strong>
+공식을 사용하여 격자와 이미지를 일치시키는 것이 작업 효율에 가장 좋습니다.</p>
+</div>
+<footer> Unity 2D Development Guide - Unit &amp; PPU System </footer>
 </div>
 
-</body>
-</html>
+</body></html>

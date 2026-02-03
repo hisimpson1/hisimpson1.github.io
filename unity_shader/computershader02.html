@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><!--simple add function-->
-
-
+<html><head>
+<!--simple add function-->
   
   <style type="text/css">table {
         line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
@@ -26,11 +25,11 @@
   <meta name="GENERATOR" content="Namo WebEditor v6.0">
 
   
-  <meta charset="UTF-8"><title>simple add function</title><!-- Google tag (gtag.js) -->
-  
+  <meta charset="UTF-8">
+  <title>simple add function</title>
 
   
-
+<!-- Google tag (gtag.js) -->
   
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
   
@@ -39,7 +38,8 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-Z0ZXNX5CYQ');
-  </script></head><body>
+  </script>
+</head><body>
 <h1>simple add function<br>
 </h1>
 
@@ -73,11 +73,9 @@ void CSMain(uint3 id : SV_DispatchThreadID)<br>
 &nbsp;&nbsp;&nbsp; Result[0] = A + B;<br>
 }<br>
       </div>
-
       <br>
       <span style="color: rgb(51, 51, 255);"></span><br>
-      ComputeAddFloat.cs 파일<br>
-      
+ComputeAddFloat.cs 파일<br>
       <div>using UnityEngine;<br>
       <br>
 public class ComputeAddFloat : MonoBehaviour<br>
@@ -92,25 +90,31 @@ public class ComputeAddFloat : MonoBehaviour<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float b = 7.25f;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과용 버퍼 (float 1개)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resultBuffer = new ComputeBuffer(1, sizeof(float));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resultBuffer = new
+ComputeBuffer(1, sizeof(float));<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int kernel = addShader.FindKernel("CSMain");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int kernel =
+addShader.FindKernel("CSMain");<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// float 값 전달</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetFloat("A", a);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetFloat("B", b);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과 버퍼 연결</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "Result", resultBuffer);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel,
+"Result", resultBuffer);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 실행 (1 스레드)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.Dispatch(kernel, 1, 1, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.Dispatch(kernel,
+1, 1, 1);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과 가져오기</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] result = new float[1];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] result = new
+float[1];<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resultBuffer.GetData(result);<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log($"{a} + {b} = {result[0]}");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log($"{a} + {b} =
+{result[0]}");<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; void OnDestroy()<br>
@@ -134,7 +138,8 @@ public class ComputeAddFloat : MonoBehaviour<br>
 SetFloat의 "A", "B", SetBuffer의 "Result" 값은 HLSL의 변수와 일치 해야 합니다.<br>
       <br>
 Unity Compute Shader는 내부적으로:<br>
-      <span style="background-color: rgb(255, 204, 0);">문자열 이름 → Shader Property ID → Constant Buffer 슬롯</span><br>
+      <span style="background-color: rgb(255, 204, 0);">문자열 이름 → Shader
+Property ID → Constant Buffer 슬롯</span><br>
       <br>
 이 구조를 사용합니다.<br>
 그래서 이름이 곧 “연결 고리”입니다.<br>
@@ -144,7 +149,6 @@ HLSL에 선언된 float / half / int / bool 같은 변수 타입을 사용 할�
       <br>
       <h4>내부 처리 순서<br>
       </h4>
-
 C# float 값<br>
 &nbsp;&nbsp; ↓<br>
 Unity 내부 Constant Buffer (CPU)<br>
@@ -158,7 +162,8 @@ Compute Shader에서 float A로 읽음<br>
 한글이 포함 되어 있으면 실행 에러가 발생한다.<br>
       <br>
 add.compute 파일<br>
-      <div><span style="color: rgb(0, 153, 0);"></span>#pragma kernel CSMain<br>
+      <div><span style="color: rgb(0, 153, 0);"></span>#pragma kernel
+CSMain<br>
       <br>
       <span style="color: rgb(0, 153, 0);">// 입력 버퍼</span><br>
 StructuredBuffer&lt;float&gt; A;<br>
@@ -192,41 +197,57 @@ public class ComputeAddExample : MonoBehaviour<br>
 &nbsp;&nbsp;&nbsp; void Start()<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 데이터 생성</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] A = new float[dataSize];<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] B = new float[dataSize];<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] Result = new float[dataSize];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] A = new
+float[dataSize];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] B = new
+float[dataSize];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float[] Result = new
+float[dataSize];<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; dataSize; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt;
+dataSize; i++)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A[i] = i;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B[i] = i * 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A[i]
+= i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B[i]
+= i * 2;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// ComputeBuffer 생성</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferA = new ComputeBuffer(dataSize, sizeof(float));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferB = new ComputeBuffer(dataSize, sizeof(float));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferResult = new ComputeBuffer(dataSize, sizeof(float));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferA = new
+ComputeBuffer(dataSize, sizeof(float));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferB = new
+ComputeBuffer(dataSize, sizeof(float));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferResult = new
+ComputeBuffer(dataSize, sizeof(float));<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferA.SetData(A);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferB.SetData(B);<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int kernel = addShader.FindKernel("CSMain");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int kernel =
+addShader.FindKernel("CSMain");<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 셰이더에 버퍼 연결</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "A", bufferA);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "B", bufferB);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel, "Result", bufferResult);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel,
+"A", bufferA);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel,
+"B", bufferB);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.SetBuffer(kernel,
+"Result", bufferResult);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 실행 (1024 / 64 = 16 그룹</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.Dispatch(kernel, dataSize / 64, 1, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addShader.Dispatch(kernel,
+dataSize / 64, 1, 1);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 결과 가져오기</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferResult.GetData(Result);<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 테스트 출력</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 5; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 5;
+i++)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log($"{A[i]} + {B[i]} = {Result[i]}");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Debug.Log($"{A[i]} + {B[i]} = {Result[i]}");<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
@@ -253,10 +274,12 @@ public class ComputeAddExample : MonoBehaviour<br>
         <li>RWStructuredBuffer : 읽기/쓰기 가능</li>
         <li>numthreads(64,1,1) : 한 그룹에 64개의 스레드</li>
         <li>Dispatch()에서 전체 데이터 개수 ÷ 64 만큼 실행</li>
-      </ul><br>
+      </ul>
+      <br>
 실행 (1024 / 64 = 16 그룹) 한 그룹에 쓰레드는 64개이므로 나눠 그룹의 갯수를 구한다.<br>
-      <span style="color: rgb(51, 51, 255);">addShader.Dispatch(kernel, dataSize / 64, 1, 1);</span><br>
-<h3>ComputeBuffer란?</h3>
+      <span style="color: rgb(51, 51, 255);">addShader.Dispatch(kernel,
+dataSize / 64, 1, 1);</span><br>
+      <h3>ComputeBuffer란?</h3>
 CPU(C#) ↔ GPU 사이에 데이터를 전달하기 위한 GPU 메모리 버퍼입니다.<br>
       <br>
 기본 사용 흐름<br>
@@ -269,7 +292,8 @@ CPU(C#) ↔ GPU 사이에 데이터를 전달하기 위한 GPU 메모리 버퍼�
         <li>반드시 Release()로 해제</li>
       </ol>
       <br>
-      <span style="font-weight: bold;">ComputerBuffer.SetData : </span>데이터를 GPU 버퍼에 올리는 단계<br>
+      <span style="font-weight: bold;">ComputerBuffer.SetData : </span>데
+이터를 GPU 버퍼에 올리는 단계<br>
       <br>
 역할: CPU 메모리에 있는 데이터를 GPU 메모리(ComputeBuffer)로 복사합니다.<br>
       <br>
@@ -280,30 +304,56 @@ SetData 내부 동작:<br>
         <li>주의: 이 시점에서는 아직 Shader에 연결된 것은 아님, 그냥 GPU 버퍼에 데이터가 올라간 것뿐입니다.</li>
       </ol>
       <br>
-      <span style="font-weight: bold;">ComputeShader.SetBuffer</span> – GPU 버퍼를 Shader 변수와 연결하는 단계<br>
+      <span style="font-weight: bold;">ComputeShader.SetBuffer</span> –
+GPU 버퍼를 Shader 변수와 연결하는 단계<br>
       <br>
 역할: GPU에 있는 ComputeBuffer를 Compute Shader 변수에 바인딩합니다.<br>
       <br>
 SetBuffer 내부 동작:<br>
       <ol>
-        <li>Compute Shader 코드에서 정의된 RWStructuredBuffer&lt;float&gt; dataBuffer와 GPU의 ComputeBuffer 연결</li>
+        <li>Compute Shader 코드에서 정의된 RWStructuredBuffer&lt;float&gt;
+dataBuffer와 GPU의 ComputeBuffer 연결</li>
         <li>Dispatch() 호출 시 Shader가 이 버퍼를 읽고 쓰게 됨</li>
         <li>주의: 데이터는 이미 GPU에 올라와 있어야 의미 있음 → 보통 SetData() 후 호출</li>
       </ol>
       <br>
       <table>
-<thead><tr><th>단계</th><th>C# 코드</th><th>GPU 측 의미</th></tr></thead><tbody><tr><td>1</td><td><code inline="">buffer.SetData(array)</code></td><td>CPU → GPU 메모리 복사</td></tr><tr><td>2</td><td><code inline="">computeShader.SetBuffer(kernel, "dataBuffer", buffer)</code></td><td>GPU Shader 변수에 버퍼 바인딩</td></tr><tr><td>3</td><td><code inline="">computeShader.Dispatch(...)</code></td><td>Shader 실행, GPU가 바인딩된 버퍼 읽기/쓰기</td></tr></tbody>
+        <thead><tr>
+          <th>단계</th>
+          <th>C# 코드</th>
+          <th>GPU 측 의미</th>
+        </tr>
+        </thead><tbody>
+          <tr>
+            <td>1</td>
+            <td><code inline="">buffer.SetData(array)</code></td>
+            <td>CPU → GPU 메모리 복사</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code inline="">computeShader.SetBuffer(kernel,
+"dataBuffer", buffer)</code></td>
+            <td>GPU Shader 변수에 버퍼 바인딩</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code inline="">computeShader.Dispatch(...)</code></td>
+            <td>Shader 실행, GPU가 바인딩된 버퍼 읽기/쓰기</td>
+          </tr>
+        </tbody>
       </table>
       <br>
       <p data-start="1798" data-end="1809">✅ <strong data-start="1800" data-end="1809">핵심 정리</strong></p>
-
       <ul data-start="1810" data-end="1947">
-<li data-start="1810" data-end="1837">
-<p data-start="1812" data-end="1837"><strong data-start="1812" data-end="1823">buffer.SetData</strong>: GPU에 데이터 올리기</p>
-</li><li data-start="1838" data-end="1876">
-<p data-start="1840" data-end="1876"><strong data-start="1840" data-end="1853">Shader.SetBuffer</strong>: GPU 버퍼를 Shader 변수와 연결</p>
-</li><li data-start="1877" data-end="1917">
-<p data-start="1879" data-end="1917"><strong data-start="1879" data-end="1891">Shader.Dispatch</strong>: Shader 실행 → GPU가 버퍼를 사용함</p></li>
+        <li data-start="1810" data-end="1837">
+          <p data-start="1812" data-end="1837"><strong data-start="1812" data-end="1823">buffer.SetData</strong>: GPU에 데이터 올리기</p>
+        </li>
+        <li data-start="1838" data-end="1876">
+          <p data-start="1840" data-end="1876"><strong data-start="1840" data-end="1853">Shader.SetBuffer</strong>: GPU 버퍼를 Shader 변수와 연결</p>
+        </li>
+        <li data-start="1877" data-end="1917">
+          <p data-start="1879" data-end="1917"><strong data-start="1879" data-end="1891">Shader.Dispatch</strong>: Shader 실행 → GPU가 버퍼를 사용함</p>
+        </li>
         <li data-start="1877" data-end="1917"><span style="font-weight: bold;">buffer.GetData</span>: GPU → CPU 데이터 읽기</li>
       </ul>
       <br>
@@ -331,7 +381,6 @@ buffer.GetData(data);<br>
 buffer.Release();<br>
       </div>
       <br>
-
       </td>
     </tr>
   </tbody>
@@ -376,4 +425,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

@@ -54,13 +54,15 @@
       <br>
       </span>"플레이 시작할 때 static 변수들 깨끗하게 리셋해라”는 뜻입니다.<br>
       <br>
-      <span style="color: rgb(51, 51, 255);">var snapshot = list.ToArray();<br>
+      <span style="color: rgb(51, 51, 255);">var snapshot =
+list.ToArray();<br>
       <br>
       </span>Publish 도중에 발생하는 구조 변경으로부터 “이번 이벤트”를 격리하기 위해 snapshot을 쓰는 것<br>
-Publish 콜백에서 Publish /&nbsp; Subscribe / Unsubscribe가 일어날 수 있기 때문에 쓰는 것입니다.<br>
+Publish 콜백에서 Publish /&nbsp; Subscribe / Unsubscribe가 일어날 수 있기 때문에 쓰는
+것입니다.<br>
 그리고 “그 이벤트는 누구에게 전달되는가”를 고정하기 위해서입니다.<br>
       <br>
-<br>
+      <br>
 EventBus.cs 파일<br>
       <div>using System;<br>
 using System.Collections.Generic;<br>
@@ -75,22 +77,28 @@ public sealed class EventBus : MonoBehaviour<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_isQuitting)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(_isQuitting)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return null;<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_instance == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(_instance == null)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 var go = new GameObject(nameof(EventBus));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 _instance = go.AddComponent&lt;EventBus&gt;();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DontDestroyOnLoad(go);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DontDestroyOnLoad(go);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _instance;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return _instance;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp; [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]<br>
+&nbsp;&nbsp;&nbsp;
+[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]<br>
 &nbsp;&nbsp;&nbsp; private static void ResetStatics()<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _instance = null;<br>
@@ -102,99 +110,132 @@ _instance = go.AddComponent&lt;EventBus&gt;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _isQuitting = true;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp; // ----------------------------------------------------<br>
+&nbsp;&nbsp;&nbsp; //
+----------------------------------------------------<br>
       <br>
 &nbsp;&nbsp;&nbsp; private sealed class Subscription<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public WeakReference TargetRef;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public WeakReference
+TargetRef;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Delegate Callback;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp; private readonly Dictionary&lt;Type, List&lt;Subscription&gt;&gt; _events = new();<br>
+&nbsp;&nbsp;&nbsp; private readonly Dictionary&lt;Type,
+List&lt;Subscription&gt;&gt; _events = new();<br>
       <br>
-&nbsp;&nbsp;&nbsp; // ----------------------------------------------------<br>
+&nbsp;&nbsp;&nbsp; //
+----------------------------------------------------<br>
 &nbsp;&nbsp;&nbsp; #region Subscribe / Unsubscribe<br>
       <br>
-&nbsp;&nbsp;&nbsp; public void Subscribe&lt;T&gt;(object subscriber, Action&lt;T&gt; callback)<br>
+&nbsp;&nbsp;&nbsp; public void Subscribe&lt;T&gt;(object subscriber,
+Action&lt;T&gt; callback)<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (subscriber == null)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentNullException(nameof(subscriber));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+throw new ArgumentNullException(nameof(subscriber));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (callback == null)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentNullException(nameof(callback));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+throw new ArgumentNullException(nameof(callback));<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Lambda / 잘못된 캡처 차단</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (callback.Target != subscriber)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (callback.Target !=
+subscriber)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.LogError(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Debug.LogError(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 $"[EventBus] Lambda or foreign target detected. " +<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 $"Subscriber: {subscriber}, Callback.Target: {callback.Target}");<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var type = typeof(T);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_events.TryGetValue(type, out var list))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!_events.TryGetValue(type, out var list))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list = new List&lt;Subscription&gt;();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _events[type] = list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list
+= new List&lt;Subscription&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_events[type] = list;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Add(new Subscription<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TargetRef = new WeakReference(subscriber),<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Callback = callback<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TargetRef = new WeakReference(subscriber),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Callback = callback<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; });<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
-&nbsp;&nbsp;&nbsp; public void Unsubscribe&lt;T&gt;(object subscriber, Action&lt;T&gt; callback)<br>
+&nbsp;&nbsp;&nbsp; public void Unsubscribe&lt;T&gt;(object subscriber,
+Action&lt;T&gt; callback)<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (subscriber == null || callback == null)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (subscriber == null ||
+callback == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var type = typeof(T);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_events.TryGetValue(type, out var list))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!_events.TryGetValue(type, out var list))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.RemoveAll(sub =&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReferenceEquals(sub.TargetRef.Target, subscriber) &amp;&amp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sub.Callback == (Delegate)callback<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ReferenceEquals(sub.TargetRef.Target, subscriber) &amp;&amp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sub.Callback == (Delegate)callback<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (list.Count == 0)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _events.Remove(type);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_events.Remove(type);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; #endregion<br>
-&nbsp;&nbsp;&nbsp; // ----------------------------------------------------<br>
+&nbsp;&nbsp;&nbsp; //
+----------------------------------------------------<br>
 &nbsp;&nbsp;&nbsp; #region Publish<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void Publish&lt;T&gt;(T evt)<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var type = typeof(T);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_events.TryGetValue(type, out var list))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!_events.TryGetValue(type, out var list))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Snapshot으로 컬렉션 수정 안전</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var snapshot = list.ToArray();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var snapshot =
+list.ToArray();<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var sub in snapshot)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var target = sub.TargetRef.Target;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var
+target = sub.TargetRef.Target;<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// GC된 경우</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (target == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(target == null)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Remove(sub);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; continue;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+list.Remove(sub);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+continue;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Unity Object 파괴된 경우</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
 (target is UnityEngine.Object uObj &amp;&amp; uObj == null)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Remove(sub);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; continue;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+list.Remove(sub);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+continue;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
@@ -202,25 +243,26 @@ $"Subscriber: {subscriber}, Callback.Target: {callback.Target}");<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ((Action&lt;T&gt;)sub.Callback)?.Invoke(evt);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+catch (Exception e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.LogException(e);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Debug.LogException(e);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (list.Count == 0)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _events.Remove(type);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_events.Remove(type);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; #endregion<br>
 }<br>
-<br>
+      <br>
       </div>
       <br>
-      <h4>
-2. Event 정의</h4>
-
-      PlayerScoreEvent.cs 파일<br>
+      <h4>2. Event 정의</h4>
+PlayerScoreEvent.cs 파일<br>
       <div>public class PlayerScoredEvent<br>
 {<br>
 &nbsp;&nbsp;&nbsp; public int Score { get; private set; }<br>
@@ -232,10 +274,8 @@ $"Subscriber: {subscriber}, Callback.Target: {callback.Target}");<br>
 }<br>
       </div>
       <br>
-      <h4>
-3. 이벤트 구독</h4>
-
-      ScoreManager.cs 파일<br>
+      <h4>3. 이벤트 구독</h4>
+ScoreManager.cs 파일<br>
       <div>using UnityEngine;<br>
       <br>
 public class ScoreManager : MonoBehaviour<br>
@@ -261,26 +301,26 @@ OnPlayerScored);<br>
 }<br>
       </div>
       <br>
-      <h4>
-4. 이벤트 발행</h4>
-
-      
+      <h4>4. 이벤트 발행</h4>
       <div>EventBus.Instance.Publish(new PlayerScoredEvent(10));<br>
       </div>
       <br>
-      <span style="font-weight: bold;">Subscribe /&nbsp; Unsubscribe를 어디서 할것인가?<br>
+      <span style="font-weight: bold;">Subscribe /&nbsp; Unsubscribe를
+어디서 할것인가?<br>
       </span><br>
 OnEnable / OnDisable → 오브젝트 활성화 상태에 따라 구독을 켰다 껐다 하는 패턴<br>
       <ul>
         <li>UI 이벤트 등 “활성화 중에만 이벤트 처리”할 때 적합</li>
       </ul>
-      <span style="font-weight: bold;"></span>OnDestroy → 오브젝트 수명 종료 시점에 구독 해제<br>
+      <span style="font-weight: bold;"></span>OnDestroy → 오브젝트 수명 종료
+시점에 구독 해제<br>
       <ul>
         <li>EventBus 같은 글로벌 이벤트 시스템에서는 권장</li>
         <li>예측 가능, 한 번만 호출, snapshot / GC와 안전하게 호환</li>
       </ul>
       <br>
-결론: EventBus 같은 전역 이벤트에서는 <strong style="font-weight: normal;" data-start="1666" data-end="1698">OnDestroy에서 구독 해제하는 것이 방탄 패턴</strong>이다.<br>
+결론: EventBus 같은 전역 이벤트에서는 <strong style="font-weight: normal;" data-start="1666" data-end="1698">OnDestroy에서 구독 해제하는 것이 방탄 패턴</strong>이
+다.<br>
       <br>
       <h4>5. 일반 오브젝트 사용하기</h4>
 MonoBehaviour를 상속하지 않은 일반 오브젝트를 EventBus에서 사용 하는 방법에 대해 알아 보겠습니다.<br>
@@ -296,12 +336,14 @@ public class Logger<br>
       <br>
 &nbsp;&nbsp;&nbsp; private void OnEvent(PlayerScoredEvent evt)<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("[Logger] PlayerScoredEvent Event received: " + evt.Score);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("[Logger]
+PlayerScoredEvent Event received: " + evt.Score);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void AddEvent()<br>
 &nbsp;&nbsp;&nbsp; { <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EventBus.Instance.Subscribe&lt;PlayerScoredEvent&gt;(this, OnEvent);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EventBus.Instance.Subscribe&lt;PlayerScoredEvent&gt;(this, OnEvent);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; public void RemoveEvent()<br>
@@ -335,7 +377,9 @@ public class ScoreManager : MonoBehaviour<br>
       <br>
 &nbsp;&nbsp;&nbsp; void OnEnable()<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EventBus.Instance.Subscribe&lt;PlayerScoredEvent&gt;(this, OnPlayerScored);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EventBus.Instance.Subscribe&lt;PlayerScoredEvent&gt;(this,
+OnPlayerScored);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; void OnDisable()<br>
@@ -348,7 +392,8 @@ OnPlayerScored);<br>
       <br>
 &nbsp;&nbsp;&nbsp; void OnPlayerScored(PlayerScoredEvent e)<br>
 &nbsp;&nbsp;&nbsp; {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("EventBus: Score: " + e.Score);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Log("EventBus: Score:
+" + e.Score);<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 &nbsp;&nbsp;&nbsp; private void OnDestroy()<br>
@@ -359,7 +404,8 @@ OnPlayerScored);<br>
 }<br>
       </div>
       <br>
-      <span style="color: rgb(51, 51, 255);">EventBus.Instance?.Unsubscribe&lt;PlayerScoredEvent&gt;(this, OnPlayerScored);</span><br>
+      <span style="color: rgb(51, 51, 255);">EventBus.Instance?.Unsubscribe&lt;PlayerScoredEvent&gt;(this,
+OnPlayerScored);</span><br>
       <br>
 다음의 워닝이 발생 합니다.<br>
 Unity objects should not use null propagation.<br>
@@ -367,11 +413,10 @@ Unity objects should not use null propagation.<br>
 여러가지 해결 방법이 있지만 여기서는 if 문 null 체크를 사용해서 해결 하겠습니다.<br>
       <br>
       <span style="color: rgb(51, 51, 255);">if(EventBus.Instance)</span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; EventBus.Instance.Unsubscribe&lt;PlayerScoredEvent&gt;(this, OnPlayerScored);</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;
+EventBus.Instance.Unsubscribe&lt;PlayerScoredEvent&gt;(this,
+OnPlayerScored);</span><br style="color: rgb(51, 51, 255);">
       <br>
-      <br>
-      <br>
-<br>
       </td>
     </tr>
   </tbody>
@@ -416,4 +461,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>

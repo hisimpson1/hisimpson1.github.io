@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><!--탭 네비게이션-->
-
-
+<html><head>
+<!--탭 네비게이션-->
   
   <style type="text/css">table {
         line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
@@ -26,19 +25,21 @@
   <meta name="GENERATOR" content="Namo WebEditor v6.0">
 
   
-  <meta charset="UTF-8"><title>탭 네비게이션</title>
+  <meta charset="UTF-8">
+  <title>탭 네비게이션</title>
+
   
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
-<script>
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-Z0ZXNX5CYQ');
-</script>
-  
-  
-  </head><body>
+  </script>
+</head><body>
 <h1>탭 네비게이션<br>
 </h1>
 
@@ -50,17 +51,19 @@
       <br>
 탭 네비게이션을 위해서는 모듈을 추가적으로 설치 해야 한다.<br>
       <br>
-      npx expo install @react-navigation/bottom-tabs<br>
+npx expo install @react-navigation/bottom-tabs<br>
       <br>
 전체 코드를 보여주고 변경된 부분을 하나씩 알아 본다.<br>
       <br>
       <a href="https://github.com/hisimpson1/ReactiveNative_test/blob/main/reactnative_base/tutorial08/App.js">https://github.com/hisimpson1/ReactiveNative_test/blob/main/reactnative_base/tutorial08/App.js</a><br>
-<br>
+      <br>
 App.js<br>
       <div>import * as React from 'react';<br>
 import { Button, Text, View } from 'react-native';<br>
-import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';<br>
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';<br>
+import { NavigationContainer, useNavigation, useRoute } from
+'@react-navigation/native';<br>
+import { createBottomTabNavigator } from
+'@react-navigation/bottom-tabs';<br>
       <br>
 const Tab = createBottomTabNavigator();<br>
       <br>
@@ -68,14 +71,18 @@ function HomeScreen() {<br>
 &nbsp; const navigation = useNavigation();<br>
       <br>
 &nbsp; return (<br>
-&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center',
+justifyContent: 'center' }}&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;홈 화면&lt;/Text&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="상세 화면으로 이동 (데이터 전달)"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; navigation.navigate('Details', {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; userName: '홍길동',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; age: 25,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+navigation.navigate('Details', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+userName: '홍길동',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; age:
+25,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; })<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
@@ -90,13 +97,17 @@ function DetailsScreen() {<br>
 &nbsp; const { userName, age } = route.params || {};<br>
       <br>
 &nbsp; return (<br>
-&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;View style={{ flex: 1, alignItems: 'center',
+justifyContent: 'center' }}&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Text&gt;상세 화면&lt;/Text&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {userName &amp;&amp; &lt;Text&gt;이름: {userName}&lt;/Text&gt;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {age &amp;&amp; &lt;Text&gt;나이: {age}&lt;/Text&gt;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {userName &amp;&amp; &lt;Text&gt;이름:
+{userName}&lt;/Text&gt;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {age &amp;&amp; &lt;Text&gt;나이:
+{age}&lt;/Text&gt;}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; title="홈으로 돌아가기"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt; navigation.navigate('Home')}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; onPress={() =&gt;
+navigation.navigate('Home')}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;<br>
 &nbsp;&nbsp;&nbsp; &lt;/View&gt;<br>
 &nbsp; );<br>
@@ -105,8 +116,10 @@ function DetailsScreen() {<br>
 export default function App() {<br>
 &nbsp; return (<br>
 &nbsp;&nbsp;&nbsp; &lt;NavigationContainer&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Tab.Navigator initialRouteName="Home"&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Tab.Screen name="Home" component={HomeScreen} options={{ title: '홈' }} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Tab.Navigator
+initialRouteName="Home"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Tab.Screen name="Home"
+component={HomeScreen} options={{ title: '홈' }} /&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Tab.Screen
 name="Details" component={DetailsScreen} options={{ title: '상세' }} /&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Tab.Navigator&gt;<br>
@@ -114,7 +127,6 @@ name="Details" component={DetailsScreen} options={{ title: '상세' }} /&gt;<br>
 &nbsp; );<br>
 }<br>
       </div>
-
       <br>
 변경 포인트 ✨<br>
       <ul>
@@ -122,44 +134,60 @@ name="Details" component={DetailsScreen} options={{ title: '상세' }} /&gt;<br>
         <li>createNativeStackNavigator → createBottomTabNavigator로 교체.</li>
         <li>Stack.Navigator → Tab.Navigator.</li>
         <li>Stack.Screen → Tab.Screen.</li>
-        <li>navigation.goBack() 대신 navigation.navigate('Home') 사용 (탭 구조에서는 goBack이 직관적이지 않음).</li>
+        <li>navigation.goBack() 대신 navigation.navigate('Home') 사용 (탭
+구조에서는 goBack이 직관적이지 않음).</li>
       </ul>
-      <span style="color: rgb(255, 204, 0);"></span>️&gt;&gt;&gt; 이렇게 하면 화면 하단에 탭이 생기고, Home과 Details를 탭으로 이동할 수 있습니다.<br>
+      <span style="color: rgb(255, 204, 0);"></span>️&gt;&gt;&gt; 이렇게
+하면 화면 하단에 탭이 생기고, Home과 Details를 탭으로 이동할 수 있습니다.<br>
       <br>
       <br>
 수정전<br>
-      <span style="color: rgb(51, 51, 255);">import { createNativeStackNavigator } from '@react-navigation/native-stack';</span><br>
+      <span style="color: rgb(51, 51, 255);">import {
+createNativeStackNavigator } from '@react-navigation/native-stack';</span><br>
 수정후<br>
-      <span style="color: rgb(51, 51, 255);">import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';</span><br>
+      <span style="color: rgb(51, 51, 255);">import {
+createBottomTabNavigator } from '@react-navigation/bottom-tabs';</span><br>
       <br>
       <br>
 수정전<br>
-      <span style="color: rgb(51, 51, 255);">const Stack = createNativeStackNavigator();</span><br>
+      <span style="color: rgb(51, 51, 255);">const Stack =
+createNativeStackNavigator();</span><br>
 수정후<br>
-      <span style="color: rgb(51, 51, 255);">const Tab = createBottomTabNavigator();</span><br>
+      <span style="color: rgb(51, 51, 255);">const Tab =
+createBottomTabNavigator();</span><br>
       <br>
       <br>
 수정전<br>
-      <span style="color: rgb(51, 51, 255);">onPress={() =&gt; navigation.goBack()}</span><br>
+      <span style="color: rgb(51, 51, 255);">onPress={() =&gt;
+navigation.goBack()}</span><br>
 수정후<br>
-      <span style="color: rgb(51, 51, 255);">onPress={() =&gt; navigation.navigate('Home')}</span><br>
+      <span style="color: rgb(51, 51, 255);">onPress={() =&gt;
+navigation.navigate('Home')}</span><br>
       <br>
       <br>
 수정전<br>
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Navigator initialRouteName="Home"&gt;</span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Stack.Screen name="Home" component={HomeScreen} options={{ title: '홈' }} /&gt;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;Stack.Navigator initialRouteName="Home"&gt;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;Stack.Screen name="Home" component={HomeScreen} options={{ title:
+'홈' }} /&gt;</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &lt;Stack.Screen name="Details" component={DetailsScreen} options={{
 title: '상세' }} /&gt;</span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Stack.Navigator&gt; </span><br>
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/Stack.Navigator&gt; </span><br>
 수정후<br>
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Tab.Navigator initialRouteName="Home"&gt;</span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Tab.Screen name="Home" component={HomeScreen} options={{ title: '홈' }} /&gt;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;Tab.Navigator initialRouteName="Home"&gt;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;Tab.Screen name="Home" component={HomeScreen} options={{ title: '홈'
+}} /&gt;</span><br style="color: rgb(51, 51, 255);">
       <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &lt;Tab.Screen name="Details" component={DetailsScreen} options={{
 title: '상세' }} /&gt;</span><br style="color: rgb(51, 51, 255);">
-      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Tab.Navigator&gt;</span><br>
-<br>
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/Tab.Navigator&gt;</span><br>
+      <br>
       </td>
     </tr>
   </tbody>
@@ -204,4 +232,8 @@ function ChangeImageSize(){
 }
 
 </script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+
 </body></html>
