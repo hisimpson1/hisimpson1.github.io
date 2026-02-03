@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--Change Parts2-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>Change Parts2</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>Change Parts2<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td><a href="tutorial01.html">Change Parts</a>에서는 리소스 설정 및 복장을 착용하는 코드에서 대해서 알아 보았습니다.<br>
+두번째는 데이터 중심으로 코드를 좀 다듬어 보겠습니다.<br>
+      <br>ScriptableObject로 데이터 정의를 합니다.<br>
+ScriptableObject를 이용하여 비프로그래머 개발자가 리소스를 등록 할수 있도록 만들어 보겠습니다.<br>
+      <br>
+      <h4>1. ENUM 정의</h4>
+PartCategory, PartType을 enum을 이용해 파츠 타입을 정의 합니다.<br>
+      <br>
+PartCategory.cs 파일<br>
+      <div>public enum PartCategory<br>
+{<br>
+&nbsp;&nbsp;&nbsp; Wearable,<br>
+&nbsp;&nbsp;&nbsp; Mesh<br>
+}<br>
+      </div>
+      <br>
+PartType.cs 파일<br>
+      <div>public enum PartType<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Wearable</span><br>
+&nbsp;&nbsp;&nbsp; Upper,<br>
+&nbsp;&nbsp;&nbsp; Pants,<br>
+&nbsp;&nbsp;&nbsp; Gloves,<br>
+&nbsp;&nbsp;&nbsp; Shoes,<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Mesh</span><br>
+&nbsp;&nbsp;&nbsp; Ear,<br>
+&nbsp;&nbsp;&nbsp; Hair,<br>
+&nbsp;&nbsp;&nbsp; Face,<br>
+&nbsp;&nbsp;&nbsp; Tail<br>
+}<br>
+      </div>
+      <br>
+      <h4>2. ScriptableObject로 데이터 정의</h4>
+C#의 abstract 클래스, abstract 함수는?<br>
+      <ul>
+        <li>abstract 클래스는 미완성 설계도</li>
+        <li>그 안의 abstract 메서드는 구현이 없는 메서드</li>
+        <li>상속받는 클래스가 반드시 구현해야 함(override 키워드 필수)</li>
+        <li>private, static, sealed 불가<br>
+        </li>
+      </ul>
+      <br>
+Expression-bodied Properties란?<br>
+프로퍼티를 한 줄짜리 표현식으로 간단히 작성하는 문법이에요.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">class ExpressionTest</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">{</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; private int _x;</span><br style="color: rgb(51, 51, 255);">
+      <br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; public int X</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; {</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get =&gt; _x;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; set =&gt; _x = value;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp; }</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">}</span><br style="color: rgb(51, 51, 255);">
+      <br>
+여기서 읽기 전용으로만 표시 하고 싶으면<br>
+읽기 전용 속성을 만들고 싶다면 get을 생략하고 =&gt;만 사용<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">class Person</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">{</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; public string Name { get; set; }</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp; public int NameLength =&gt; Name.Length;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">}</span><br>
+      <br>
+PartData를 상속하여 MeshPartData의 Category는 PartCategory.Mesh<br>
+PartData를 상속하여 WearablePartData Category는 PartCategory.Wearable<br>
+      <br>
+PartData.cs 파일<br>
+      <div>using UnityEngine;<br>
+      <br>
+public abstract class PartData : ScriptableObject<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public string partName;<br>
+&nbsp;&nbsp;&nbsp; public Sprite icon;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">//C# expression-bodied property 문법, Read-Only 속성</span><br>
+&nbsp;&nbsp;&nbsp; public abstract PartCategory Category { get; }&nbsp; <span style="color: rgb(0, 153, 0);">// Wearable / Mesh</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp; public PartType type;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Upper, Pants, Ear, Hair 등</span><br>
+}<br>
+      </div>
+      <br>
+MeshPartData.cs<br>
+      <div>using UnityEngine;<br>
+      <br>
+[CreateAssetMenu(menuName = "Character/Part/Mesh")]<br>
+public class MeshPartData : PartData<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public Mesh mesh;<br>
+&nbsp;&nbsp;&nbsp; public override PartCategory Category =&gt; PartCategory.Mesh;<br>
+}<br>
+      </div>
+      <br>
+WearablePartData.cs<br>
+      <div>using UnityEngine;<br>
+      <br>
+[CreateAssetMenu(menuName = "Character/Part/Wearable")]<br>
+public class WearablePartData : PartData<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public SkinnedMeshRenderer prefab;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public override PartCategory Category =&gt; PartCategory.Wearable;<br>
+}<br>
+      </div>
+      <br>
+      <h4>CharacterCustomizer로 장비 착용</h4>
+      <a href="tutorial01.html">Change Parts</a>에서 핵심 코드는 변경된것이 없습니다.<br>
+      <br>
+복장 착용은 <br>
+newPart.rootBone = baseMeshRenderer.rootBone;<br>
+newPart.bones = baseMeshRenderer.bones;<br>
+      <br>
+귀, 코 어태치는 <br>
+targetRenderer.sharedMesh = partData.mesh;<br>
+
+      <br>
+PartType에 따라 ScriptableObject를 이용하여 데이타를 정의 합니다.<br>
+      <br>
+CharacterCustomizer.cs 파일<br>
+      <div>using System.Collections.Generic;<br>
+using UnityEngine;<br>
+using UnityEngine.Rendering;<br>
+      <br>
+public class CharacterCustomizer : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [Header("Base Character")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer baseMeshRenderer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("Mesh Swap Renderers")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer earRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer hairRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer faceRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer tailRenderer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType, SkinnedMeshRenderer&gt; equippedWearables = new();<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 공통 Equip 메서드</span><br>
+&nbsp;&nbsp;&nbsp; public void Equip(PartData partData)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (partData == null) return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (partData.Category)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case PartCategory.Wearable:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EquipWearable(partData as WearablePartData);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case PartCategory.Mesh:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipMesh(partData as MeshPartData);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">#region 내부 장착 로직</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void EquipWearable(WearablePartData partData)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (partData == null || partData.prefab == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (equippedWearables.TryGetValue(partData.type, out var oldPart))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Destroy(oldPart.gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var newPart = Instantiate(partData.prefab, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.rootBone = baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.bones = baseMeshRenderer.bones;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equippedWearables[partData.type] = newPart;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void EquipMesh(MeshPartData partData)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (partData == null || partData.mesh == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SkinnedMeshRenderer targetRenderer = partData.type switch<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Ear =&gt; earRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Hair =&gt; hairRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Face =&gt; faceRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Tail =&gt; tailRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ =&gt; null<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (targetRenderer != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; targetRenderer.sharedMesh = partData.mesh;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">#endregion</span><br>
+}<br>
+      </div>
+      <br>
+
+switch expression 예시<br>
+
+      <ul>
+<li>
+switch expression은 
+switch case문을 더 간결하게 보여줍니다.</li><li>&nbsp;_ 는 default</li>
+      </ul>
+
+      <br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+int number = 2;</span><br style="color: rgb(51, 51, 255);">
+
+
+      <br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+string result = number switch</span><br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+{</span><br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp; 1 =&gt; "하나",</span><br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp; 2 =&gt; "둘",</span><br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp; 3 =&gt; "셋",</span><br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+&nbsp;&nbsp;&nbsp; _ =&gt; "기타"</span><br style="color: rgb(51, 51, 255);">
+
+      <span style="color: rgb(51, 51, 255);">
+};</span><br style="color: rgb(51, 51, 255);">
+
+      <br style="color: rgb(51, 51, 255);">
+
+
+      <span style="color: rgb(51, 51, 255);">Debug.Log(result); // "둘"</span><br>
+
+      <br>
+
+      <h4>PartData 사용 방법</h4>
+버튼을 만들고 UIEquipButton을 컴포넌트로 추가 합니다.<br>
+equipButton에 만든 버튼을 드래그 합니다.<br>
+      <br>
+UIEquipButton.cs<br>
+      <div>using UnityEngine;<br>
+using UnityEngine.UI;<br>
+      <br>
+public class UIEquipButton : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [Header("Target Customizer")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private CharacterCustomizer customizer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("Part to Equip: wear")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private PartData upperPartData;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("Part to Equip: attach")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private PartData earPartData;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("UI Button")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private Button equipButton;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void Awake()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (equipButton != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equipButton.onClick.AddListener(OnEquipClicked);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void OnEquipClicked()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (customizer != null &amp;&amp; earPartData != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customizer.Equip(earPartData);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (customizer != null &amp;&amp; upperPartData != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customizer.Equip(upperPartData);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+Project &gt; Assets &gt; Data &gt; ScriptableObjects 폴더를 만들고 <br>
+      <br>
+      <img style="width: 769px; height: 587px;" alt="" src="tutorial02/create_PartData.png"><br>
+      <br>
+ear, upper 데이터를 생성합니다.<br>
+      <br>
+      <img style="width: 527px; height: 186px;" alt="" src="tutorial02/PartData.png"><br>
+      <br>
+ear 데이터 지정<br>
+      <br>
+      <img style="width: 390px; height: 201px;" alt="" src="tutorial02/ear.png"><br>
+      <br>
+upper 데이터 지정<br>
+      <br>
+      <img style="width: 388px; height: 193px;" alt="" src="tutorial02/upper.png"><br>
+      <br>
+실행 화면입니다.<br>
+      <img style="width: 597px; height: 606px;" alt="" src="tutorial02/run.png"><br>
+      <br>
+소스)<br>
+      <a href="tutorial02/source/PartCategory.cs">PartCategory.cs</a><br>
+      <a href="tutorial02/source/PartType.cs">PartType.cs</a><br>
+      <a href="tutorial02/source/MeshPartData.cs">MeshPartData.cs</a><br>
+      <a href="tutorial02/source/WearablePartData.cs">WearablePartData.cs</a><br>
+      <a href="tutorial02/source/CharacterCustomizer.cs">CharacterCustomizer.cs</a><br>
+      <a href="tutorial02/source/UIEquipButton.cs">UIEquipButton.cs</a><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

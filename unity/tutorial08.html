@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--C# 구조체-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>C# 구조체</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>C# 구조체<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>C# 카테고리를 만들어서 별도로 해야 하지만 그냥 유니티 카테고리에 올리겠습니다.<br>
+AI가 저보다 설명도 잘하고 글도 잘적기 때문에 챗 GPT 설명을 가져오겠습니다.<br>
+      <br>
+챗 GPT에게 한 질문입니다.<br>
+구조체는 new 했으면&nbsp; 어디서 삭제해?<br>
+      <br>
+      <h2 data-start="62" data-end="75">결론부터 딱 말하면</h2>
+      <p data-start="76" data-end="132">👉 <strong data-start="79" data-end="99">struct는 삭제 안 한다.</strong><br data-start="99" data-end="102">
+👉 <strong data-start="105" data-end="132">new 했다고 해서 “해제” 개념이 없다.</strong></p>
+      <p data-start="134" data-end="148">왜 그런지 차근차근 보자.</p>
+      <br>
+      <h2 data-start="155" data-end="182">struct는 힙이 아니다 (대부분)</h2>
+      <pre class="overflow-visible! px-0!" data-start="184" data-end="243"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span>PlayerDeadEvent evt = </span><span><span class="hljs-keyword">new</span></span><span> PlayerDeadEvent(</span><span><span class="hljs-number">1</span></span><span>);<br></span></span></code></div></div></pre>
+      <p data-start="245" data-end="261">이 코드에서 벌어지는 일 👇</p>
+      <h3 data-start="263" data-end="277">struct의 특징</h3>
+      <ul data-start="278" data-end="338">
+        <li data-start="278" data-end="300">
+          <p data-start="280" data-end="300"><strong data-start="280" data-end="300">값 타입(Value Type)</strong></p>
+        </li>
+        <li data-start="301" data-end="316">
+          <p data-start="303" data-end="316">보통 <strong data-start="306" data-end="312">스택</strong>에 생성</p>
+        </li>
+        <li data-start="317" data-end="338"><p data-start="319" data-end="338">함수 끝나면 <strong data-start="326" data-end="338">자동으로 사라짐</strong></p>
+        </li>
+</ul>
+      <pre class="overflow-visible! px-0!" data-start="340" data-end="466"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-function"><span class="hljs-keyword">void</span></span></span><span> </span><span><span class="hljs-title">Die</span></span><span>()<br>{<br>    PlayerDeadEvent evt = </span><span><span class="hljs-keyword">new</span></span><span> PlayerDeadEvent(</span><span><span class="hljs-number">1</span></span><span>);<br>    EventBus.Publish(evt);<br>} </span><span style="color: rgb(0, 153, 0);"><span class="hljs-comment">// ← 여기서 evt는 그냥 사라짐</span></span><span>
+</span></span></code></div></div></pre>
+
+      <p data-start="468" data-end="502">👉 <strong data-start="471" data-end="483">GC 관여 없음</strong></p>
+<p data-start="468" data-end="502"><strong data-start="471" data-end="483"></strong>👉 <strong data-start="487" data-end="502">삭제 코드 필요 없음</strong></p>
+      <span style="font-weight: bold;"><br>
+      </span>
+      <h2 data-start="509" data-end="539">“new”라는 단어 때문에 헷갈리는 포인트</h2>
+      <p data-start="541" data-end="568">C#에서 <code data-start="546" data-end="551">new</code>는 두 가지 의미가 섞여 있음:</p>
+class : 힙에 할당<br>
+struct : 값 초기화<br>
+      <p data-start="541" data-end="568">👉 struct의 <code data-start="643" data-end="648">new</code>는<br data-start="649" data-end="652">
+**“메모리 할당”이 아니라 “값을 채운다”**에 가까움</p>
+      <h2 data-start="690" data-end="716">그럼 struct는 항상 스택이냐?</h2>
+      <p data-start="718" data-end="748">❌ 항상은 아님.<br data-start="727" data-end="730">
+      <strong data-start="730" data-end="742">어디에 담기느냐</strong>가 중요함.</p>
+      <h3 data-start="750" data-end="775">예외 1: class 필드에 들어갈 때</h3>
+      <pre class="overflow-visible! px-0!" data-start="777" data-end="840"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">Wrapper</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> PlayerDeadEvent evt;<br>}<br></span></span></code></div></div></pre>
+      <p data-start="842" data-end="903">👉 이 경우 struct는 <strong data-start="858" data-end="876">Wrapper 객체의 일부</strong><br data-start="876" data-end="879">
+👉 Wrapper가 GC 되면 같이 사라짐</p>
+      <br>
+      <h3 data-start="910" data-end="943">예외 2: interface / object로 캐스팅</h3>
+      <pre class="overflow-visible! px-0!" data-start="945" data-end="986"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span>IEvent e = evt;   </span><span><span class="hljs-comment">// boxing</span></span><span>
+</span></span></code></div></div></pre>
+      <p data-start="988" data-end="1025">👉 <strong data-start="991" data-end="1004">boxing 발생</strong><br>
+👉 힙에 복사됨<br>
+👉 GC 대상 ⭕</p>
+      <p data-start="1027" data-end="1054">⚠️ EventBus에서 이런 짓 하면 성능 망함</p>
+      <h3 data-start="1670" data-end="1686">👎 이렇게 하지 마라</h3>
+      <ul data-start="1687" data-end="1746">
+        <li data-start="1687" data-end="1694">
+          <p data-start="1689" data-end="1694">큰 데이터</p>
+        </li>
+        <li data-start="1695" data-end="1712">
+          <p data-start="1697" data-end="1712">List / class 포함 (List는 값
+복사가 아니라 참조 문제 발생)<br>
+          </p>
+        </li>
+        <li data-start="1713" data-end="1729">
+          <p data-start="1715" data-end="1729">mutable struct</p>
+        </li>
+        <li data-start="1730" data-end="1746">
+          <p data-start="1732" data-end="1746">interface로 다루기</p>
+        </li>
+      </ul>
+      <h2 data-start="1753" data-end="1769">한 문장으로 정리</h2>
+      <blockquote data-start="1771" data-end="1814">
+        <p data-start="1773" data-end="1814"><strong data-start="1773" data-end="1814">struct는 만들고 잊어도 된다.<br data-start="1794" data-end="1797">
+함수 끝나면 자연 소멸한다.</strong></p>
+      </blockquote>
+      <br>
+      <strong data-start="1168" data-end="1175">결론:</strong> 배열이나 컬렉션은 <strong data-start="1186" data-end="1225">struct 이벤트가 아니라 class 이벤트로 넘기는 게 안전<br>
+      <br>
+      </strong>
+      <h2 data-start="1234" data-end="1243">예시</h2>
+      <pre class="overflow-visible! px-0!" data-start="1245" data-end="1425"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">readonly</span></span><span> </span><span><span class="hljs-built_in">int</span></span><span>[] Damages;<br><br>    </span><span><span class="hljs-function"><span class="hljs-keyword">public</span></span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span>(</span><span><span class="hljs-params"><span class="hljs-built_in">int</span></span></span><span>[] damages)<br>    {<br>        Damages = (</span><span><span class="hljs-built_in">int</span></span><span>[])damages.Clone(); </span><span style="color: rgb(0, 153, 0);"><span class="hljs-comment">// 불변성 보장</span></span><span><br>    }<br>}<br></span></span></code></div></div></pre>
+      <pre class="overflow-visible! px-0!" data-start="1427" data-end="1501"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span>EventBus.Publish(</span><span><span class="hljs-keyword">new</span></span><span> DamageEvent(</span><span><span class="hljs-keyword">new</span></span><span> </span><span><span class="hljs-built_in">int</span></span><span>[] { </span><span><span class="hljs-number">10</span></span><span>, </span><span><span class="hljs-number">20</span></span><span>, </span><span><span class="hljs-number">30</span></span><span> }));<br></span></span></code></div></div></pre>
+      <ul data-start="1503" data-end="1561">
+        <li data-start="1503" data-end="1521">
+          <p data-start="1505" data-end="1521">리스너들은 자유롭게 읽기 가능</p>
+        </li>
+        <li data-start="1522" data-end="1545">
+          <p data-start="1524" data-end="1545">수정은 각자 독립적인 이벤트에서만 가능</p>
+        </li>
+        <li data-start="1546" data-end="1561">
+          <p data-start="1548" data-end="1561">GC는 배열 하나만 생성</p>
+        </li>
+      </ul>
+      <br>
+      <h2 data-start="215" data-end="239">값 변경 상관없으면 이렇게 가능</h2>
+
+      <pre class="overflow-visible! px-0!" data-start="241" data-end="405"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">readonly</span></span><span> </span><span><span class="hljs-built_in">int</span></span><span>[] Damages;<br><br>    </span><span><span class="hljs-function"><span class="hljs-keyword">public</span></span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span>(</span><span><span class="hljs-params"><span class="hljs-built_in">int</span></span></span><span>[] damages)<br>    {<br>        Damages = damages; </span><span><span class="hljs-comment">// 참조 전달</span></span><span><br>    }<br>}<br></span></span></code></div></div></pre>
+
+      <ul data-start="407" data-end="489">
+<li data-start="407" data-end="433">
+<p data-start="409" data-end="433">✅ <strong data-start="411" data-end="427">값 변경해도 괜찮을 때</strong> 사용 가능</p>
+</li><li data-start="434" data-end="461">
+<p data-start="436" data-end="461">⚠️ 다른 쪽에서 배열을 수정해도 문제가 없음</p>
+</li><li data-start="462" data-end="489">
+<p data-start="464" data-end="489">🔹 메모리/GC 효율은 좋음 (복사 안 함)</p>
+</li>
+      </ul>
+
+      <h3 data-start="589" data-end="625"><code data-start="597" data-end="617">IReadOnlyList&lt;int&gt;</code> 사용 (추천)</h3>
+
+      <pre class="overflow-visible! px-0!" data-start="627" data-end="813"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">readonly</span></span><span> IReadOnlyList&lt;</span><span><span class="hljs-built_in">int</span></span><span>&gt; Damages;<br><br>    </span><span><span class="hljs-function"><span class="hljs-keyword">public</span></span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span>(</span><span><span class="hljs-params"><span class="hljs-built_in">int</span></span></span><span>[] damages)<br>    {<br>        Damages = Array.AsReadOnly(damages);<br>    }<br>}<br></span></span></code></div></div></pre>
+
+      <ul data-start="815" data-end="915">
+<li data-start="815" data-end="876">
+<p data-start="817" data-end="838">배열을 <strong data-start="821" data-end="836">읽기 전용으로 감싸서</strong></p>
+<ul data-start="841" data-end="876"><li data-start="841" data-end="876">
+<p data-start="843" data-end="876"><code data-start="843" data-end="860">Damages[0] = 10</code> 같은 코드는 컴파일에서 막힘</p>
+</li></ul>
+</li><li data-start="877" data-end="895">
+<p data-start="879" data-end="895">참조는 여전히 readonly</p>
+</li><li data-start="896" data-end="915">
+<p data-start="898" data-end="915">내부 배열 수정 가능성도 막아줌</p></li>
+      </ul>
+
+      
+      <h3 data-start="1055" data-end="1104"><br>
+<code data-start="1063" data-end="1084"><span style="font-family: 맑은 고딕,바탕,Courier New,Courier;"></span></code></h3>
+      <h3 data-start="1055" data-end="1104"><code data-start="1063" data-end="1084"><span style="font-family: 맑은 고딕,바탕,Courier New,Courier;"></span>ReadOnlyMemory&lt;int&gt;</code> / <code data-start="1087" data-end="1098">Span&lt;int&gt;</code> (고성능)</h3>
+
+      <ul data-start="1106" data-end="1153">
+<li data-start="1106" data-end="1136">
+<p data-start="1108" data-end="1136">Unity DOTS / Jobs 환경에서 주로 사용 (MonoBehaviour 환경에서는 고성능과 상관없음)<br>
+</p>
+</li><li data-start="1137" data-end="1153">
+<p data-start="1139" data-end="1153">메모리 안전 + 불변 보장</p>
+</li>
+      </ul>
+
+      <pre class="overflow-visible! px-0!" data-start="1155" data-end="1349"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-csharp"><span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">class</span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span><br>{<br>    </span><span><span class="hljs-keyword">public</span></span><span> </span><span><span class="hljs-keyword">readonly</span></span><span> ReadOnlyMemory&lt;</span><span><span class="hljs-built_in">int</span></span><span>&gt; Damages;<br><br>    </span><span><span class="hljs-function"><span class="hljs-keyword">public</span></span></span><span> </span><span><span class="hljs-title">DamageEvent</span></span><span>(</span><span><span class="hljs-params"><span class="hljs-built_in">int</span></span></span><span>[] damages)<br>    {<br>        Damages = </span><span><span class="hljs-keyword">new</span></span><span> ReadOnlyMemory&lt;</span><span><span class="hljs-built_in">int</span></span><span>&gt;(damages);<br>    }<br>}<br></span></span></code></div></div></pre>
+
+      <ul data-start="1351" data-end="1416">
+<li data-start="1351" data-end="1363">
+<p data-start="1353" data-end="1363">내부 값 변경 불가</p>
+</li><li data-start="1364" data-end="1374">
+<p data-start="1366" data-end="1374">GC 부담 없음</p>
+</li><li data-start="1375" data-end="1416">
+<p data-start="1377" data-end="1416">다만 Unity 일반 MonoBehaviour 환경에서는 조금 번거로움</p></li>
+      </ul>
+즉, <strong data-start="868" data-end="908">ReadOnlyMemory는 DOTS 환경에서 진짜 고성능이 되고</strong>,<br data-start="909" data-end="912">
+
+MonoBehaviour 환경에서는 주로 <strong data-start="935" data-end="950">안전성 + 불변 보장</strong> 용도로 유용<br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>

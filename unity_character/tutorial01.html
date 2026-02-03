@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--Change Parts-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>Change Parts</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>Change Parts<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>캐릭터 파츠를 교환해보겠습니다.<br>
+예쁜 캐릭터나 멋진 모델로 하고 싶지만 무료는 찾지를 못했습니다.<br>
+유니티 에디터 버전은 6.0으로&nbsp; 정식 명칭은 Editor version 6000.0.64f1 LTS입니다.<br>
+      <br>
+      <h4>1. 모델 가져와서 렌더링 하기<br>
+      </h4>
+Package Manager에서 "GanzSe FREE Low Poly Modular Character" 모델을 가져옵니다.<br>
+      <img style="width: 751px; height: 380px;" alt="" src="tutorial01/GanzSe.png"><br>
+      <br>
+      <br>
+모델을 Prefab 폴더로 복사를 합니다. 모델이름은 MyCharacter입니다.<br>
+      <br>
+URP 렌더링에서 모델이 분홍색으로 보인다면 "Window / Rendering / Render Pipeline Converter"로 메트리얼을 변경합니다.<br>
+      <br>
+      <img style="width: 719px; height: 630px;" alt="" src="tutorial01/rendering.png"><br>
+      <br>
+      <br>
+Render Pipeline Converter 팝업을 띄웁니다.<br>
+      <br>
+1. Material Upgrade 체크<br>
+      <br>
+2. Initialize And Convert 버튼 클릭<br>
+      <br>
+3. Convert Assets 버튼 클릭<br>
+      <br>
+      <img style="width: 638px; height: 609px;" alt="" src="tutorial01/RenderPipelineConverter.png"><br>
+      <br>
+      <br>
+모델을 가져오면 이렇게 보입니다.<br>
+      <br>
+      <img style="width: 745px; height: 537px;" alt="" src="tutorial01/model.png"><br>
+      <br>
+      <h4>2. 프리팹 파츠 만들기</h4>
+너무 많이 붙어 있어서 어떻게 해야 할지 난감합니다.<br>
+장비착용을 위해서 기본 복장으로 만들어 보겠습니다.<br>
+      <br>
+      <img style="width: 872px; height: 486px;" alt="" src="tutorial01/model_inactive.png"><br>
+      <br>
+      <br>
+Ears Type1의 Mesh를 인스펙트 뷰에서 None으로 지정합니다.<br>
+      <br>
+      <img style="width: 576px; height: 386px;" alt="" src="tutorial01/mesh_none.png"><br>
+      <br>
+prefab 폴더를 만들고 착용하고 싶은 파츠를 Project/Assets/prefab 폴더로 드래그 합니다.<br>
+      <br>
+저는 "Chest Armor Type 2 Color1", "Chest Armor Type 5 Color3"를 Upper 파츠를 드래그 했습니다.<br>
+      <br>
+      <img style="width: 353px; height: 482px;" alt="" src="tutorial01/prefab_chest.png"><br>
+      <br>
+"Ears Type2" 게임 오브젝트의 인스펙트뷰에서 Mesh의 Ears Type2를 클릭하면 프로젝트창에서 해당 메시가 있는 위치로 이동 합니다.<br>
+      <br>
+메시 "Ears Typ1", "Ears Type2"를 prefab으로 복사합니다.<br>
+      <br>
+2종류의 Chest와 2종류의 귀 파츠를 준비했습니다.<br>
+      <br>
+      <img style="width: 752px; height: 365px;" alt="" src="tutorial01/ear_mesh.png"><br>
+      <br>
+      <img style="width: 835px; height: 187px;" alt="" src="tutorial01/ear_mesh1.png"><br>
+      <br>
+몇개 필요 없는 파일도 있는데, 프리팹에 만들어진 파일들입니다.<br>
+      <br>
+      <img style="width: 978px; height: 182px;" alt="" src="tutorial01/prefab_file.png"><br>
+      <br>
+CharacterCustomizer.cs 파일<br>
+      <div>using System.Collections.Generic;<br>
+using UnityEngine;<br>
+      <br>
+public enum PartType<br>
+{<br>
+&nbsp;&nbsp;&nbsp; Upper,<br>
+&nbsp;&nbsp;&nbsp; Pants,<br>
+&nbsp;&nbsp;&nbsp; Gloves,<br>
+&nbsp;&nbsp;&nbsp; Shoes,<br>
+&nbsp;&nbsp;&nbsp; Ear<br>
+}<br>
+      <br>
+public class CharacterCustomizer : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer baseMeshRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer earMeshRenderer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType, SkinnedMeshRenderer&gt; equippedParts = new();<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer upper1;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer upper2;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] Mesh ear1;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] Mesh ear2;<br>
+      <br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void EquipMesh(PartType type, Mesh partPrefab)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; earMeshRenderer.sharedMesh = partPrefab;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void EquipPart(PartType type, SkinnedMeshRenderer partPrefab)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 기존 파츠 제거</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (equippedParts.ContainsKey(type))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Destroy(equippedParts[type].gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 새 파츠 생성</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var newPart = Instantiate(partPrefab, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.rootBone = baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.bones = baseMeshRenderer.bones;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equippedParts[type] = newPart;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha1))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipPart(PartType.Upper, upper1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha2))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipPart(PartType.Upper, upper2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha3))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipMesh(PartType.Ear, ear1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Input.GetKeyDown(KeyCode.Alpha4))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquipMesh(PartType.Ear, ear2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+이 코드에서 실제 일어나는 일은 다음과 같습니다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">var newPart = Instantiate(partPrefab, transform)</span><br>
+      <ul>
+        <li>partPrefab.gameObject를 복제</li>
+        <li>그 안에 있는 모든 컴포넌트 복사</li>
+      </ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Transform<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- SkinnedMeshRenderer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Material<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - 기타 스크립트들<br>
+      <ul>
+        <li>부모를 transform으로 설정</li>
+      </ul>
+      <span style="color: rgb(204, 0, 0);">정확히는 partPrefab이 붙어 있는 GameObject를 통째로 생성하고</span><br style="color: rgb(204, 0, 0);">
+      <span style="color: rgb(204, 0, 0);">반환값은 그 GameObject의 SkinnedMeshRenderer 컴포넌트입니다.</span><br>
+      <br>
+그래서 Destroy시 컴포넌트를 삭제하는것이 아니고 게임오브젝트를 삭제하는 것입니다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">Destroy(equippedParts[type].gameObject);</span><br>
+      <br>
+명시적으로 게임오브젝트를 생성하고 싶다면 다음과 같이 합니다.<br>
+      <br>
+      <div>var newGO = Instantiate(partPrefab.gameObject, transform);<br>
+var newPart = newGO.GetComponent&lt;SkinnedMeshRenderer&gt;();<br>
+      </div>
+      <br>
+      <br>
+빈 게임오브젝트(여기서는 이름을 ChangeParts)를 만들고 CharacterCustomizer.cs 파일을 컴포넌트로 추가 합니다.<br>
+      <br>
+EquipPart는 입을수 있는 상의, 하의를 착용할수 있는 함수입니다.<br>
+EquipMesh는 귀처럼 메시를 붙일수 있는 함수입니다. 지금은 코드를 간단하게 유지하기 위해 귀만 해보겠습니다.<br>
+      <br>
+CharacterCustomizer의 필드를 채워 줍니다.<br>
+baseMeshRenderer는 상의나 하의를 착용할 루트라고 보시면 됩니다.<br>
+earMeshRenderer는 귀의 메시를 어태치 할 루트라고 보시면 됩니다.<br>
+      <br>
+      <img style="width: 803px; height: 349px;" alt="" src="tutorial01/CharacterCustomizer.png"><br>
+      <br>
+      <br>
+1, 2키를 누르면 상의를 바꿔 입습니다.<br>
+3, 4키를 누르면 귀를 변경 합니다.<br>
+      <br>
+      <img style="width: 585px; height: 578px;" alt="" src="tutorial01/run.png"><br>
+참조)<br>
+코드 보기 쉬움<br>
+      <a href="https://forum.gamer.com.tw/C.php?bsn=60602&amp;snA=2711">https://forum.gamer.com.tw/C.php?bsn=60602&amp;snA=2711</a><br>
+      <br>
+전체 코드 있음 (노드별로 순회해서 구조를 맞추고 있음)<br>
+      <a href="https://github.com/sniffle6/Scriptable-Object-Inventory">https://github.com/sniffle6/Scriptable-Object-Inventory</a><br>
+      <a href="https://www.youtube.com/watch?v=RESuTNMdqqQ">https://www.youtube.com/watch?v=RESuTNMdqqQ</a><br>
+      <br>
+헤어 교체<br>
+      <a href="https://www.youtube.com/watch?v=yK0ojJSoHds">https://www.youtube.com/watch?v=yK0ojJSoHds</a><br>
+      <br>
+예제에 사용한 모델( GanzSe FREE Low Poly Modular Character )<br>
+      <a href="https://assetstore.unity.com/packages/3d/characters/humanoids/fantasy/ganzse-free-low-poly-modular-character-321521">https://assetstore.unity.com/packages/3d/characters/humanoids/fantasy/ganzse-free-low-poly-modular-character-321521</a><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+</body></html>
