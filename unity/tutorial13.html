@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--Unity Addressables ABC-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>Unity Addressables ABC</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>Unity Addressables ABC<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>에셋을 주소(address)로 관리하고, 필요할 때 로드/해제할 수 있게 해주는 시스템입니다.<br>
+      <h4>기존 방식이:</h4>
+      <ul>
+        <li>씬에 다 넣어두거나</li>
+        <li>Resources.Load() 쓰거나</li>
+        <li>AssetBundle 직접 관리해야 했다면</li>
+      </ul>
+Addressables는 이걸 훨씬 안전하고 자동화된 방식으로 해결하고 있습니다.<br>
+      <br>
+      <h4>기존방식의 문제점</h4>
+      <ul>
+        <li>빌드 크기 커짐</li>
+        <li>메모리 관리 지옥</li>
+        <li>AssetBundle 직접 관리 → 실수 많음</li>
+        <li>업데이트할 때 전체 빌드 다시 해야 함</li>
+      </ul>
+      <h4>Addressables 장점</h4>
+      <ul>
+        <li>필요한 순간에만 로드</li>
+        <li>안 쓰면 바로 메모리 해제</li>
+        <li>로컬 / 원격(서버) 에셋 동일한 코드로 처리</li>
+        <li>라이브 서비스 &amp; DLC에 최적</li>
+      </ul>
+      <h4>핵심 개념 5개</h4>
+1. Address (주소)<br>
+에셋에 문자열 주소를 붙여서 접근함<br>
+      <div>"UI/MainMenu"<br>
+"Characters/Hero_01"<br>
+      </div>
+      <br>
+2. Addressable Asset<br>
+      <ul>
+        <li>Texture, Prefab, Audio, Scene</li>
+        <li>전부 Addressable로 만들 수 있음</li>
+        <li>에셋 선택 → Inspector에서 Addressable 체크</li>
+      </ul>
+3. Group<br>
+에셋 묶음 단위<br>
+      <br>
+예:<br>
+      <ul>
+        <li>Default Local Group</li>
+        <li>Remote Characters</li>
+        <li>UI Group</li>
+      </ul>
+여기서 결정됨:<br>
+      <ul>
+        <li>로컬에 포함할지</li>
+        <li>서버에서 받을지</li>
+        <li>압축 방식</li>
+      </ul>
+4. 로드 방식 (비동기)<br>
+Addressables는 무조건 비동기 로드가 기본이야.<br>
+      <br>
+      <div>Addressables.LoadAssetAsync&lt;GameObject&gt;("Characters/Hero_01");</div>
+      <ul>
+        <li>로딩 중 멈추는 거 없음</li>
+        <li>모바일/콘솔에서 특히 중요</li>
+      </ul>
+      <br>
+5. 메모리 해제 (중요!)<br>
+쓴 만큼 반드시 Release 해줘야 함<br>
+      <br>
+      <div>Addressables.Release(handle);</div>
+      <br>
+이거 안 하면:<br>
+      <ul>
+        <li>메모리 누수</li>
+        <li>플레이 오래 할수록 느려짐</li>
+      </ul>
+      <h4><br>
+      </h4>
+      <h3>기본적인 사용 흐름</h3>
+      <h4>1. 패키지 설치: Window &gt; Package Manager에서 Addressables를 설치합니다.</h4>
+      <h4>2. 에셋 등록: 인스펙터 창에서 에셋의 'Addressable' 체크박스를 활성화합니다.</h4>
+(테스트이므로 문자열 주소와 그룹은 디폴트로 사용)<br>
+      <br>
+문자열 주소: "Assets/Prefab/MyCharacter.prefab"<br>
+그룹: Default Local Group로 지정<br>
+      <br>
+      <img style="width: 394px; height: 342px;" alt="" src="tutorial13/check_addressable.png"><br>
+      <br>
+      <h3>3. 코드 작성: 주소를 이용해 에셋을 불러옵니다.</h3>
+빈 게임오브젝트를 만들고 컴포넌트로 추가 합니다.<br>
+      <br>
+1. 문자열 주소로 로드하기 (Direct Address)<br>
+      <br>
+AddressableLoadByAddress.cs<br>
+      <div>using UnityEngine;<br>
+using UnityEngine.AddressableAssets; <span style="color: rgb(0, 153, 0);">// 어드레서블 네임스페이스</span><br>
+using UnityEngine.ResourceManagement.AsyncOperations; <span style="color: rgb(0, 153, 0);">// 비동기 핸들 관련</span><br>
+      <br>
+public class AddressableLoadByAddress : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; private GameObject spawnedObject;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 'S' 키를 누르면 로드 및 생성</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.S))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadAndSpawn("Assets/Prefab/MyCharacter.prefab");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 'D' 키를 누르면 메모리 해제 및 파괴</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.D))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ReleaseAsset();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void LoadAndSpawn(string address)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// InstantiateAsync는 로드와 생성을 동시에 수행합니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Addressables.InstantiateAsync(address).Completed += OnLoadCompleted;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void
+OnLoadCompleted(AsyncOperationHandle&lt;GameObject&gt; handle)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (handle.Status ==
+AsyncOperationStatus.Succeeded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+spawnedObject = handle.Result;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Debug.Log("에셋 로드 성공!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Debug.LogError("에셋 로드 실패");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void ReleaseAsset()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (spawnedObject != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 인스턴스를 파괴하고 메모리 참조 카운트를 감소시킵니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Addressables.ReleaseInstance(spawnedObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+spawnedObject = null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Debug.Log("에셋 해제 완료");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+      <br>
+2. AssetReference 방식<br>
+      <br>
+인스펙터뷰에서 myAssetRef를 지정한 오브젝트를 스폰하고 해제합니다.<br>
+      <br>
+AddressableLoadByRef.cs<br>
+      <div>using UnityEngine;<br>
+using UnityEngine.AddressableAssets;<br>
+      <br>
+public class AddressableLoadByRef : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 인스펙터에서 선택
+가능하도록 노출</span><br>
+&nbsp;&nbsp;&nbsp; public AssetReference myAssetRef;<br>
+&nbsp;&nbsp;&nbsp; private GameObject instantiatedObj;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 'S' 키를 누르면 로드 및 생성</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.S))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadAndSpawn();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 'D' 키를 누르면 메모리 해제 및 파괴</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.D))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ReleaseAsset();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; public void LoadAndSpawn()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(myAssetRef.RuntimeKeyIsValid()) <span style="color: rgb(0, 153, 0);">//
+유효한 에셋인지 확인</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+myAssetRef.InstantiateAsync().Completed += (handle) =&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+instantiatedObj = handle.Result;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void ReleaseAsset()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (instantiatedObj != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 변수(AssetReference)를 통해 직접 해제</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+myAssetRef.ReleaseInstance(instantiatedObj);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+instantiatedObj = null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+      <h4>4. 문자열 주소 이름 수정</h4>
+문자열 주소로 로드할때, 다른 문자열로 변경할수도 있습니다.<br>
+다음과 같이 Assressable을 "MyPlayer"로 수정 하였습니다.<br>
+      <br>
+코드에서도 수정된 이름으로 실행하면 됩니다.<br>
+      <span style="color: rgb(51, 51, 255);">LoadAndSpawn("MyPlayer");</span><br>
+      <br>
+      <img style="width: 393px; height: 315px;" alt="" src="tutorial13/check_addressable1.png"><br>
+      <br>
+      <h4>5. 그룹 변경</h4>
+Window &gt; Asset Management &gt; Addressables &gt; Groups 으로
+Addressables Groups 창을 오픈합니다.<br>
+      <br>
+      <img style="width: 702px; height: 622px;" alt="" src="tutorial13/group.png"><br>
+      <br>
+그룹을 생성합니다.<br>
+      <br>
+      <img style="width: 566px; height: 278px;" alt="" src="tutorial13/new_group.png"><br>
+      <br>
+그룹이름을 변경 합니다.<br>
+"Packed Assets"로 그룹이 추가 됩니다. 이름을 "PlayerGroup"으로 수정 합니다.<br>
+      <br>
+      <img style="width: 430px; height: 329px;" alt="" src="tutorial13/player_group.png"><br>
+      <br>
+Group을 "PlayerGroup"으로 지정 합니다.<br>
+      <br>
+      <img style="width: 390px; height: 307px;" alt="" src="tutorial13/myplayer.png"><br>
+      <br>
+      <span style="font-weight: bold;">그룹은 "빌드 및 배포 단위"입니다</span><br>
+      <br>
+코드에서 LoadAndSpawn("MyPlayer")라고 호출할 때는 그룹이 어디든 상관없이 유니티가 알아서 찾아줍니다. 하지만
+실제 게임을 빌드(파일로 추출)할 때 그룹의 진가가 나타납니다.<br>
+      <br>
+용도 구분: <br>
+- "기본 캐릭터는 설치 파일에 포함하고, 나중에 업데이트될 보스 몬스터는 서버에서 다운로드하게 하자!" 같은 결정을 그룹
+단위로 합니다.<br>
+      <br>
+설정 예시:&nbsp; <br>
+- Local Group: 앱 설치 시 같이 설치됨 (빠름).<br>
+- Remote Group: 나중에 필요할 때 서버에서 받아옴 (앱 용량 줄임).<br>
+      <br>
+코드상에서 하나씩 호출할 때는 그룹을 신경 쓰지 않아도 됩니다. 하지만 "이 캐릭터를 서버에 올릴지, 기기에 저장할지" 혹은
+"여러 캐릭터를 하나의 데이터 뭉치(Bundle)로 묶을지"를 결정하고 싶을 때 그룹을 나누게 됩니다.<br>
+      <br>
+      <h4>실전 활용: 레이블(Label)과 함께 쓰기</h4>
+그룹은 단순히 박스라면, 레이블(Label)은 박스 안에 포스트잇을 붙이는 것과 같습니다.<br>
+      <br>
+Address <br>
+      <ul>
+        <li>특정 에셋 딱 하나 로드&nbsp;&nbsp;&nbsp; </li>
+        <li>Addressables.LoadAssetAsync("MyPlayer")</li>
+      </ul>
+Label&nbsp;&nbsp;&nbsp; <br>
+      <ul>
+        <li>특정 태그가 붙은 에셋들 몽땅 로드&nbsp;&nbsp;&nbsp; </li>
+        <li>Addressables.LoadAssetsAsync("Stage1_Enemies", ...)</li>
+      </ul>
+Group&nbsp;&nbsp;&nbsp; <br>
+      <ul>
+        <li>파일 관리 및 서버 업데이트 단위</li>
+        <li>(코드보다는 에디터 설정 영역)</li>
+      </ul>
+      <br>
+참고)<br>
+      <a href="https://devshovelinglife.tistory.com/398">https://devshovelinglife.tistory.com/398</a><br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

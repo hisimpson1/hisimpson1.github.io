@@ -1,0 +1,506 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--Unity Addressables ABC1-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>Unity Addressables ABC1</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>Unity Addressables ABC1<br>
+</h1>
+
+<table border="0" width="800">
+
+  <tbody>
+    <tr>
+      <td>캐릭터 파츠를 변경하는 샘플 코드를 Addressables로 수정 해보겠습니다.<br>
+캐릭터 파츠를 변경하는 샘플 코드는 unity_character/tutorial01.html에 있는 코드입니다.<br>
+      <br>
+기존 코드CharacterCustomizer 클래스를 한번 보실까요?<br>
+<br>
+예전 CharacterCustomizer.cs 파일<br>
+      <div>using System.Collections.Generic;<br>
+using UnityEngine;<br>
+      <br>
+public enum PartType<br>
+{<br>
+&nbsp;&nbsp;&nbsp; Upper,<br>
+&nbsp;&nbsp;&nbsp; Pants,<br>
+&nbsp;&nbsp;&nbsp; Gloves,<br>
+&nbsp;&nbsp;&nbsp; Shoes,<br>
+&nbsp;&nbsp;&nbsp; Ear<br>
+}<br>
+      <br>
+public class CharacterCustomizer : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer
+baseMeshRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer earMeshRenderer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType,
+SkinnedMeshRenderer&gt; equippedParts = new();<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer upper1;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer upper2;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] Mesh ear1;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] Mesh ear2;<br>
+      <br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void EquipMesh(PartType type, Mesh partPrefab)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; earMeshRenderer.sharedMesh =
+partPrefab;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void EquipPart(PartType type,
+SkinnedMeshRenderer partPrefab)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 기존 파츠 제거</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(equippedParts.ContainsKey(type))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Destroy(equippedParts[type].gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 새 파츠 생성</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var newPart =
+Instantiate(partPrefab, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.rootBone =
+baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.bones =
+baseMeshRenderer.bones;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equippedParts[type] =
+newPart;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha1)) EquipPart(PartType.Upper, upper1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha2)) EquipPart(PartType.Upper, upper2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha3)) EquipMesh(PartType.Ear, ear1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha4)) EquipMesh(PartType.Ear, ear2);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+어드레서블로 변경된 CharacterCustomizer 클래스입니다.<br>
+      <br>
+CharacterCustomizer.cs<br>
+      <div>using System.Collections.Generic;<br>
+using UnityEngine;<br>
+using UnityEngine.AddressableAssets; <span style="color: rgb(0, 153, 0);">// 필수</span><br>
+using UnityEngine.Rendering;<br>
+using UnityEngine.ResourceManagement.AsyncOperations; <span style="color: rgb(0, 153, 0);">// 필수</span><br>
+      <br>
+public enum PartType<br>
+{<br>
+&nbsp;&nbsp;&nbsp; Upper,<br>
+&nbsp;&nbsp;&nbsp; Pants,<br>
+&nbsp;&nbsp;&nbsp; Gloves,<br>
+&nbsp;&nbsp;&nbsp; Shoes,<br>
+&nbsp;&nbsp;&nbsp; Ear<br>
+}<br>
+      <br>
+public class CharacterCustomizer : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer
+baseMeshRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] SkinnedMeshRenderer earMeshRenderer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 인스턴스화된 객체를
+관리 (해제용)</span><br>
+&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType, GameObject&gt;
+spawnedParts = new();<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 어드레서블 로딩 상태
+및 메모리 해제용 핸들 </span><br>
+&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType,
+AsyncOperationHandle&lt;GameObject&gt;&gt; partHandles = new();<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 이제 프리팹 대신
+'참조'를 인스펙터에 노출합니다.</span><br>
+&nbsp;&nbsp;&nbsp; [SerializeField] AssetReference upper1Ref;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] AssetReference upper2Ref;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] AssetReference ear1MeshRef; <span style="color: rgb(0, 153, 0);">// Mesh 전용 참조</span><br>
+&nbsp;&nbsp;&nbsp; [SerializeField] AssetReference ear2MeshRef;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void EquipMesh(PartType type, AssetReference
+meshRef)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (meshRef == null ||
+!meshRef.RuntimeKeyIsValid()) return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// AssetReference를 사용할 때는 어떤 타입으로 로드할지
+&lt;Mesh&gt;를 명시해줘야 합니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+meshRef.LoadAssetAsync&lt;Mesh&gt;().Completed += (handle) =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(handle.Status == AsyncOperationStatus.Succeeded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+earMeshRenderer.sharedMesh = handle.Result;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void EquipPart(PartType type, AssetReference
+partRef)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (partRef == null ||
+!partRef.RuntimeKeyIsValid()) return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 1. 기존 파츠 및 핸들 해제 (메모리 누수 방지 핵심!)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReleasePart(type);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 2. 비동기 생성 시작</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var handle =
+partRef.InstantiateAsync(transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; partHandles[type] = handle;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handle.Completed += (op)
+=&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(op.Status == AsyncOperationStatus.Succeeded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+GameObject newPartObj = op.Result;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (newPartObj.TryGetComponent&lt;SkinnedMeshRenderer&gt;(out var nSmr))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nSmr.rootBone = baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nSmr.bones = baseMeshRenderer.bones;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+spawnedParts[type] = newPartObj;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void ReleasePart(PartType type)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(partHandles.ContainsKey(type))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">//
+Addressables를 통해 생성된 객체는 반드시 Addressables.ReleaseInstance로 지워야 합니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Addressables.ReleaseInstance(partHandles[type]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+partHandles.Remove(type);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+spawnedParts.Remove(type);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; void Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha1)) EquipPart(PartType.Upper, upper1Ref);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha2)) EquipPart(PartType.Upper, upper2Ref);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha3)) EquipMesh(PartType.Ear, ear1MeshRef);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(Input.GetKeyDown(KeyCode.Alpha4)) EquipMesh(PartType.Ear, ear2MeshRef);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 오브젝트 파괴 시 전체 메모리 해제</span><br>
+&nbsp;&nbsp;&nbsp; private void OnDestroy()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var key in new
+List&lt;PartType&gt;(partHandles.Keys))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ReleasePart(key);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+인스펙트창에서 upper1Ref, upper2Ref, ear1MeshRef, ear2MeshRef 값은 어드레스블이 체크된 리소스로 드래그 합니다.<br>
+      <br>
+      <img style="width: 389px; height: 356px;" alt="" src="tutorial14/inspect.png"><br>
+      <br>
+실행 화면은 다음과 같습니다.<br>
+      <br>
+      <img style="width: 338px; height: 493px;" alt="" src="tutorial14/run.png"><br>
+      <br>
+<br>
+기존 코드와 Addressable이 적용된 코드를 하나하나 비교 해보겠습니다.<br>
+      <br>
+      <h4>헤더 추가</h4>
+      <div>using UnityEngine.AddressableAssets;<br>
+using UnityEngine.ResourceManagement.AsyncOperations;<br>
+      </div>
+
+      <br>
+      <h4>오브젝트 Dictionary </h4>
+기존<br>
+      <div>private Dictionary&lt;PartType, SkinnedMeshRenderer&gt; equippedParts = new();<br>
+      </div>
+Addressable<br>
+      <div>private Dictionary&lt;PartType, GameObject&gt; spawnedParts = new();<br>
+private Dictionary&lt;PartType, AsyncOperationHandle&lt;GameObject&gt;&gt; partHandles = new();<br>
+      </div>
+      <br>
+partHandles은 어드레서블 로딩 상태 및 메모리 해제용 핸들입니다.<br>
+자세한 설명은 마지막에 Addressables.ReleaseInstance에서 자세하게 설명 하겠습니다.<br>
+      <br>
+      <span style="color: rgb(204, 0, 0);">AsyncOperationHandle 핸들이 필요한 이유는 비동기 처리이기도 하고, 로딩중에 취소 할수도 있기 때문에 핸들을 별도로 들고 있는게 좋습니다.</span><br>
+      <br>
+      <h4>인스펙트뷰의 참조 오브젝트</h4>
+기존<br>
+      <div>[SerializeField] SkinnedMeshRenderer upper1;<br>
+[SerializeField] SkinnedMeshRenderer upper2;<br>
+[SerializeField] Mesh ear1;<br>
+[SerializeField] Mesh ear2;<br>
+      </div>
+Addressable<br>
+      <div>[SerializeField] AssetReference upper1Ref;<br>
+[SerializeField] AssetReference upper2Ref;<br>
+[SerializeField] AssetReference ear1MeshRef;<br>
+[SerializeField] AssetReference ear2MeshRef;<br>
+      </div>
+      <br>
+Addressable 지정이 안된 게임오브젝트를 참조하면 실행중에 에러가 발생합니다.<br>
+      <br>
+      <h4>EquipMesh 처리</h4>
+기존 코드<br>
+      <div>public void EquipMesh(PartType type, Mesh partPrefab)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; earMeshRenderer.sharedMesh = partPrefab;<br>
+}<br>
+      </div>
+Addressable<br>
+      <div>public void EquipMesh(PartType type, AssetReference meshRef)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; if (meshRef == null || !meshRef.RuntimeKeyIsValid()) return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; meshRef.LoadAssetAsync&lt;Mesh&gt;().Completed += (handle) =&gt;<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (handle.Status == AsyncOperationStatus.Succeeded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; earMeshRenderer.sharedMesh = handle.Result;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; };<br>
+}<br>
+      </div>
+      <br>
+meshRef.LoadAssetAsync&lt;Mesh&gt;().Completed로 비동기 로딩이 완료되면 sharedMesh를 지정합니다.<br>
+      <br>
+      <h4>EquipPart 처리</h4>
+기존 코드<br>
+      <div>public void EquipPart(PartType type, SkinnedMeshRenderer partPrefab)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 기존 파츠 제거</span><br>
+&nbsp;&nbsp;&nbsp; if (equippedParts.ContainsKey(type))<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Destroy(equippedParts[type].gameObject);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 새 파츠 생성</span><br>
+&nbsp;&nbsp;&nbsp; var newPart = Instantiate(partPrefab, transform);<br>
+&nbsp;&nbsp;&nbsp; newPart.rootBone = baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp; newPart.bones = baseMeshRenderer.bones;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; equippedParts[type] = newPart;<br>
+}<br>
+      </div>
+Addressable<br>
+      <div>public void EquipPart(PartType type, AssetReference partRef)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; if (partRef == null || !partRef.RuntimeKeyIsValid()) return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 1. 기존 파츠 및 핸들 해제 (메모리 누수 방지 핵심!)</span><br>
+&nbsp;&nbsp;&nbsp; ReleasePart(type);<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 2. 비동기 생성 시작</span><br>
+&nbsp;&nbsp;&nbsp; var handle = partRef.InstantiateAsync(transform);<br>
+&nbsp;&nbsp;&nbsp; partHandles[type] = handle;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; handle.Completed += (op) =&gt;<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (op.Status == AsyncOperationStatus.Succeeded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GameObject newPartObj = op.Result;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(newPartObj.TryGetComponent&lt;SkinnedMeshRenderer&gt;(out var nSmr))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nSmr.rootBone = baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nSmr.bones = baseMeshRenderer.bones;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spawnedParts[type] = newPartObj;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; };<br>
+}<br>
+      </div>
+      <br>
+비동기 처리라서 로딩이 완료되면 새파츠 생성을 처리하고 있습니다.<br>
+      <br>
+      <h4>객체 릴리즈</h4>
+기존<br>
+      <div>Destroy(equippedParts[type].gameObject);</div>
+Addressable<br>
+      <div>private void ReleasePart(PartType type)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; if (partHandles.ContainsKey(type))<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Addressables를 통해 생성된 객체는 반드시 Addressables.ReleaseInstance로 지워야 합니다.</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Addressables.ReleaseInstance(partHandles[type]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; partHandles.Remove(type);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spawnedParts.Remove(type);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+Addressables.ReleaseInstance()에서 partHandles 대신 spawnedParts로 ReleaseInstance 가능합니다.<br>
+      <br>
+      <span style="font-weight: bold;">그럼에도 불구하고 '핸들'로 ReleaseInstance 해야 하는 예외 상황이 있습니다.</span><br>
+      <br>
+1. 로딩 도중에 취소할 때<br>
+만약 에셋이 너무 커서 로딩하는 데 3초가 걸린다고 가정해 봅시다.<br>
+      <ul>
+        <li>유저가 1초 만에 "아, 이거 말고 다른 거 입을래"라고 취소 버튼을 누르면?</li>
+        <li>이때 spawnedParts는 아직 null이라 아무것도 할당되어 있지 않지만, partHandles는 이미 생성되어 로딩을 진행 중입니다.</li>
+        <li>Addressables.ReleaseInstance(partHandles[type])를 하면 나중에 생성될 물건까지 예약 취소가 되며 메모리가 깨끗해집니다.</li>
+      </ul>
+2. 여러 개를 한 번에 불러올 때 (1:N 관계 가능성)<br>
+만약 나중에 LoadAssetsAsync(복수형)를 써서 "Stage1에 등장하는 몬스터 10마리"를 한꺼번에 불러온다면?<br>
+      <ul>
+        <li>Handle: 1개 (이 로딩 작업 전체를 관리)</li>
+        <li>Instances: 10개 (생성된 몬스터들)</li>
+        <li>이런 경우에는 핸들 하나만 Release 해도 10마리의 메모리가 한 번에 관리됩니다.</li>
+      </ul>
+      <br>
+      <h4>어떻게 1:N 해제가 가능한가요?</h4>
+유니티 어드레서블 시스템은 "한 번의 로딩 작업(Handle)"이 만들어낸 모든 결과물을 내부적으로 묶어서 관리합니다.<br>
+코드 예를 하나 더 들어 보겠습니다.<br>
+      <br>
+      <div>AsyncOperationHandle&lt;IList&lt;GameObject&gt;&gt; groupHandle;<br>
+      <br>
+void LoadMonsters()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// "Stage1" 태그가 붙은 모든 에셋을 로드</span><br>
+&nbsp;&nbsp;&nbsp; groupHandle = Addressables.LoadAssetsAsync&lt;GameObject&gt;("Stage1", (monster) =&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 로드될 때마다 한 마리씩 생성 (여기서 10마리가 생성된다면)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Instantiate(monster);<br>
+&nbsp;&nbsp;&nbsp; });<br>
+}<br>
+      <br>
+void ClearStage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 이 핸들 하나만 놓아주면, "Stage1"로 로드된 10종류의 에셋 참조가 모두 해제됩니다.</span><br>
+&nbsp;&nbsp;&nbsp; Addressables.Release(groupHandle);<br>
+}<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">주의할 점: Instantiate vs InstantiateAsync</span><br>
+      <br>
+여기서 헷갈리지 말아야 할 중요한 포인트가 하나 있습니다.<br>
+      <ul>
+        <li>Addressables.InstantiateAsync를 10번 호출했다면: 핸들도 10개가 생깁니다. 이 경우엔 핸들 10개를 각각 Release 해야 합니다.</li>
+        <li>Addressables.LoadAssetsAsync로 에셋 뭉치를 가져왔다면: 핸들은 딱 1개입니다. 이 핸들 하나가 10개 에셋의 메모리 권한을 모두 쥐고 있습니다.</li>
+      </ul>
+      <br>
+코드:<br>
+      <a href="tutorial14/source/old_CharacterCustomizer.cs">old_CharacterCustomizer.cs</a><br>
+      <a href="tutorial14/source/CharacterCustomizer.cs">CharacterCustomizer.cs</a><br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

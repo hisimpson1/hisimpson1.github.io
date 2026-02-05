@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--Change Parts3-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>Change Parts3</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>Change Parts3<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>첫번째,&nbsp; Change Parts에서는 리소스 설정 및 복장을 착용하는 간단한 코드,<br>
+두번째, Change Parts2에서는 enum을 하나로 합치되, 카테고리 필드를 추가해서 착용형인지 메쉬형인지 구분하는 방식입니다.<br>
+      <br>
+이번에 사용할 방식은, 인터페이스/추상화 활용 방식입니다.<br>
+PartCategory를 사용하지 않고, 인터페이스 기반으로 공통 처리하는 방법입니다.<br>
+      <br>
+실행화면입니다.<br>
+      <br>
+      <img style="width: 572px; height: 576px;" alt="" src="tutorial03/run.png"><br>
+<br>
+      <br>
+      <img style="width: 913px; height: 683px;" alt="" src="tutorial03/tiny_uml.png"><br>
+      <br>
+주요 클래스의 특징은 다음과 같습니다.<br>
+      <br>
+IEquippablePart:<br>
+장착 가능한 아이템의 추상 인터페이스입니다. Equip() 메서드를 통해 CharacterCustomizer에게 자신을 어떻게 장착할지 명령합니다.<br>
+      <br>
+PartData(Abstract):<br>
+모든 파츠의 기본 데이터를 담는 ScriptableObject입니다. UI용 이름과 아이콘을 가집니다.<br>
+      <br>
+MeshPartData:<br>
+단순 메쉬 교체형(귀, 머리 등) 파츠입니다. sharedMesh를 교체하는 로직을 가집니다.<br>
+      <br>
+WearablePartData:<br>
+의상형(상체, 하체 등) 파츠입니다. 프리팹을 생성하고 본(Bone) 정보를 동기화하는 로직을 가집니다.<br>
+      <br>
+CharacterCustomizer:<br>
+실제 캐릭터의 SkinnedMeshRenderer들을 관리하고, 실질적인 메쉬 할당 및 인스턴스화를 수행하는 Context 역할입니다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255);">이 구조는  새로운 장착 타입(예: 이펙트 파츠, 무기 등)이 필요하면 </span><code style="color: rgb(51, 51, 255);" data-path-to-node="6,1,0" data-index-in-node="41">IEquippablePart</code><span style="color: rgb(51, 51, 255);">를 상속받는 클래스만 추가하면 </span><code style="color: rgb(51, 51, 255);" data-path-to-node="6,1,0" data-index-in-node="73">CharacterCustomizer</code><span style="color: rgb(51, 51, 255);">의 기존 코드를 거의 수정하지 않고 확장할 수 있습니다.</span><br>
+      <br>
+      <br>
+ScriptableObject [CreateAssetMenu(menuName = "Character/Part/Mesh")]로 ear 생성<br>
+      <img style="width: 390px; height: 218px;" alt="" src="tutorial03/ear.png"><br>
+      <br>
+ScriptableObject [CreateAssetMenu(menuName = "Character/Part/Wearable")]로 upper 생성<br>
+      <img style="width: 395px; height: 217px;" alt="" src="tutorial03/upper.png"><br>
+      <br>
+PartType.cs<br>
+      
+      <div>public enum PartType<br>
+{<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Wearable</span><br>
+&nbsp;&nbsp;&nbsp; Upper,<br>
+&nbsp;&nbsp;&nbsp; Pants,<br>
+&nbsp;&nbsp;&nbsp; Gloves,<br>
+&nbsp;&nbsp;&nbsp; Shoes,<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Mesh</span><br>
+&nbsp;&nbsp;&nbsp; Ear,<br>
+&nbsp;&nbsp;&nbsp; Hair,<br>
+&nbsp;&nbsp;&nbsp; Face,<br>
+&nbsp;&nbsp;&nbsp; Tail<br>
+}<br>
+      </div>
+
+      <br>
+PartData.cs<br>
+      <div>using UnityEngine;<br>
+      <br>
+public abstract class PartData : ScriptableObject<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [Header("Common Info")]<br>
+&nbsp;&nbsp;&nbsp; public string partName;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 파츠 이름</span><br>
+&nbsp;&nbsp;&nbsp; public Sprite icon;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// UI 아이콘</span><br>
+}<br>
+      </div>
+      <br>
+IEquippablePart.cs<br>
+      <div>public interface IEquippablePart<br>
+{<br>
+&nbsp;&nbsp;&nbsp; PartType Type { get; }<br>
+&nbsp;&nbsp;&nbsp; void Equip(CharacterCustomizer customizer);<br>
+}<br>
+      </div>
+      <br>
+MeshPartData.cs<br>
+      <div>using UnityEngine;<br>
+      <br>
+[CreateAssetMenu(menuName = "Character/Part/Mesh")]<br>
+public class MeshPartData : PartData, IEquippablePart<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public Mesh mesh;<br>
+&nbsp;&nbsp;&nbsp; public PartType type; <span style="color: rgb(0, 153, 0);">// Ear, Hair, Face, Tail 등</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp; public PartType Type =&gt; type;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void Equip(CharacterCustomizer customizer)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customizer.EquipMesh(this);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+WearablePartData.cs<br>
+      <div>using UnityEngine;<br>
+      <br>
+[CreateAssetMenu(menuName = "Character/Part/Wearable")]<br>
+public class WearablePartData : PartData, IEquippablePart<br>
+{<br>
+&nbsp;&nbsp;&nbsp; public SkinnedMeshRenderer prefab;<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// Upper, Pants, Gloves, Shoes 등</span><br>
+&nbsp;&nbsp;&nbsp; public PartType type; <span style="color: rgb(0, 153, 0);">// 인스펙터에서 지정</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp; public PartType Type =&gt; type; <span style="color: rgb(0, 153, 0);">// 인터페이스 구현</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp; public void Equip(CharacterCustomizer customizer)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customizer.EquipWearable(this);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+CharacterCustomizer.cs<br>
+      <div>using System.Collections.Generic;<br>
+using UnityEngine;<br>
+      <br>
+public class CharacterCustomizer : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [Header("Base Character")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer baseMeshRenderer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("Mesh Swap Renderers")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer earRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer hairRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer faceRenderer;<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private SkinnedMeshRenderer tailRenderer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 현재 장착된 착용형 파츠 관리</span><br>
+&nbsp;&nbsp;&nbsp; private Dictionary&lt;PartType, SkinnedMeshRenderer&gt; equippedWearables = new();<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 공통 Equip 메서드</span><br>
+&nbsp;&nbsp;&nbsp; public void Equip(IEquippablePart part)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (part == null) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; part.Equip(this);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">#region 내부 장착 로직 (Wearable / Mesh)</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 착용형 파츠 장착</span><br>
+&nbsp;&nbsp;&nbsp; public void EquipWearable(WearablePartData partData)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (partData == null || partData.prefab == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (equippedWearables.TryGetValue(partData.Type, out var oldPart))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Destroy(oldPart.gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var newPart = Instantiate(partData.prefab, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.rootBone = baseMeshRenderer.rootBone;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newPart.bones = baseMeshRenderer.bones;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equippedWearables[partData.Type] = newPart;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 메쉬 교체형 파츠 장착</span><br>
+&nbsp;&nbsp;&nbsp; public void EquipMesh(MeshPartData partData)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (partData == null || partData.mesh == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SkinnedMeshRenderer targetRenderer = partData.Type switch<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Ear =&gt; earRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Hair =&gt; hairRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Face =&gt; faceRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PartType.Tail =&gt; tailRenderer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ =&gt; null<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (targetRenderer != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; targetRenderer.sharedMesh = partData.mesh;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">#endregion</span><br>
+}<br>
+      </div>
+      <br>
+UIEquipButton.cs<br>
+      <div>using UnityEngine;<br>
+using UnityEngine.UI;<br>
+      <br>
+public class UIEquipButton : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp; [Header("Target Customizer")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private CharacterCustomizer customizer;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("Part to Equip: wear")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private PartData upperPartData;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("Part to Equip: attach")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private PartData earPartData;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; [Header("UI Button")]<br>
+&nbsp;&nbsp;&nbsp; [SerializeField] private Button equipButton;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void Awake()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (equipButton != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equipButton.onClick.AddListener(OnEquipClicked);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; private void OnEquipClicked()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IEquippablePart equippablePart = upperPartData as IEquippablePart;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (customizer != null &amp;&amp; equippablePart != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customizer.Equip(equippablePart);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equippablePart = earPartData as IEquippablePart;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (customizer != null &amp;&amp; equippablePart != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customizer.Equip(equippablePart);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+소스:<br>
+      <a href="tutorial03/source/PartType.cs">PartType.cs</a><br>
+      <a href="tutorial03/source/PartData.cs">PartData.cs</a><br>
+      <a href="tutorial03/source/IEquippablePart.cs">IEquippablePart.cs</a><br>
+      <a href="tutorial03/source/MeshPartData.cs">MeshPartData.cs</a><br>
+      <a href="tutorial03/source/WearablePartData.cs">WearablePartData.cs</a><br>
+      <a href="tutorial03/source/CharacterCustomizer.cs">CharacterCustomizer.cs</a><br>
+      <a href="tutorial03/source/UIEquipButton.cs">UIEquipButton.cs</a><br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>
