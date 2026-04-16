@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--Texture Sampler-->
+  
+  <style type="text/css">
+table {
+    border-collapse: collapse;
+    line-height: 160%;
+    font-size: 11pt;
+    margin: 0px;
+    font-family: 맑은 고딕, 바탕, Courier New, Courier;
+}
+
+.lineTable,
+.lineTable th,
+.lineTable td {
+    border: 1px solid black;
+}
+
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>Texture Sampler</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+  
+  <style type="text/css"><!--br {mso-data-placement:same-cell;}--></style>
+</head><body>
+<h1>Texture Sampler<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>URP에서 텍스쳐 사용시 다음 명령에 대해 자세하게 알아 본다.<br>
+      <br>
+TEXTURE2D: 머티리얼의 _BaseMap 텍스처 리소스를 참조합니다.<br>
+SAMPLER: 필터링/랩핑 모드 등 샘플링 상태를 나타냅니다.<br>
+      <br>
+      <span style="color: rgb(51, 51, 255); font-weight: bold;">TEXTURE2D(_BaseMap);</span><br style="color: rgb(51, 51, 255); font-weight: bold;">
+      <span style="color: rgb(51, 51, 255); font-weight: bold;">SAMPLER(sampler_BaseMap);</span><br>
+      <br>
+      <h3 dir="auto" node="[object Object]">1. Built-in vs URP/HDRP 스타일
+비교 (핵심 차이)</h3>
+      <br>
+      <table class="lineTable">
+        <thead><tr>
+          <th data-col-size="sm">항목</th>
+          <th data-col-size="lg">Built-in (CG)</th>
+          <th data-col-size="lg">URP / HDRP (HLSL)</th>
+          <th data-col-size="lg">왜 바뀌었나?</th>
+        </tr>
+        </thead><tbody>
+          <tr>
+            <td data-col-size="sm">선언 방식</td>
+            <td data-col-size="lg"><code>sampler2D _MainTex;</code></td>
+            <td data-col-size="lg"><code>TEXTURE2D(_MainTex);</code> <code>SAMPLER(sampler_MainTex);</code></td>
+            <td data-col-size="lg">DX11+ / Vulkan / Metal 호환성 + 샘플러 재사용
+가능</td>
+          </tr>
+          <tr>
+            <td data-col-size="sm">샘플링 함수</td>
+            <td data-col-size="lg"><code>tex2D(_MainTex, uv)</code></td>
+            <td data-col-size="lg"><code>SAMPLE_TEXTURE2D(_MainTex,
+sampler_MainTex, uv)</code></td>
+            <td data-col-size="lg">명시적 + 성능 최적화 가능</td>
+          </tr>
+          <tr>
+            <td data-col-size="sm">sampler2D 안에</td>
+            <td data-col-size="lg">텍스처 + 샘플링 상태 같이 묶임</td>
+            <td data-col-size="lg">텍스처와 샘플러 분리</td>
+            <td data-col-size="lg">여러 텍스처가 같은 샘플링 상태 공유 가능</td>
+          </tr>
+          <tr>
+            <td data-col-size="sm">SRP Batcher 호환</td>
+            <td data-col-size="lg">불가</td>
+            <td data-col-size="lg">가능 (매우 중요!)</td>
+            <td data-col-size="lg">배칭 성능 ↑</td>
+          </tr>
+        </tbody>
+      </table>
+      <p dir="auto" style="">URP에서는 SRP Batcher 때문에 이 분리된 방식이 거의 필수입니다.</p>
+      <br>
+      <h3 dir="auto" node="[object Object]">2. 각각의 의미 자세히</h3>
+      <p dir="auto" node="[object Object]" style=""><strong node="[object Object]">TEXTURE2D(_BaseMap);</strong></p>
+      <ul dir="auto" node="[object Object]">
+        <li node="[object Object]"><strong node="[object Object]">Texture2D</strong>
+타입의 변수를 선언합니다. (HLSL 기본 타입)</li>
+        <li node="[object Object]"><span>_BaseMap</span>이라는 이름의 <strong node="[object Object]">텍스처 리소스</strong>만 가리킵니다.</li>
+        <li node="[object Object]"><strong node="[object Object]">텍스처
+데이터</strong>(픽셀 색상들)만 가지고 있고, <strong node="[object Object]">어떻게 샘플링할지</strong>(필
+터링, wrap 모드 등)는 모릅니다.</li>
+        <li node="[object Object]">이 한 줄만으로는 샘플링을 할 수 없습니다!</li>
+      </ul>
+      <p dir="auto" node="[object Object]" style=""><strong node="[object Object]">SAMPLER(sampler_BaseMap);</strong></p>
+      <ul dir="auto" node="[object Object]">
+        <li node="[object Object]"><strong node="[object Object]">SamplerState</strong>
+타입의 변수를 선언합니다.</li>
+        <li node="[object Object]">이름 규칙 : <strong node="[object Object]">sampler + _ + 텍스처이름</strong> (반드시 이렇게 해야 Unity가
+자동 연결)</li>
+        <li node="[object Object]">이 변수는 <strong node="[object Object]">필
+터링 모드</strong>(Linear, Point), <strong node="[object Object]">Wrap 모드</strong>(Repeat,
+Clamp), <strong node="[object Object]">Aniso 레벨</strong> 등을 결정합니다.</li>
+        <li node="[object Object]">Material Inspector에서 설정한 텍스처의 <strong node="[object Object]">Filter Mode / Wrap Mode</strong>가 여기로 들어옵니다.</li>
+      </ul>
+      <p dir="auto" node="[object Object]" style="">→ 결국 두 개가 한 쌍으로
+동작해야 텍스처를 읽을 수 있어요.</p>
+      <h3 dir="auto" node="[object Object]">3. 실제 샘플링하는 코드</h3>
+      <div>half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap,
+uv);<br>
+      </div>
+      <ul dir="auto" node="[object Object]">
+        <li node="[object Object]"><span>_BaseMap</span> → 텍스처 데이터</li>
+        <li node="[object Object]"><span>sampler_BaseMap</span> → 샘플링 방법</li>
+        <li node="[object Object]"><span>uv</span> → 좌표</li>
+      </ul>
+      <p dir="auto" node="[object Object]" style="">이 함수는 내부적으로 대략 이런
+느낌입니다:</p>
+      <div><span style="color: rgb(0, 153, 0);">// 개념적 pseudo-code</span><br>
+half4 SAMPLE_TEXTURE2D(Texture2D tex, SamplerState samp, float2 uv)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; return tex.Sample(samp, uv);<br>
+}<br>
+      </div>
+      <br>
+      <h3 dir="auto" node="[object Object]">4. 이름 규칙 꼭 지켜야 하는 이유<br>
+      </h3>
+텍스쳐 이름 ---&gt; sampler 이름<br>
+_BaseMap&nbsp; ---&gt; sampler_BaseMap<br>
+_MainTex ---&gt; sampler_MainTex<br>
+_DetailAlbedo&nbsp; ---&gt;&nbsp; sampler_DetailAlbedo<br>
+      <br>
+이름이 맞으면<br>
+→ TRANSFORM_TEX 가능<br>
+→ Unity 자동 연결<br>
+      <br>
+이름이 안맞으면<br>
+→ Inspector에서 Tiling/Offset이 안 먹히거나<br>
+→ 아예 검은색/흰색으로 나오는 버그 발생<br>
+      <br>
+      <h3 dir="auto" node="[object Object]">5. 언제 sampler를 따로 만들어 쓸가?
+(고급)<br>
+      </h3>
+      <div>SamplerState sampler_linear_clamp;<br>
+SamplerState sampler_point_repeat;<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// ...</span><br>
+      <br>
+half4 col1 = SAMPLE_TEXTURE2D(_BaseMap, sampler_linear_clamp, uv);<br>
+half4 col2 = SAMPLE_TEXTURE2D(_NoiseMap, sampler_point_repeat, uv * 20);<br>
+      </div>
+      <br>
+→ 같은 텍스처를 다른 샘플링 방식으로 여러 번 쓰고 싶을 때 유용합니다.<br>
+      <br>
+      <h3 dir="auto" node="[object Object]">요약 한 방에</h3>
+      <ul dir="auto" node="[object Object]">
+        <li node="[object Object]"><strong node="[object Object]">TEXTURE2D(_XXX)</strong>
+→ 픽셀 데이터만 담당</li>
+        <li node="[object Object]"><strong node="[object Object]">SAMPLER(sampler_XXX)</strong>
+→ 필터링/Wrap 방식만 담당</li>
+        <li node="[object Object]">둘이 한 쌍이 되어야 SAMPLE_TEXTURE2D로 색을 읽을
+수 있음</li>
+        <li node="[object Object]">이름 규칙 엄격히 지켜야 Tiling/Offset,
+Inspector 연동이 정상 동작</li>
+        <li node="[object Object]">URP/HDRP에서는 sampler2D 스타일 거의 안 씀
+(호환성 + 배칭 문제)</li>
+      </ul>
+      <br>
+      <br>
+      <br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

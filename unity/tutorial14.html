@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><!--Unity Addressables ABC1-->
+<html><head>
+<!--Unity Addressables ABC1-->
 
 
   
@@ -169,6 +170,11 @@ meshRef)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (meshRef == null ||
 !meshRef.RuntimeKeyIsValid()) return;<br>
       <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (meshRef.OperationHandle.IsValid())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Addressables.Release(meshRef.OperationHandle);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// AssetReference를 사용할 때는 어떤 타입으로 로드할지
 &lt;Mesh&gt;를 명시해줘야 합니다.</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -324,6 +330,11 @@ Addressable<br>
 {<br>
 &nbsp;&nbsp;&nbsp; if (meshRef == null || !meshRef.RuntimeKeyIsValid()) return;<br>
       <br>
+&nbsp;&nbsp;&nbsp; if (meshRef.OperationHandle.IsValid())<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Addressables.Release(meshRef.OperationHandle);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
 &nbsp;&nbsp;&nbsp; meshRef.LoadAssetAsync&lt;Mesh&gt;().Completed += (handle) =&gt;<br>
 &nbsp;&nbsp;&nbsp; {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (handle.Status == AsyncOperationStatus.Succeeded)<br>
@@ -336,6 +347,18 @@ Addressable<br>
       <br>
 meshRef.LoadAssetAsync&lt;Mesh&gt;().Completed로 비동기 로딩이 완료되면 sharedMesh를 지정합니다.<br>
       <br>
+      <span style="color: rgb(153, 0, 0);">Mesh는 핸들을 해제하지 않고 로딩하면 접근 에러가 발생합니다.</span><br>
+Addressables.Release(meshRef.OperationHandle);<br>
+      <br>
+왜 InstantiateAsync는 괜찮은데 LoadAssetAsync는 안 터질까?<br>
+      <ul>
+        <li>InstantiateAsync() → 매번 새 인스턴스 생성 (정상)</li>
+        <li>LoadAssetAsync() → AssetReference 내부에 단일 핸들 보관 (중복 금지)</li>
+      </ul>
+이 차이 때문입니다.<br>
+      <br>
+AssetReference에 대해 LoadAssetAsync를 중복 호출했기 때문에 중복 에러가 발생합니다.<br>
+그래서, meshRef.OperationHandle을 해제 해야 합니다.
       <h4>EquipPart 처리</h4>
 기존 코드<br>
       <div>public void EquipPart(PartType type, SkinnedMeshRenderer partPrefab)<br>

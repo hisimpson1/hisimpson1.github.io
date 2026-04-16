@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--Blueprint Actor-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>Blueprint Actor</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>Blueprint Actor<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>블루프린트에서 액터를 추가하는 방법에 대해 알아 보겠습니다.<br>
+      큐브를 10개로 이어서 한줄로 추가 해보겠습니다.<br>
+<br>
+1. 오른쪽 마우스를 클릭해서 블루 프린트 &gt; 블루 프린트 클래스 &gt; 액터를 생성<br>
+여기서 파일 이름은 BP_GROUND입니다.<br>
+      <br>
+2. 컴포넌트 추가 &gt; Cube를 추가 합니다.<br>
+      <br>
+3. 스케일을 수정하고 머티리얼을 지정합니다.<br>
+스케일 : 10, 10, 0.1<br>
+머티리얼 : M_Ground_Moss<br>
+      <br>
+      <img style="width: 376px; height: 596px;" alt="" src="tutorial03/BP_GROUND_SCALE.png"><br>
+      <br>
+      4. 화살표(Arrow)를 추가 합니다.<br>
+      <br>
+위치: 500, 0, 0<br>
+      <br>
+      <img style="width: 1004px; height: 536px;" alt="" src="tutorial03/arrow.png"><br>
+      <br>
+5. BP_GROUND 블루프틴트에서 함수를 추가 합니다.<br>
+함수 이름은 GetAttachTransform입니다.<br>
+      <br>
+6. 출력 버튼으로 리턴값을 설정 합니다.<br>
+      <br>
+리턴값 타입 : 트랜스폼<br>
+리턴값 이름: AttachTransform<br>
+      <br>
+      <img style="width: 890px; height: 476px;" alt="" src="tutorial03/return_value.png"><br>
+      <br>
+7. Arrow의 월드트랜스폼 값을 얻어 옵니다.<br>
+      <br>
+컴포넌트 패널에서 Arrow 컴포넌트를 드래그 합니다.<br>
+Get World Transform으로 월드 트랜스폼을 구합니다.<br>
+      <br>
+      <img style="width: 881px; height: 482px;" alt="" src="tutorial03/arrow_worldtransform.png"><br>
+      <br>
+8. Arrow 월드 트랜스폼 값을 Return Node의 "Attach Transform" 핀에 연결 합니다.<br>
+      <br>
+완성된 함수는 다음과 같습니다.<br>
+      <br>
+      <img style="width: 654px; height: 321px;" alt="" src="tutorial03/attach_transform_function.png"><br>
+      <br>
+      <br>
+9. GameMode에 AddGround 함수를 추가하고 BP_GROUND를 스폰 해보겠습니다.<br>
+      <br>
+스폰은 "Spawn Actor from Class"로 노드를 생성합니다.<br>
+      <br>
+      <img style="width: 878px; height: 376px;" alt="" src="tutorial03/gamemode_spawn.png"><br>
+      <br>
+10. Class를 BP_GROUND로 지정 합니다.<br>
+      <br>
+11. Spawn Transform은 변수로 승격하고 이름을 NewSpawnTransform으로 변경 합니다.<br>
+      <br>
+새로 추가되는 액터는 NewSpawnTransform 위치에 스폰이 됩니다.<br>
+      <br>
+      <img style="width: 685px; height: 347px;" alt="" src="tutorial03/GameMode_spawn1.png"><br>
+      <br>
+12. BP_GROUND로 형변환 합니다.<br>
+      <br>
+Cast To BP_GROUND 노드를 생성합니다.<br>
+      <br>
+      <img style="width: 1464px; height: 431px;" alt="" src="tutorial03/spawn_ground.png"><br>
+      <br>
+13.&nbsp; BP_GROUND의 GetAttachTransform으로 NewSpawnTransform 변수 값을 셋팅 합니다.<br>
+      <br>
+      <br>
+      <h4>게임 모드에서 BP_GROUND를 여러개 배치해 보겠습니다.</h4>
+      <br>
+14. gamemode 이벤트 그래프에서 Event BeginPlay를 추가 합니다.<br>
+      <br>
+      <br>
+15. 그라운드를 여러개 배치하기 위해 흐름 제어의 For Loop 노드를 생성합니다.<br>
+      <br>
+      <img style="width: 700px; height: 493px;" alt="" src="tutorial03/for_loop.png"><br>
+      <br>
+16. For Loop에서 Add Ground 함수를 실행합니다.<br>
+      <br>
+0부터 4까지 5번 Add Ground 함수를 실행 합니다.<br>
+      <br>
+      <img style="width: 763px; height: 283px;" alt="" src="tutorial03/beginplay.png"><br>
+      <br>
+17. 실행 화면입니다.<br>
+      <br>
+잔디로 깔려 있는 부분이 BP_GROUND입니다.<br>
+      <br>
+      <img style="width: 647px; height: 198px;" alt="" src="tutorial03/run.png"><br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

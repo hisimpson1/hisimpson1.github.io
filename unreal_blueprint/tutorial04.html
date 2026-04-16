@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--blueprint trigger-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>blueprint trigger</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>blueprint trigger<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>블루프린트에 박스를 추가하여 trigger로 사용하는 방법에 대해 알아 보겠습니다.<br>
+      <br>
+흰색 큐브가 이벤트 박스에 오버랩 되면 새로운 흰색 큐브가 생성됩니다.<br>
+오버랩 될때, 이펙트와 사운드 연출효과가 있습니다.<br>
+<br>
+      <img style="width: 690px; height: 436px;" alt="" src="tutorial04/run.png"><br>
+      <h4>BP_EventBox에서 작업</h4>
+
+      1. 오른쪽 마우스를 클릭해서 블루 프린트 &gt; 블루 프린트 클래스 &gt; 액터를 생성<br>
+
+여기서 파일 이름은 BP_EventBox입니다.<br>
+      <br>
+2. Cube를 추가 합니다.<br>
+      <br>
+스케일을 5, 5, 0.2로 지정합니다.<br>
+      <br>
+3. Box를 추가 합니다.<br>
+      <br>
+스케일을 7.82, 7.82, 5로 지정합니다.<br>
+위치는 0, 0, 150으로 지정합니다.<br>
+      <br>
+      <img style="width: 858px; height: 465px;" alt="" src="tutorial04/eventbox.png"><br>
+      <br>
+      <br>
+4. Box 컴포넌트를 선택하고 콜리전 / 콜리전 프리셋에서 OverlapOnlyPawn을 선택합니다.<br>
+      <br>
+콜리전 프리셋을 OverlapOnlyPawn으로 지정하면 캐릭터만 트리거로 체크 하게 됩니다.<br>
+      <br>
+      <img style="width: 394px; height: 601px;" alt="" src="tutorial04/box_detail.png"><br>
+      <br>
+5. "컴포넌트 오버랩 시작시"를 클릭하여 이벤트를 추가합니다.<br>
+      <br>
+      <h4>BP_ThirdPersionGameMode에서 BP_EventBox를 스폰 합니다.</h4>
+6. 스폰할 트랜스폼을 저장하기 위해 "타깃 포인트"&nbsp; 타입의 변수 NewEventBoxTarget을 추가<br>
+      <br>
+7. AddEventBox 함수를 추가<br>
+      <br>
+8. "BP_EventBox"를 스폰하기 위해 Game &gt; Spawn Actor from Class 노드 추가<br>
+      <br>
+9. Spawn Actor from Class 노드에서 Class를 "BP_EventBox"로 지정<br>
+      <br>
+10. Spawn Actor from Class 노드에서 Spawn Transform을 NewEventBoxTarget의 트랜스폼으로 지정<br>
+      <br>
+      <img style="width: 1218px; height: 548px;" alt="" src="tutorial04/gamemode.png"><br>
+      <br><br>
+      <h4>게임모드의 NewEventBoxTarget 변수 값을 레벨 블루프린트에서 지정</h4>
+
+      11. NewTargetPoint1을 지정후에 레벨블루프린트 열기<br>
+      <br>
+<img style="width: 1295px; height: 489px;" alt="" src="tutorial04/level_blueprint.png"><br>
+      <br>
+      12. Event BeginPlay에서 게임모드의 변수를 설정 할수 있도록 노드를 다음과 같이 구성 합니다.<br>
+      <br>
+13. 맵에 배치한 NewTargetPoint1 오브젝트를 참조하기 위해 "Create a Reference to NewTargetPoint1" 노드를 생성 합니다.<br>
+      <br>
+      <img style="width: 1006px; height: 694px;" alt="" src="tutorial04/LevelBlueprint_TargetPoint.png"><br>
+      <br>
+14. NewTargetPoint1로 게임모드의 NewEventBoxTarget을 설정 합니다.<br>
+      <br>
+      <img style="width: 931px; height: 281px;" alt="" src="tutorial04/NewTargetPoint1.png"><br>
+      <br>
+15. 이벤트박스에 오버랩시 이펙트와 사운드를 연출하기 위해&nbsp; BP_ThirdPersionCharacter에 ShowEffect 함수를 만들고 이펙트와 사운드를 추가 합니다.<br>
+      <br>
+      <img style="width: 1368px; height: 591px;" alt="" src="tutorial04/ShowEffect.png"><br>
+      <br>
+      <h4>BP_EventBox에서 캐릭터가 오버랩 되었을때 처리를 하겠습니다.</h4>
+      <br>
+16. 오버랩 되면 BP_ThirdPersonCharacter의 ShowEffect로 이펙트와 사운드 처리로 연출 효과를&nbsp; 줍니다.<br>
+      <br>
+17. 1초 동안 Delay<br>
+      <br>
+18. GameMode로 AddEventBox 실행하여 박스 추가<br>
+      <br>
+19. BP_EventBox 제거<br>
+      <br>
+      <img style="width: 1511px; height: 564px;" alt="" src="tutorial04/overlap_box.png"><br>
+      <br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

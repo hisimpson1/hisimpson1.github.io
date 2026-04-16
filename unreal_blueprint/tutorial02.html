@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--blueprint tip-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>blueprint tip</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>blueprint tip</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td><br>
+      <h4>Not Equal 노드 사용시 허용오차</h4>
+- CurRotaiton은 로테이터 타입의 변수입니다.<br>
+- Get Control Rotation과 CurRotation이 같으면 false, 같지 않으면 true를 반환 합니다.<br>
+- 허용 오차를 0.0001로 설정합니다.<br>
+      <br>
+만약 오차 허용 범위를 0으로 둔다면?<br>
+      <ul>
+        <li>캐릭터가 시각적으로는 이미 90도를 다 돌아서 정면을 보고 있는 것처럼 보입니다.</li>
+        <li>하지만 시스템 내부의 Get Control Rotation 값은 89.99999도이고, Desired Rotation은 90.0도입니다.</li>
+        <li>차이가 0이 아니기 때문에(완벽히 같지 않기 때문에), != 노드는 계속해서 True를 반환합니다.</li>
+      </ul>
+      <br>
+      <img style="width: 839px; height: 288px;" alt="" src="tutorial02/not_equal.png"><br>
+      <br>
+      <br>
+      <h4>Get Player Controller란</h4>
+언리얼 엔진에서는 플레이어를 두 가지 요소로 나누어서 관리합니다.<br>
+      <ol>
+        <li>Pawn 또는 Character (육체): 화면에 보이고, 팔다리를 움직이고, 총에 맞으면 데미지를 입는 물리적인 아바타입니다.</li>
+        <li>Player Controller (영혼/뇌): 키보드나 마우스, 게임패드의 입력을 받아들이고 화면(UI)을 관리하는 보이지 않는 지휘자입니다.<br>
+          <br>
+        </li>
+      </ol>
+예) 컨트롤러 방향 가져오기<br>
+대부분 상황에서 카메라는 컨트롤러를 따라가기 때문에 같은 것처럼 느껴집니다.<br>
+      <br>
+Get Player Controller → Get Control Rotation<br>
+      <br>
+핵심: Set Control Rotation = 플레이어 시점(컨트롤러 방향)을 회전시키는 것<br>
+      <br>
+      <h4>RInterp To</h4>
+회전값(Rotation)을 “부드럽게 목표 방향으로 보간(보정)”해주는 노드입니다.<br>
+      <br>
+Lerp (Rotator)와 차이<br>
+      <ul>
+        <li>RInterp To 속도 기반,&nbsp; Lerp는 비율기반 </li>
+        <li>RInterp To 자동 감속,&nbsp; Lerp는 일정 비율</li>
+        <li>RInterp To 자연스러운 회전,&nbsp; Lerp는 정확한 타이밍</li>
+      </ul>
+      <br>
+      <img style="width: 1019px; height: 244px;" alt="" src="tutorial02/RInterp.png"><br>
+      <br>
+      <h4>레벨 블루프린트에서 트리거 박스 사용</h4>
+맵에 추가된 "Trigger Box3"와 플레이어가 트리거 되었을때 어떻게 사용하는지 알아 보겠습니다.<br>
+      <br>
+1. 레벨 블루프린트 열기<br>
+      <br>
+2. "Tigger Box3에 대한 이벤트 추가" 항목 찾기<br>
+      <br>
+3. "Add On Actor Begin Overlap" 항목 찾기<br>
+      <br>
+      <img style="width: 509px; height: 316px;" alt="" src="tutorial02/BeginOverlap.png"><br>
+      <br>
+4. Cast To BP_ThirdPersonCharacter 추가<br>
+      <br>
+      <img style="width: 732px; height: 249px;" alt="" src="tutorial02/level_character.png"><br>
+      <br>
+      <br>
+      <h4>3인칭 시점의 프로젝트에서 카메라 z값 올리기</h4>
+BP_ThirdPersonCharacter &gt; CameraBoom 선택<br>
+      <br>
+      <img style="width: 251px; height: 260px;" alt="" src="tutorial02/CameraBoom.png"><br>
+      <br>
+소켓 오프셋의 z값 조정해서 카메라 높이를 조정 할 수 있습니다.<br>
+      <br>
+      <img style="width: 398px; height: 497px;" alt="" src="tutorial02/camera_scoket_offset.png"><br>
+      <br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

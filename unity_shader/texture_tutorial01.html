@@ -1,0 +1,363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--Drawing a texture-->
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8">
+  <title>Drawing a texture</title>
+
+  
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+</head><body>
+<h1>Drawing a texture&nbsp;<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>텍스쳐를 그리는 방법에 대해서 자세하게 알아 보겠습니다.<br>
+우선 텍스쳐를 그리는 전체 코드부터 먼저 보겠습니다.<br>
+      <br>
+texture.shader 파일<br>
+      <div>Shader "URPStudy/texture"<br>
+{<br>
+&nbsp;&nbsp;&nbsp; Properties<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _BaseMap("BaseMap", 2D) =
+"white" {}<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; SubShader<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tags { "RenderType" =
+"Opaque" "RenderPipeline" = "UniversalPipeline" }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HLSLPROGRAM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#pragma vertex vert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#pragma fragment frag<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#include
+"Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+struct Attributes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float4 positionOS : POSITION;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float2 uv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : TEXCOORD0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+struct Varyings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float4 positionHCS : SV_POSITION;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float2 uv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+TEXCOORD0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TEXTURE2D(_BaseMap);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SAMPLER(sampler_BaseMap);<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CBUFFER_START(UnityPerMaterial)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+float4 _BaseMap_ST;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CBUFFER_END<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Varyings vert(Attributes IN)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Varyings OUT;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return OUT;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+half4 frag(Varyings IN) : SV_Target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return color;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ENDHLSL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </div>
+      <br>
+      <h4>텍스쳐 슬롯 추가</h4>
+      <div>Properties<br>
+{<br>
+&nbsp;&nbsp;&nbsp; _BaseMap("BaseMap", 2D) = "white" {}<br>
+}<br>
+      </div>
+      <br>
+머티리얼 슬롯: _BaseMap이라는 텍스처 슬롯을 만듭니다. 에디터에서 “BaseMap” 라벨로 보이고, 기본값은 흰
+텍스처입니다.<br>
+      <br>
+의미: 머티리얼에 지정된 텍스처가 셰이더로 전달되며, 이후 샘플링에 사용됩니다.<br>
+      <br>
+      <h4>struct Attributes, Varyings에 UV 좌표에 대한 변수를 추가</h4>
+      <br>
+      <div>struct Attributes<br>
+{<br>
+&nbsp;&nbsp;&nbsp; float4 positionOS : POSITION;<br>
+&nbsp;&nbsp;&nbsp; float2
+uv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : TEXCOORD0;<br>
+};<br>
+      <br>
+struct Varyings<br>
+{<br>
+&nbsp;&nbsp;&nbsp; float4 positionHCS : SV_POSITION;<br>
+&nbsp;&nbsp;&nbsp; float2
+uv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : TEXCOORD0;<br>
+};<br>
+      </div>
+      <br>
+struct Attributes에서 uv : 메시에 저장된 첫 번째 UV 채널<br>
+Varyings에서 uv : 프래그먼트 셰이더로 전달될 UV. 마지막 단계에서 삼각형 내부 픽셀로 보간됩니다.<br>
+      <br>
+      <br>
+텍스처를 2D 텍스처로 정의하고 샘플러를 지정<br>
+      <br>
+      <div>TEXTURE2D(_BaseMap);<br>
+SAMPLER(sampler_BaseMap);<br>
+      </div>
+      <br>
+TEXTURE2D: 머티리얼의 _BaseMap 텍스처 리소스를 참조합니다.<br>
+SAMPLER: 필터링/랩핑 모드 등 샘플링 상태를 나타냅니다.<br>
+      <br>
+      <span style="font-weight: bold;">TRANSFORM_TEX</span><br>
+      <p dir="auto" style="">- TRANSFORM_TEX는 Unity 셰이더에서 매우 자주 쓰이는 편의
+매크로입니다.</p>
+      <p dir="auto" style="">- UV 좌표에 Material의 Tiling &amp; Offset 값을
+적용해줍니다.</p>
+      <p dir="auto" style="">- URP에서는 반드시 float4 _XXX_ST를
+UnityPerMaterial CBUFFER 안에 선언해야 함</p>
+      <div><span style="color: rgb(0, 153, 0);">// 실제 매크로 정의
+(UnityCG.cginc / Core.hlsl 등에 있음)</span><br>
+#define TRANSFORM_TEX(tex,name) (tex.xy * name##_ST.xy + name##_ST.zw)<br>
+      </div>
+      <br>
+직접 쓰는 것 vs TRANSFORM_TEX 쓰는 것 비교<br>
+      <div><span style="color: rgb(0, 153, 0);">// 직접 쓰기 (TRANSFORM_TEX
+매크로와</span> <span style="color: rgb(0, 153, 0);">동일한 결과)</span><br>
+OUT.uv = IN.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 매크로 사용 (가독성 + 실수 방지)</span><br>
+OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">상수 버퍼 (SRP Batcher 호환 되려면):<br>
+      <br>
+      </span><span style="font-weight: bold;"></span>
+      <div>CBUFFER_START(UnityPerMaterial)<br>
+float4 _BaseMap_ST;<br>
+CBUFFER_END<br>
+      </div>
+      <br>
+      <strong style="white-space: normal;">역할:</strong> 머티리얼별
+상수(타일링/오프셋)를 GPU에 효율적으로 업로드합니다. SRP Batcher와 정렬되는 레이아웃입니다.<br>
+_BaseMap_ST는 TRANSFORM_TEX에 적용한 변수입니다.<br>
+SRP Batcher에 대해서는 마지막에서 자세하게 다시 설명하겠습니다.<br>
+      <br>
+      <span style="font-weight: bold;">버텍스 셰이더 함수:<br>
+      <br>
+      </span><span style="font-weight: bold;"></span>
+      <div>Varyings vert(Attributes IN) {<br>
+&nbsp;&nbsp;&nbsp; Varyings OUT;<br>
+&nbsp;&nbsp;&nbsp; OUT.positionHCS =
+TransformObjectToHClip(IN.positionOS.xyz);<br>
+&nbsp;&nbsp;&nbsp; OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);<br>
+&nbsp;&nbsp;&nbsp; return OUT;<br>
+}<br>
+      </div>
+      <ul>
+        <li>화면 변환: TransformObjectToHClip는 오브젝트 공간 → 월드 → 뷰 → 클립 공간으로
+변환해 SV_POSITION에 넣습니다.</li>
+        <li>UV Tiling/Offset: TRANSFORM_TEX(IN.uv, _BaseMap)는 머티리얼의
+_BaseMap_ST를 이용해 UV에 타일링(_BaseMap_ST.xy)과 오프셋(_BaseMap_ST.zw)을 적용합니다.</li>
+      </ul>
+      <span style="font-weight: bold;">프래그먼트 셰이더 함수:</span><br>
+      <div>half4 frag(Varyings IN) : SV_Target {<br>
+&nbsp;&nbsp;&nbsp; half4 color = SAMPLE_TEXTURE2D(_BaseMap,
+sampler_BaseMap, IN.uv);<br>
+&nbsp;&nbsp;&nbsp; return color;<br>
+}<br>
+      </div>
+      <ul>
+        <li>UV 보간 사용: 버텍스에서 넘긴 IN.uv는 픽셀 위치에 맞게 보간되어 들어옵니다.</li>
+        <li>샘플링: SAMPLE_TEXTURE2D로 _BaseMap을 sampler_BaseMap 상태로 샘플하고,
+결과 색을 그대로 출력합니다.</li>
+        <li>SV_Target: 렌더 타겟(보통 컬러 버퍼)에 쓰이는 픽셀 컬러입니다.</li>
+      </ul>
+      <br>
+      <h4>유니티 6에서 SRP Batcher</h4>
+유니티 6(Unity 6)에서 SRP Batcher는 URP/HDRP의 핵심 최적화 기술로, 셰이더 변수 업데이트 속도를
+향상시켜 CPU 드로우콜 부하를 줄입니다. 여러 매테리얼이 동일한 셰이더를 사용할 때 효과적이며, 유니티 6에서는 새롭게 추가된
+GPU Resident Drawer와 병용되어 극적인 렌더링 성능 향상을 제공합니다. <br>
+      <br>
+      <span style="font-weight: bold;">유니티 6 SRP Batcher 핵심 정리</span><br>
+      <ul>
+        <li>작동 원리: 드로우콜 자체의 수를 줄이는 것이 아니라, 매테리얼 데이터(SetPass Call)를 GPU
+메모리에 상주시켜 CPU가 렌더링 상태를 변경하는 비용을 최소화합니다.</li>
+        <li>유니티 6에서의 위치: URP/HDRP 프로젝트 설정에서 기본 활성화되어 있으며, 특히 많은 오브젝트를
+화면에 그릴 때 필수적인 기술입니다.</li>
+        <li>호환성: 커스텀 셰이더의 경우 SRP Batcher 호환성 코드를 포함해야 동작합니다.</li>
+      </ul>
+      <br>
+      <span style="font-weight: bold;">최적화 팁</span>:<br>
+      <ul>
+        <li>동일한 셰이더를 사용하는 매테리얼을 최대한 공유하여 배치 효율을 높입니다.</li>
+        <li>Skinned Mesh Renderer도 지원하지만, 2D 셰이더 사용 시 Metal 오류가 수정된 최신
+6000.x 버전을 사용해야 합니다. </li>
+      </ul>
+      <span style="font-weight: bold;">머티리얼 프로퍼티 CBUFFER</span>: <span style="color: rgb(204, 0, 0);">모든 머티리얼의 프로퍼티(color, float, vector 등)는
+오직 하나의 CBUFFER 안에 선언되어야 하며, 이름은 UnityPerMaterial이어야 합니다.</span><br>
+      <br>
+      <span style="font-weight: bold;">SRP Batcher 호환 셰이더 예시 (HLSL)</span><br>
+      <br>
+      <div><span style="color: rgb(0, 153, 0);">// ... 다른 셰이더 코드들 ...</span><br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 1. 모든 프로퍼티를
+CBUFFER_START(UnityPerMaterial) 안에 묶습니다.</span><br>
+CBUFFER_START(UnityPerMaterial)<br>
+&nbsp;&nbsp;&nbsp; float4 _BaseColor;<br>
+&nbsp;&nbsp;&nbsp; float4 _BaseMap_ST; // Tiling and Offset<br>
+&nbsp;&nbsp;&nbsp; half _Cutoff;<br>
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 153, 0);">// 필요한 다른 머티리얼
+프로퍼티들...</span><br>
+CBUFFER_END<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// 2. 텍스처는 CBUFFER 안에 넣지
+않습니다. (SRP Batcher가 처리)</span><br>
+TEXTURE2D(_BaseMap);<br>
+SAMPLER(sampler_BaseMap);<br>
+      <br>
+      <span style="color: rgb(0, 153, 0);">// ... </span><br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">SRP Batcher 호환성 체크리스트</span><br>
+      <ul>
+        <li>MaterialPropertyBlock 미사용: SRP Batcher는
+MaterialPropertyBlock을 사용하는 렌더러와 호환되지 않습니다.</li>
+        <li>텍스처는 CBUFFER 제외: 텍스처 변수는 CBUFFER_START와 CBUFFER_END 바깥에
+선언해야 합니다.</li>
+        <li>변수 타입 일치: Properties 블록에서 정의한 변수명과 CBUFFER 내의 변수명이 동일해야 합니다.</li>
+        <li>Multi-pass 셰이더: 셰이더에 여러 패스(Pass)가 있다면, 모든 패스에서 동일한
+UnityPerMaterial 구조를 사용해야 합니다.</li>
+        <li>Meta Pass: 라이트맵 베이킹을 위한 Meta Pass에서도 CBUFFER 구조가 깨지지 않도록 해야
+합니다. </li>
+      </ul>
+      <span style="font-weight: bold;">셰이더 호환성 확인 방법</span><br>
+      <ol>
+        <li>프로젝트 설정에서 SRP Batcher를 활성화합니다.</li>
+        <li>작성한 셰이더 파일을 Inspector창에서 클릭합니다.</li>
+        <li>Inspector 하단에 "SRP Batcher: compatible"이라고 표시되면 호환되는 것입니다.</li>
+        <li>만약 "not compatible"이라면, CBUFFER_START 블록이 제대로 정의되지 않았거나,
+MaterialPropertyBlock을 사용하는 오브젝트가 씬에 있는 것입니다. </li>
+      </ol>
+참조)<br>
+      <a href="https://chulin28ho.tistory.com/669#google_vignette">https://chulin28ho.tistory.com/669#google_vignette</a><br>
+      <a href="https://docs.unity3d.com/kr/Packages/com.unity.render-pipelines.universal@8.2/manual/writing-shaders-urp-unlit-texture.html">유
+니티 공식문서 : 텍스쳐 그리기</a><br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

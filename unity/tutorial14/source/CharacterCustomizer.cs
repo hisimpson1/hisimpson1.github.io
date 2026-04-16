@@ -33,6 +33,11 @@ public class CharacterCustomizer : MonoBehaviour
     {
         if (meshRef == null || !meshRef.RuntimeKeyIsValid()) return;
 
+        if (meshRef.OperationHandle.IsValid())
+        {
+            Addressables.Release(meshRef.OperationHandle);
+        }
+
         // AssetReference를 사용할 때는 어떤 타입으로 로드할지 <Mesh>를 명시해줘야 합니다.
         meshRef.LoadAssetAsync<Mesh>().Completed += (handle) =>
         {

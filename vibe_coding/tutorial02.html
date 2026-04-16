@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!--claudeflare 기본 사용법-->
+
+
+  
+  <style type="text/css">table {
+        line-height:160%; FONT-SIZE: 11pt; MARGIN: 0px; FONT-FAMILY: 맑은 고딕, 바탕, Courier New, Courier
+}
+  </style>
+  
+  <style type="text/css">div {
+        line-height:130%; font-family:돋움체; font-size:10pt; color:black; background-color:white; padding:0pt; border-width:1pt; border-color:black; border-style:solid
+}
+  </style>
+  
+  <style type="text/css">
+	li {
+          margin: 10px 0;
+        }
+
+        li:last-child {
+           margin-bottom: 0;
+        }
+  </style>
+  
+  <meta name="GENERATOR" content="Namo WebEditor v6.0">
+
+  
+  <meta charset="UTF-8"><title>claudeflare 기본 사용법</title><!-- Google tag (gtag.js) -->
+  
+
+  
+
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script></head><body>
+<h1>claudeflare 배포<br>
+</h1>
+
+<table border="0" width="700">
+
+  <tbody>
+    <tr>
+      <td>Cloudflare는 보안·네트워크 인프라를 함께 제공하는 “인프라 플랫폼”에 가깝고, Netlify는 프런트엔드 배포 및 JAMstack 개발자 경험에 초점을 둡니다.<br>
+      Cloudflare는 대역폭이 무제한이고, Netlify는 무료일때는 대역폭이 100G까지 제한 사용 가능합니다.<br><br>
+Cloudflare 가입과 사용법에 대해서 알아 본후, 배포를 어떻게 하는지 알아 보겠습니다.<br>
+배포는 드래그로 파일 올려서 배포 하기, github로 배포하는 방법에 대해서 알아 보겠습니다.<br>
+<br>
+cloudeflare 홈페이지<br>
+      <a href="https://www.cloudflare.com/ko-kr/">https://www.cloudflare.com/ko-kr/</a><br>
+가입하기<br>
+      <a href="https://pages.cloudflare.com/">https://pages.cloudflare.com/</a><br>
+      <br>
+      <br>
+      <br>
+      <h4>1. 가입하기</h4>
+      <img style="width: 797px; height: 578px;" alt="" src="tutorial02/sign.png"><br>
+      <br>
+      <br>
+      <h4>2 Workers &amp; Pages</h4>
+오른쪽 메뉴에서 워커스 앤 페이지를 선택 합니다.<br>
+      <br>
+      <h4>3. "Create application" 버튼을 클릭하여 Worker를 만듭니다.</h4>
+      <img style="width: 968px; height: 949px;" alt="" src="tutorial02/workers_pages.png"><br>
+      <br>
+      <h4>4. "Get started" 클릭</h4>
+"Get started" 위에 있는 다른 옵션을 선택하면 비용이 많이 든다고 하네요.<br>
+&nbsp;저는 "Get started"를 선택합니다.<br>
+      <br>
+      <img style="width: 992px; height: 496px;" alt="" src="tutorial02/Get_started.png"><br>
+      <br>
+      <h4>5. Drag and drop your files 선택</h4>
+"Drag and drop your files"을 선택하여 파일들을 드래그 하도록 하겠습니다.<br>
+      <br>
+      <img style="width: 982px; height: 409px;" alt="" src="tutorial02/Get_started1.png"><br>
+      <br>
+      <br>
+      <h4>6. create project 버튼 클릭</h4>
+      <img style="width: 996px; height: 864px;" alt="" src="tutorial02/create_project.png"><br>
+      <br>
+      <h4>7 Drag folder로 파일 올리기</h4>
+폴더 이름을 아무거나 (여기서는 새폴더) 만들고 올리 파일을 넣은후 폴더를 드래그 합니다.<br>
+      <img style="width: 981px; height: 980px;" alt="" src="tutorial02/drag_folder.png"><br>
+      <br>
+      <h4>8. Deploy 버튼을 클릭하여 배포하기</h4>
+      <img style="width: 974px; height: 827px;" alt="" src="tutorial02/deploy.png"><br>
+      <br>
+      <br>
+      <h4>9. 배포 주소로 확인하기</h4>
+      <img style="width: 1138px; height: 895px;" alt="" src="tutorial02/deploy1.png"><br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <h2 style="color: rgb(204, 0, 0);">여기서는 git을 통한 배포에 대해서 알아 보겠습니다.</h2>
+      <h4>7(git) Import an existing Get repository 선택해서 배포</h4>
+      <br>
+      <img style="width: 976px; height: 606px;" alt="" src="tutorial02/github.png"><br>
+      <br>
+      <br>
+      <h4>8. 진행중 설치하다 문세 있으면 아래 링크에서 제거한다.</h4>
+      <a href="https://github.com/settings/installations">https://github.com/settings/installations</a><br>
+      <br>
+Installed GitHub Apps와 Authorized GitHub Apps에서 "Cloudflare Workers and Pages" 관련 된 사항을 제거한다.<br>
+      <br>
+      <img style="width: 974px; height: 562px;" alt="" src="tutorial02/github_installations.png"><br>
+      <br>
+      <h4>9. 모든 저장소 참조를 선택 합니다.</h4>
+      <img style="width: 620px; height: 658px;" alt="" src="tutorial02/all_install.png"><br>
+      <br>
+      <h4>10. 모바일로 github 인증을 합니다.</h4>
+      <img style="width: 282px; height: 420px;" alt="" src="tutorial02/mobile_auth.png"><br>
+      <br>
+      <h4>11. github 저장소 선택</h4>
+      <img style="width: 791px; height: 854px;" alt="" src="tutorial02/deploy_github.png"><br>
+      <br>
+      <h4>12. builds and deployments</h4>
+      <br>
+      <img style="width: 754px; height: 859px;" alt="" src="tutorial02/builds_and_deployments.png"><br>
+      <br>
+      <br>
+13. 결과화면<br>
+      <br>
+      <img style="width: 783px; height: 872px;" alt="" src="tutorial02/result.png"><br>
+      <br>
+<br>
+참고)<br>
+claudeflare 사용법<br>
+      <a href="https://www.youtube.com/watch?v=77ZT6H1Kpa8">https://www.youtube.com/watch?v=77ZT6H1Kpa8</a><br>
+      <br>
+바이브 코딩 기초, 수익형 웹 사이트 만들고 돈 벌기<br>
+      <a href="https://www.youtube.com/watch?v=wUFtsYHQOpI">https://www.youtube.com/watch?v=wUFtsYHQOpI</a><br>
+      <br>
+<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<script language="JavaScript">
+
+var images = document.getElementsByTagName('img'); 
+
+for(var i = 0; i < images.length; i++) { 
+    images[i].style.width = images[i].width/2 + 'px';
+    images[i].style.height = images[i].height/2 + 'px';
+    images[i].addEventListener("click", ChangeImageSize.bind(images[i]), false);
+    images[i].setAttribute('data-imageSize', '0.5');
+}
+
+function ChangeImageSize(){
+    imageSize = this.getAttribute('data-imageSize')
+
+    width = this.width;
+    height = this.height;
+
+    if(imageSize == '1') 
+    {
+	this.setAttribute('data-imageSize', '0.5');
+        width =  width/2;
+        height = height/2;      
+    }
+    else 
+    {
+	this.setAttribute('data-imageSize', '1');
+        width = width*2;
+        height = height*2;
+    }
+
+    this.style.width = width + 'px';
+    this.style.height = height + 'px';
+}
+
+</script>
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body></html>

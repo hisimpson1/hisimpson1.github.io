@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutter 깊이 알기: 왜 클래스가 2개일까?</title>
+    <style>
+        :root {
+            --primary-blue: #02569B;
+            --accent-blue: #0175C2;
+            --bg-gray: #f5f7fa;
+            --text-dark: #202124;
+            --code-bg: #1e1e1e;
+            --point-color: #ff7043;
+        }
+        body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; line-height: 1.8; color: var(--text-dark); background-color: var(--bg-gray); margin: 0; padding: 20px; }
+        .container { max-width: 950px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary-blue); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        h2 { color: var(--accent-blue); margin-top: 40px; border-left: 5px solid var(--accent-blue); padding-left: 15px; font-size: 1.5rem; }
+        h3 { color: #444; margin-top: 25px; }
+        p, li { font-size: 1.05rem; color: #444; }
+        
+        /* 강조구문 */
+        .important { color: var(--point-color); font-weight: bold; }
+        .highlight-box { background-color: #f0f7ff; border-left: 6px solid var(--primary-blue); padding: 20px; margin: 25px 0; border-radius: 4px; }
+        
+        /* 테이블 스타일 */
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 0.95rem; }
+        th { background-color: var(--primary-blue); color: white; padding: 15px; text-align: left; }
+        td { border-bottom: 1px solid #ddd; padding: 15px; vertical-align: top; }
+        
+        /* 코드 블록 (VS Code Dark) */
+        pre { background-color: var(--code-bg); color: #d4d4d4; padding: 25px; border-radius: 10px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 14px; margin-top: 15px; }
+        .c-keyword { color: #569cd6; } 
+        .c-type { color: #4ec9b0; }    
+        .c-func { color: #dcdcaa; }    
+        .c-string { color: #ce9178; }  
+        .c-comment { color: #6a9955; } 
+        .c-at { color: #b5cea8; }      
+    </style>
+	
+<!-- Google tag (gtag.js) -->
+  
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Z0ZXNX5CYQ"></script>
+  
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0ZXNX5CYQ');
+  </script>
+	
+</head>
+<body>
+
+<div class="container">
+    <h1>Flutter StatefulWidget의 구조적 이해</h1>
+
+    <section>
+        <h2>1. StatefulWidget과 setState 개념</h2>
+        <p>Flutter에서 화면은 <strong>'위젯(Widget)'</strong>의 조합으로 이루어집니다. 그중에서도 데이터에 따라 모습이 변하는 것을 <code>StatefulWidget</code>이라 부릅니다.</p>
+        <ul>
+            <li><strong>StatefulWidget:</strong> 상태(데이터)를 가질 수 있는 위젯입니다.</li>
+            <li><strong>setState():</strong> "상태가 변했으니 화면을 새로 그려라"라고 Flutter 엔진에 보내는 <strong>알림 신호</strong>입니다.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>2. 왜 반드시 클래스를 2개로 나누어 쓰나요?</h2>
+        <p>초보자가 가장 의아해하는 부분입니다. "그냥 클래스 하나에 변수랑 화면 코드를 다 넣으면 안 될까?"라는 의문이 들 수 있죠. 하지만 여기에는 <strong>Flutter의 성능 최적화 전략</strong>이 숨어 있습니다.</p>
+
+        <h3>① 위젯(Widget)은 소모품입니다</h3>
+        <p>Flutter에서 위젯 클래스(<code>CounterPage</code>)는 매우 가볍고 **불변(Immutable)**한 객체입니다. 화면이 1초에 60번 바뀐다면, 위젯 객체도 1초에 60번씩 새로 생성되고 버려질 수 있습니다. 만약 이 클래스 안에 <code>count</code> 데이터를 저장한다면, 화면이 바뀔 때마다 데이터가 초기화되어 버릴 것입니다.</p>
+
+        <h3>② 상태(State)는 유지되어야 합니다</h3>
+        <p>반면, <code>_CounterPageState</code> 클래스는 위젯이 화면에 떠 있는 동안 <strong>메모리에 계속 유지</strong>됩니다. 위젯 껍데기가 수백 번 갈아치워져도, 알맹이인 '상태 객체'는 그대로 살아남아 <code>count</code> 숫자를 안전하게 지킵니다.</p>
+
+        <div class="highlight-box">
+            <strong>정리하자면:</strong><br>
+            1. <strong>CounterPage (Widget):</strong> "이 화면은 상태가 필요한 화면이다"라는 것을 정의하는 <span class="important">설계도/이름표</span> 역할 (자주 교체됨)<br>
+            2. <strong>_CounterPageState (State):</strong> 실제 데이터와 화면을 그리는 로직을 담은 <span class="important">실행 엔진</span> 역할 (오래 유지됨)
+        </div>
+    </section>
+
+    <section>
+        <h2>3. 두 클래스의 역할 비교</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>구분</th>
+                    <th>위젯 클래스 (CounterPage)</th>
+                    <th>상태 클래스 (_CounterPageState)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>불변성</strong></td>
+                    <td><strong>불변 (Immutable)</strong><br>내부 필드는 모두 final이어야 함.</td>
+                    <td><strong>가변 (Mutable)</strong><br>변수 값을 자유롭게 변경 가능.</td>
+                </tr>
+                <tr>
+                    <td><strong>수명(Lifecycle)</strong></td>
+                    <td><strong>매우 짧음</strong><br>부모 위젯이 재빌드되면 같이 새로 생성됨.</td>
+                    <td><strong>길음</strong><br>화면에서 완전히 제거될 때까지 유지됨.</td>
+                </tr>
+                <tr>
+                    <td><strong>핵심 메서드</strong></td>
+                    <td><code>createState()</code><br>상태 객체를 생성하여 연결함.</td>
+                    <td><code>build()</code> / <code>setState()</code><br>화면을 구성하고 변화를 처리함.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>4. 전체 소스 코드 (main.dart)</h2>
+        <pre><code><span class="c-keyword">import</span> <span class="c-string">'package:flutter/material.dart'</span>;
+
+<span class="c-keyword">void</span> <span class="c-func">main</span>() {
+  <span class="c-func">runApp</span>(MyApp());
+}
+
+<span class="c-keyword">class</span> <span class="c-type">MyApp</span> <span class="c-keyword">extends</span> <span class="c-type">StatelessWidget</span> {
+  <span class="c-keyword">@override</span>
+  <span class="c-type">Widget</span> <span class="c-func">build</span>(<span class="c-type">BuildContext</span> context) {
+    <span class="c-keyword">return</span> <span class="c-type">MaterialApp</span>(
+      home: CounterPage(),
+    );
+  }
+}
+
+<span class="c-comment">// 1. 위젯 클래스: 상태를 '가질 수 있음'을 정의 (이름표)</span>
+<span class="c-keyword">class</span> <span class="c-type">CounterPage</span> <span class="c-keyword">extends</span> <span class="c-type">StatefulWidget</span> {
+  <span class="c-keyword">@override</span>
+  _CounterPageState <span class="c-func">createState</span>() => _CounterPageState();
+}
+
+<span class="c-comment">// 2. 상태 클래스: 실제 데이터(상태)를 보관하고 화면을 그림 (엔진)</span>
+<span class="c-keyword">class</span> <span class="c-type">_CounterPageState</span> <span class="c-keyword">extends</span> <span class="c-type">State</span>&lt;CounterPage&gt; {
+  <span class="c-type">int</span> count = <span class="c-at">0</span>; <span class="c-comment">// 위젯이 재생성되어도 이 값은 유지됩니다.</span>
+
+  <span class="c-keyword">@override</span>
+  <span class="c-type">Widget</span> <span class="c-func">build</span>(<span class="c-type">BuildContext</span> context) {
+    <span class="c-keyword">return</span> <span class="c-type">Scaffold</span>(
+      appBar: <span class="c-type">AppBar</span>(title: <span class="c-type">Text</span>(<span class="c-string">"StatefulWidget 이해"</span>)),
+      body: <span class="c-type">Center</span>(
+        child: <span class="c-type">Text</span>(
+          <span class="c-string">'현재 숫자: $count'</span>,
+          style: <span class="c-type">TextStyle</span>(fontSize: <span class="c-at">30</span>),
+        ),
+      ),
+      floatingActionButton: <span class="c-type">FloatingActionButton</span>(
+        onPressed: () {
+          <span class="c-comment">// setState를 호출해야만 build()가 다시 실행됩니다.</span>
+          <span class="c-func">setState</span>(() {
+            count++; 
+          });
+        },
+        child: <span class="c-type">Icon</span>(Icons.add),
+      ),
+    );
+  }
+}</code></pre>
+    </section>
+</div>
+
+<script src="https://giscus.app/client.js" data-repo="hisimpson1/blog-Comments" data-repo-id="R_kgDORHPRTA" data-category="Comments" data-category-id="DIC_kwDORHPRTM4C1zCU" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="ko" crossorigin="anonymous" async="">
+</script>
+</body>
+</html>
